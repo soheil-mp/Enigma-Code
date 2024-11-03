@@ -6,3 +6,5 @@ node_modules
 
 # .next folder
 /.next/
+.next
+.next/

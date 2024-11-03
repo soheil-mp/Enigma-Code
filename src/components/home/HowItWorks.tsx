@@ -1,70 +1,114 @@
-import AnimatedBackgroundLight from '@/components/effects/AnimatedBackgroundLight'
+import { motion } from 'framer-motion'
 
 const steps = [
   {
     number: '01',
     title: 'Create Your Profile',
     description: 'Sign up in seconds and let our AI analyze your existing resume or create a new one from scratch.',
-    gradient: 'from-purple-500 to-indigo-500'
+    gradient: 'text-blue-500',
+    bgColor: 'bg-blue-50/5'
   },
   {
     number: '02',
     title: 'Set Your Preferences',
     description: 'Tell us about your dream job, preferred locations, and salary expectations.',
-    gradient: 'from-cyan-500 to-teal-500'
+    gradient: 'text-purple-500',
+    bgColor: 'bg-purple-50/5',
+    stat: 'Personalized matching'
   },
   {
     number: '03',
     title: 'Let AI Do the Work',
     description: 'Our AI automatically finds and applies to matching positions while optimizing your applications.',
-    gradient: 'from-pink-500 to-rose-500'
+    gradient: 'text-orange-500',
+    bgColor: 'bg-orange-50/5',
+    stat: '100+ applications/day'
   },
   {
     number: '04',
     title: 'Prepare & Succeed',
     description: 'Use our AI interview coach to practice and get ready to ace your interviews.',
-    gradient: 'from-amber-500 to-orange-500'
+    gradient: 'text-green-500',
+    bgColor: 'bg-green-50/5',
+    stat: '93% success rate'
   }
 ]
 
 export default function HowItWorks() {
   return (
-    <div className="py-24">
+    <div className="py-24" id="how-it-works">
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-            Four Simple Steps to Success
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600">
-            Getting started with Enigma Code is easy. Our streamlined process gets you from sign-up to job applications in minutes.
-          </p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+              Four Simple Steps to Success
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600">
+              Getting started with Enigma Code is easy. Our streamlined process gets you from sign-up to job applications in minutes.
+            </p>
+          </motion.div>
         </div>
 
-        <div className="mt-20 grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-20 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {steps.map((step, index) => (
-            <div key={index} className="relative">
-              <div className="overflow-hidden rounded-2xl bg-gray-800 p-8 shadow-lg transition-all hover:scale-105">
-                <div className={`absolute inset-0 opacity-10 bg-gradient-to-br ${step.gradient}`} />
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.2 }}
+              className="relative"
+            >
+              <div className={`relative rounded-2xl ${step.bgColor} p-8 shadow-lg transition-all duration-300`}>
+                {/* Content */}
                 <div className="relative">
-                  <span className={`bg-gradient-to-r ${step.gradient} bg-clip-text text-4xl font-bold text-transparent`}>
+                  {/* Step number */}
+                  <div className={`${step.gradient} text-2xl font-bold`}>
                     {step.number}
-                  </span>
-                  <h3 className="mt-4 text-xl font-semibold text-white">{step.title}</h3>
-                  <p className="mt-2 text-gray-300">{step.description}</p>
+                  </div>
+
+                  {/* Title and description */}
+                  <h3 className="mt-4 text-xl font-bold text-gray-900">
+                    {step.title}
+                  </h3>
+                  <p className="mt-2 text-gray-600">
+                    {step.description}
+                  </p>
+
+                  {/* Stat */}
+                  {step.stat && (
+                    <div className="mt-4 inline-flex items-center rounded-full bg-white/50 px-3 py-1">
+                      <span className={`text-sm font-semibold ${step.gradient}`}>
+                        {step.stat}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
-        <div className="mt-20 text-center">
+        {/* CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="mt-16 text-center"
+        >
           <a
             href="/auth/signup"
-            className="inline-block transform rounded-xl bg-gradient-to-r from-teal-400 to-cyan-500 px-8 py-4 font-bold text-white transition-all hover:scale-105 hover:shadow-lg"
+            className="inline-flex items-center justify-center rounded-xl bg-blue-500 px-8 py-4 font-bold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl"
           >
             Start Your Journey Today
           </a>
-        </div>
+        </motion.div>
       </div>
     </div>
   )

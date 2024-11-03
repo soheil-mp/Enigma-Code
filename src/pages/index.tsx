@@ -1,6 +1,4 @@
-import { useEffect } from 'react'
 import MainLayout from '@/layouts/MainLayout'
-import NotificationBanner from '@/components/common/NotificationBanner'
 import ParticleBackground from '@/components/effects/ParticleBackground'
 import ScrollIndicator from '@/components/effects/ScrollIndicator'
 import AnimatedBackground from '@/components/effects/AnimatedBackground'
@@ -13,7 +11,6 @@ import Pricing from '@/components/home/Pricing'
 export default function Home() {
   return (
     <MainLayout>
-      <NotificationBanner />
       <div className="flex flex-col">
         {/* Hero - Rich gradient with particles */}
         <AnimatedBackground className="bg-gradient-to-br from-[#0A0F2C] via-[#1E1B4B] to-[#312E81]">

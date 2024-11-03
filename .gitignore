@@ -1,4 +1,3 @@
-
 # Environment variables
 .env
 
@@ -6,4 +5,4 @@
 node_modules
 
 # .next folder
-.next
+/.next/

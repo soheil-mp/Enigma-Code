@@ -50,46 +50,46 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-7xl mx-auto space-y-6 px-4 sm:px-6">
+      <div className="max-w-7xl mx-auto space-y-8 px-4 sm:px-6">
         {/* Welcome Section */}
         <div className="mt-4 relative">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="relative bg-white/95 rounded-3xl p-8 border border-white/20 overflow-hidden shadow-sm"
+            className="relative bg-white rounded-[24px] p-8 shadow-sm"
           >
             <div className="relative">
               {/* Welcome Text */}
               <div className="flex items-start gap-4 mb-8">
-                <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-[#EEF2FF] rounded-2xl flex items-center justify-center">
                   <span className="text-2xl">👋</span>
                 </div>
                 <div>
-                  <h2 className="text-3xl font-bold">
-                    <span className="text-gray-900 block mb-1">Ready to shine,</span>
-                    <span className="text-[#6366F1] block">
+                  <h2 className="text-[28px] font-semibold">
+                    <span className="text-[#1F2937] block">Ready to shine,</span>
+                    <span className="text-[#6366F1] block mt-1">
                       {session?.user?.name}!
                     </span>
                   </h2>
-                  <p className="mt-2 text-gray-600 text-base">
+                  <p className="mt-2 text-[#4B5563] text-base">
                     Your journey to success starts here. Let's make your dream job a reality!
                   </p>
                 </div>
               </div>
 
               {/* Quick Stats */}
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-blue-50/50 rounded-2xl p-4">
-                  <div className="text-sm text-gray-600">Weekly Progress</div>
-                  <div className="mt-1 text-xl font-bold text-gray-800">+25%</div>
+              <div className="grid grid-cols-3 gap-6">
+                <div className="bg-[#EEF2FF] rounded-2xl px-5 py-4">
+                  <div className="text-sm text-[#4B5563]">Weekly Progress</div>
+                  <div className="mt-1 text-xl font-semibold text-[#1F2937]">+25%</div>
                 </div>
-                <div className="bg-purple-50/50 rounded-2xl p-4">
-                  <div className="text-sm text-gray-600">Active Applications</div>
-                  <div className="mt-1 text-xl font-bold text-gray-800">12</div>
+                <div className="bg-[#F5F3FF] rounded-2xl px-5 py-4">
+                  <div className="text-sm text-[#4B5563]">Active Applications</div>
+                  <div className="mt-1 text-xl font-semibold text-[#1F2937]">12</div>
                 </div>
-                <div className="bg-green-50/50 rounded-2xl p-4">
-                  <div className="text-sm text-gray-600">Interview Success</div>
-                  <div className="mt-1 text-xl font-bold text-gray-800">85%</div>
+                <div className="bg-[#ECFDF5] rounded-2xl px-5 py-4">
+                  <div className="text-sm text-[#4B5563]">Interview Success</div>
+                  <div className="mt-1 text-xl font-semibold text-[#1F2937]">85%</div>
                 </div>
               </div>
             </div>
@@ -97,28 +97,28 @@ export default function Dashboard() {
         </div>
 
         {/* Tools Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {tools.map((tool) => (
             <motion.div 
               key={tool.title}
               whileHover={{ y: -2 }}
-              className="bg-white rounded-3xl p-6 shadow-sm hover:shadow-md transition-all duration-200"
+              className="bg-white rounded-[24px] p-6 shadow-sm"
             >
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4">
+              <div className="w-10 h-10 mb-4">
                 <span className="text-2xl">{tool.icon}</span>
               </div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">{tool.title}</h3>
-              <p className="text-gray-600 text-sm mb-4">
+              <h3 className="text-[#1F2937] text-lg font-semibold mb-2">{tool.title}</h3>
+              <p className="text-[#4B5563] text-sm mb-6">
                 {tool.description}
               </p>
               <motion.button 
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full bg-[#4F46E5] hover:bg-[#4338CA] text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-200 flex items-center justify-center"
+                className="w-full bg-[#6366F1] hover:bg-[#4F46E5] text-white px-4 py-3 rounded-xl text-sm font-medium transition-colors duration-200 flex items-center justify-center"
               >
                 Get Started
-                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                <svg className="w-4 h-4 ml-2" viewBox="0 0 24 24" fill="none">
+                  <path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </motion.button>
             </motion.div>
@@ -126,33 +126,31 @@ export default function Dashboard() {
         </div>
 
         {/* Success Journey Section */}
-        <div className="bg-[#4F46E5] rounded-3xl p-8 text-white">
+        <div className="bg-[#6366F1] rounded-[24px] p-8">
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-white/10 rounded-xl">
+            <div className="p-2">
               <span className="text-xl">🚀</span>
             </div>
             <div>
-              <h3 className="text-xl font-bold">Your Success Journey</h3>
+              <h3 className="text-white text-xl font-semibold">Your Success Journey</h3>
               <p className="text-white/80 text-sm">
                 Unlock achievements and watch your career soar!
               </p>
             </div>
           </div>
 
-          <div className="bg-white/10 rounded-xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
-                  <span className="text-sm">✨</span>
-                </div>
-                <div>
-                  <div className="font-medium">Rising Star</div>
-                  <div className="text-sm text-white/70">Level 1</div>
-                </div>
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mt-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+                <span className="text-sm">✨</span>
+              </div>
+              <div>
+                <div className="text-white font-medium">Rising Star</div>
+                <div className="text-white/70 text-sm">Level 1</div>
               </div>
             </div>
 
-            <div className="h-2 bg-white/20 rounded-full overflow-hidden">
+            <div className="h-2 bg-white/10 rounded-full overflow-hidden">
               <motion.div 
                 className="h-full bg-white rounded-full"
                 initial={{ width: 0 }}
@@ -164,24 +162,18 @@ export default function Dashboard() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-3 gap-4">
-          <div className="bg-white rounded-3xl p-6">
-            <h4 className="text-gray-600 text-sm">Applications Launched</h4>
-            <div className="mt-2 text-2xl font-bold text-gray-800">0</div>
-            <div className="mt-1 text-sm text-gray-500">Next milestone: 5</div>
-          </div>
-
-          <div className="bg-white rounded-3xl p-6">
-            <h4 className="text-gray-600 text-sm">Interview Opportunities</h4>
-            <div className="mt-2 text-2xl font-bold text-gray-800">0</div>
-            <div className="mt-1 text-sm text-gray-500">Next milestone: 3</div>
-          </div>
-
-          <div className="bg-white rounded-3xl p-6">
-            <h4 className="text-gray-600 text-sm">Profile Impact</h4>
-            <div className="mt-2 text-2xl font-bold text-gray-800">0</div>
-            <div className="mt-1 text-sm text-gray-500">Next milestone: 10</div>
-          </div>
+        <div className="grid grid-cols-3 gap-6">
+          {[
+            { title: 'Applications Launched', value: '0', milestone: '5' },
+            { title: 'Interview Opportunities', value: '0', milestone: '3' },
+            { title: 'Profile Impact', value: '0', milestone: '10' }
+          ].map((stat) => (
+            <div key={stat.title} className="bg-white rounded-[24px] px-6 py-5">
+              <h4 className="text-[#4B5563] text-sm">{stat.title}</h4>
+              <div className="mt-2 text-[28px] font-semibold text-[#1F2937]">{stat.value}</div>
+              <div className="mt-1 text-sm text-[#6B7280]">Next milestone: {stat.milestone}</div>
+            </div>
+          ))}
         </div>
       </div>
     </DashboardLayout>

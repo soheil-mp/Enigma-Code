@@ -6,6 +6,7 @@ import ToolCard from '@/components/dashboard/ToolCard'
 import { motion, AnimatePresence } from 'framer-motion'
 import Tooltip from '@/components/common/Tooltip'
 import Confetti from 'react-confetti'
+import Link from 'next/link'
 
 export default function Dashboard() {
   const { data: session, status } = useSession()
@@ -30,7 +31,7 @@ export default function Dashboard() {
       title: 'AI Resume Builder',
       description: 'Craft a stunning resume that stands out with AI-powered optimization',
       icon: '📝',
-      href: '/dashboard/resume',
+      href: '/resume-builder',
       bgGradient: 'from-blue-500/10 via-indigo-500/10 to-purple-500/10',
       iconBg: 'bg-blue-100',
       hoverEffect: 'hover:bg-gradient-to-br hover:from-blue-500/20 hover:to-indigo-500/20'
@@ -39,7 +40,7 @@ export default function Dashboard() {
       title: 'Application Tracker',
       description: 'Supercharge your job hunt with smart application management',
       icon: '📊',
-      href: '/dashboard/applications',
+      href: '/application-tracker',
       bgGradient: 'from-purple-500/10 via-pink-500/10 to-rose-500/10',
       iconBg: 'bg-purple-100',
       hoverEffect: 'hover:bg-gradient-to-br hover:from-purple-500/20 hover:to-pink-500/20'
@@ -48,7 +49,7 @@ export default function Dashboard() {
       title: 'Interview Master',
       description: 'Ace every interview with AI-powered practice and real-time coaching',
       icon: '🎯',
-      href: '/dashboard/interviews',
+      href: '/interview-master',
       bgGradient: 'from-emerald-500/10 via-teal-500/10 to-cyan-500/10',
       iconBg: 'bg-emerald-100',
       hoverEffect: 'hover:bg-gradient-to-br hover:from-emerald-500/20 hover:to-teal-500/20'
@@ -57,7 +58,7 @@ export default function Dashboard() {
       title: 'Career Insights',
       description: 'Unlock powerful market insights to make strategic career moves',
       icon: '📈',
-      href: '/dashboard/insights',
+      href: '/career-insights',
       bgGradient: 'from-orange-500/10 via-amber-500/10 to-yellow-500/10',
       iconBg: 'bg-orange-100',
       hoverEffect: 'hover:bg-gradient-to-br hover:from-orange-500/20 hover:to-amber-500/20'
@@ -180,26 +181,28 @@ export default function Dashboard() {
                 <p className="text-[#4B5563] text-sm mb-6">
                   {tool.description}
                 </p>
-                <motion.button 
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full bg-[#6366F1] hover:bg-[#4F46E5] text-white px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 flex items-center justify-center group"
-                >
-                  Get Started
-                  <motion.svg 
-                    className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" 
-                    viewBox="0 0 24 24" 
-                    fill="none"
+                <Link href={tool.href}>
+                  <motion.button 
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full bg-[#6366F1] hover:bg-[#4F46E5] text-white px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 flex items-center justify-center group"
                   >
-                    <path 
-                      d="M9 5l7 7-7 7" 
-                      stroke="currentColor" 
-                      strokeWidth={2} 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round"
-                    />
-                  </motion.svg>
-                </motion.button>
+                    Get Started
+                    <motion.svg 
+                      className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" 
+                      viewBox="0 0 24 24" 
+                      fill="none"
+                    >
+                      <path 
+                        d="M9 5l7 7-7 7" 
+                        stroke="currentColor" 
+                        strokeWidth={2} 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                      />
+                    </motion.svg>
+                  </motion.button>
+                </Link>
               </div>
             </motion.div>
           ))}

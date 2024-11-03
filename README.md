@@ -328,7 +328,7 @@ Ensure you have the following installed:
    npm run dev
    # or
    yarn dev
-```
+   ```
    The application will be running on `http://localhost:3000`.
 
 ### Project Structure

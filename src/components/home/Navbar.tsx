@@ -23,10 +23,12 @@ export default function Navbar() {
       className={`w-full transition-all duration-300 ${
         isScrolled 
           ? 'fixed top-0 z-50 bg-white/80 backdrop-blur-lg shadow-lg' 
-          : 'absolute top-0 left-0 right-0 z-40'
+          : 'absolute top-0 left-0 right-0 z-40 bg-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${
+        isMenuOpen && !isScrolled ? 'bg-gray-900/50 backdrop-blur-sm' : 'bg-transparent'
+      }`}>
         <div className="flex justify-between h-16">
           {/* Logo and Brand */}
           <div className="flex items-center">
@@ -39,9 +41,7 @@ export default function Navbar() {
                 className="w-10 h-10 object-contain"
               />
               <span className={`text-xl font-bold ${
-                isScrolled 
-                  ? 'text-gray-900' 
-                  : 'text-white'
+                isScrolled ? 'text-gray-900' : 'text-white'
               }`}>
                 Enigma Code
               </span>
@@ -56,7 +56,7 @@ export default function Navbar() {
                   className={`text-sm font-medium transition-colors ${
                     isScrolled 
                       ? 'text-gray-600 hover:text-gray-900' 
-                      : 'text-gray-100 hover:text-white'
+                      : 'text-white/80 hover:text-white'
                   }`}
                 >
                   {item}
@@ -68,7 +68,7 @@ export default function Navbar() {
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
             {status === 'loading' ? (
-              <div className="animate-pulse h-8 w-20 bg-gray-200 rounded"></div>
+              <div className="animate-pulse h-8 w-20 bg-white/20 rounded"></div>
             ) : session ? (
               <motion.div className="flex items-center space-x-4">
                 <Link 
@@ -76,7 +76,7 @@ export default function Navbar() {
                   className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
                     isScrolled 
                       ? 'text-gray-600 hover:text-gray-900' 
-                      : 'text-gray-100 hover:text-white'
+                      : 'text-white/80 hover:text-white'
                   }`}
                 >
                   Dashboard
@@ -101,7 +101,7 @@ export default function Navbar() {
                   className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
                     isScrolled 
                       ? 'text-gray-600 hover:text-gray-900' 
-                      : 'text-gray-100 hover:text-white'
+                      : 'text-white/80 hover:text-white'
                   }`}
                 >
                   Sign In
@@ -126,8 +126,8 @@ export default function Navbar() {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className={`p-2 rounded-lg transition-colors ${
                 isScrolled 
-                  ? 'text-gray-600 hover:text-gray-900' 
-                  : 'text-gray-100 hover:text-white'
+                  ? 'text-gray-600 hover:bg-gray-100' 
+                  : 'text-white hover:bg-white/10'
               }`}
             >
               <span className="sr-only">Open menu</span>
@@ -152,7 +152,11 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white/95 backdrop-blur-lg border-t"
+            className={`md:hidden ${
+              isScrolled 
+                ? 'bg-white/95 backdrop-blur-lg' 
+                : 'bg-gray-900/50 backdrop-blur-sm'
+            }`}
           >
             <div className="px-2 pt-2 pb-3 space-y-1">
               {['Features', 'How it Works', 'Pricing'].map((item) => (

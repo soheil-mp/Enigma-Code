@@ -50,26 +50,26 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto space-y-8">
         {/* Welcome Section */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-6 bg-white rounded-2xl p-8 border border-gray-100 relative overflow-hidden"
+          className="mt-6 bg-white/90 rounded-2xl p-8 border border-white/20 relative overflow-hidden shadow-xl"
         >
-          {/* Playful background decorations */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-full -mr-48 -mt-48 opacity-70 animate-pulse" />
-          <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-pink-50 via-red-50 to-yellow-50 rounded-full -ml-36 -mb-36 opacity-50 animate-pulse delay-1000" />
+          {/* Enhanced background decorations */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 rounded-full -mr-48 -mt-48 opacity-70 animate-pulse" />
+          <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-pink-100 via-red-50 to-yellow-100 rounded-full -ml-36 -mb-36 opacity-50 animate-pulse delay-1000" />
           
           <div className="relative">
             <motion.h2 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-5xl font-bold space-y-2"
+              className="text-5xl font-bold space-y-4"
             >
-              <span className="text-gray-700 block">Ready to shine,</span>
+              <span className="text-gray-800 block">Ready to shine,</span>
               <motion.span 
-                className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent block"
+                className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 bg-clip-text text-transparent block"
                 animate={{ 
                   backgroundPosition: ['0%', '100%', '0%'],
                 }}
@@ -83,14 +83,14 @@ export default function Dashboard() {
                 {session?.user?.name}!
               </motion.span>
             </motion.h2>
-            <p className="mt-4 text-gray-500 max-w-xl text-lg">
+            <p className="mt-6 text-gray-600 max-w-xl text-lg leading-relaxed">
               Your journey to success starts here. Let's make your dream job a reality!
             </p>
           </div>
         </motion.div>
 
         {/* Tools Grid */}
-        <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <AnimatePresence>
             {tools.map((tool, index) => (
               <motion.div
@@ -110,18 +110,18 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="mt-12 bg-white rounded-3xl p-8 border border-gray-100 relative overflow-hidden"
+          className="bg-white/90 rounded-3xl p-8 border border-white/20 relative overflow-hidden shadow-xl"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-purple-50/50 opacity-50" />
           
           {/* Achievement Banner */}
-          <div className="relative mb-8 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-2xl p-6 text-white overflow-hidden">
+          <div className="relative mb-8 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 rounded-2xl p-6 text-white overflow-hidden shadow-lg">
             <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-20 -mt-20 animate-pulse" />
-            <h2 className="text-2xl font-bold mb-2">Your Success Journey</h2>
-            <p className="text-white/80">Unlock achievements and watch your career soar! 🚀</p>
+            <h2 className="text-2xl font-bold mb-3">Your Success Journey</h2>
+            <p className="text-white/90 text-lg">Unlock achievements and watch your career soar! 🚀</p>
             
             {/* Achievement Progress Bar */}
-            <div className="mt-4 h-2.5 bg-black/20 rounded-full overflow-hidden">
+            <div className="mt-6 h-3 bg-black/20 rounded-full overflow-hidden">
               <motion.div
                 className="h-full bg-white"
                 initial={{ width: "0%" }}
@@ -129,10 +129,10 @@ export default function Dashboard() {
                 transition={{ duration: 1, delay: 0.5 }}
               />
             </div>
-            <div className="mt-2 text-sm text-white/80">Rising Star - Level 1</div>
+            <div className="mt-3 text-sm font-medium text-white/90">Rising Star - Level 1</div>
           </div>
 
-          <div className="grid gap-8 sm:grid-cols-3 relative">
+          <div className="grid gap-6 sm:grid-cols-3 relative">
             {[
               { 
                 label: 'Applications Launched', 

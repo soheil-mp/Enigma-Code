@@ -43,23 +43,41 @@ export default function ToolCard({ title, description, icon, href }: ToolCardPro
             <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
               {title}
             </h3>
-            <p className="text-sm text-gray-500 leading-relaxed mb-4">
+            <p className="text-sm text-gray-500 leading-relaxed mb-6">
               {description}
             </p>
           </div>
 
-          {/* Action Indicator */}
-          <div className="flex items-center justify-center mt-4">
-            <motion.div
-              className="flex items-center gap-2 text-sm font-medium text-blue-500"
-              animate={{ x: [0, 5, 0] }}
-              transition={{ repeat: Infinity, duration: 1.5 }}
-            >
+          {/* Action Button - Made more prominent */}
+          <motion.div
+            className="relative mx-auto w-full max-w-[200px]"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-xl blur-sm opacity-75 group-hover:opacity-100 transition-opacity" />
+            <button className="relative w-full px-6 py-2.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 text-white rounded-xl font-medium group-hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2">
               <span>Get Started</span>
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </motion.div>
+              <motion.svg 
+                className="w-4 h-4"
+                animate={{ x: [0, 4, 0] }}
+                transition={{ repeat: Infinity, duration: 1.5 }}
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </motion.svg>
+            </button>
+          </motion.div>
+
+          {/* Progress Indicator */}
+          <div className="mt-6 h-1 bg-gray-100 rounded-full overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <motion.div
+              className="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"
+              initial={{ width: "0%" }}
+              whileHover={{ width: "100%" }}
+              transition={{ duration: 0.8 }}
+            />
           </div>
         </div>
       </motion.div>

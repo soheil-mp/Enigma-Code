@@ -1,6 +1,0 @@
-{
-    "gitlens.advanced.commitMode": "auto",
-    "git-autocommit.enabled": true,
-    "git-autocommit.interval": 1800,  // in seconds (30 minutes)
-    "git-autocommit.message": "Auto commit: ${date}"
-}

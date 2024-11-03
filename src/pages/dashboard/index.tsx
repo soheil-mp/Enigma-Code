@@ -50,151 +50,139 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="max-w-7xl mx-auto space-y-6 px-4 sm:px-6">
         {/* Welcome Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6 bg-white/90 rounded-2xl p-8 border border-white/20 relative overflow-hidden shadow-xl"
-        >
-          {/* Enhanced background decorations */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 rounded-full -mr-48 -mt-48 opacity-70 animate-pulse" />
-          <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-pink-100 via-red-50 to-yellow-100 rounded-full -ml-36 -mb-36 opacity-50 animate-pulse delay-1000" />
-          
-          <div className="relative">
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-5xl font-bold space-y-4"
-            >
-              <span className="text-gray-800 block">Ready to shine,</span>
-              <motion.span 
-                className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 bg-clip-text text-transparent block"
-                animate={{ 
-                  backgroundPosition: ['0%', '100%', '0%'],
-                }}
-                transition={{ 
-                  duration: 10,
-                  repeat: Infinity,
-                  ease: "linear"
-                }}
-                style={{ backgroundSize: '200% auto' }}
-              >
-                {session?.user?.name}!
-              </motion.span>
-            </motion.h2>
-            <p className="mt-6 text-gray-600 max-w-xl text-lg leading-relaxed">
-              Your journey to success starts here. Let's make your dream job a reality!
-            </p>
-          </div>
-        </motion.div>
+        <div className="mt-4 relative">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="relative bg-white/95 rounded-3xl p-8 border border-white/20 overflow-hidden shadow-sm"
+          >
+            <div className="relative">
+              {/* Welcome Text */}
+              <div className="flex items-start gap-4 mb-8">
+                <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center">
+                  <span className="text-2xl">👋</span>
+                </div>
+                <div>
+                  <h2 className="text-3xl font-bold">
+                    <span className="text-gray-900 block mb-1">Ready to shine,</span>
+                    <span className="text-[#6366F1] block">
+                      {session?.user?.name}!
+                    </span>
+                  </h2>
+                  <p className="mt-2 text-gray-600 text-base">
+                    Your journey to success starts here. Let's make your dream job a reality!
+                  </p>
+                </div>
+              </div>
 
-        {/* Tools Grid */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <AnimatePresence>
-            {tools.map((tool, index) => (
-              <motion.div
-                key={tool.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <ToolCard {...tool} />
-              </motion.div>
-            ))}
-          </AnimatePresence>
+              {/* Quick Stats */}
+              <div className="grid grid-cols-3 gap-4">
+                <div className="bg-blue-50/50 rounded-2xl p-4">
+                  <div className="text-sm text-gray-600">Weekly Progress</div>
+                  <div className="mt-1 text-xl font-bold text-gray-800">+25%</div>
+                </div>
+                <div className="bg-purple-50/50 rounded-2xl p-4">
+                  <div className="text-sm text-gray-600">Active Applications</div>
+                  <div className="mt-1 text-xl font-bold text-gray-800">12</div>
+                </div>
+                <div className="bg-green-50/50 rounded-2xl p-4">
+                  <div className="text-sm text-gray-600">Interview Success</div>
+                  <div className="mt-1 text-xl font-bold text-gray-800">85%</div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
 
-        {/* Progress Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="bg-white/90 rounded-3xl p-8 border border-white/20 relative overflow-hidden shadow-xl"
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-purple-50/50 opacity-50" />
-          
-          {/* Achievement Banner */}
-          <div className="relative mb-8 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 rounded-2xl p-6 text-white overflow-hidden shadow-lg">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-20 -mt-20 animate-pulse" />
-            <h2 className="text-2xl font-bold mb-3">Your Success Journey</h2>
-            <p className="text-white/90 text-lg">Unlock achievements and watch your career soar! 🚀</p>
-            
-            {/* Achievement Progress Bar */}
-            <div className="mt-6 h-3 bg-black/20 rounded-full overflow-hidden">
-              <motion.div
-                className="h-full bg-white"
-                initial={{ width: "0%" }}
-                animate={{ width: "30%" }}
-                transition={{ duration: 1, delay: 0.5 }}
+        {/* Tools Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {tools.map((tool) => (
+            <motion.div 
+              key={tool.title}
+              whileHover={{ y: -2 }}
+              className="bg-white rounded-3xl p-6 shadow-sm hover:shadow-md transition-all duration-200"
+            >
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4">
+                <span className="text-2xl">{tool.icon}</span>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">{tool.title}</h3>
+              <p className="text-gray-600 text-sm mb-4">
+                {tool.description}
+              </p>
+              <motion.button 
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full bg-[#4F46E5] hover:bg-[#4338CA] text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-200 flex items-center justify-center"
+              >
+                Get Started
+                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </motion.button>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Success Journey Section */}
+        <div className="bg-[#4F46E5] rounded-3xl p-8 text-white">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-white/10 rounded-xl">
+              <span className="text-xl">🚀</span>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold">Your Success Journey</h3>
+              <p className="text-white/80 text-sm">
+                Unlock achievements and watch your career soar!
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-white/10 rounded-xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+                  <span className="text-sm">✨</span>
+                </div>
+                <div>
+                  <div className="font-medium">Rising Star</div>
+                  <div className="text-sm text-white/70">Level 1</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="h-2 bg-white/20 rounded-full overflow-hidden">
+              <motion.div 
+                className="h-full bg-white rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: '25%' }}
+                transition={{ duration: 1 }}
               />
             </div>
-            <div className="mt-3 text-sm font-medium text-white/90">Rising Star - Level 1</div>
+          </div>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-3 gap-4">
+          <div className="bg-white rounded-3xl p-6">
+            <h4 className="text-gray-600 text-sm">Applications Launched</h4>
+            <div className="mt-2 text-2xl font-bold text-gray-800">0</div>
+            <div className="mt-1 text-sm text-gray-500">Next milestone: 5</div>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-3 relative">
-            {[
-              { 
-                label: 'Applications Launched', 
-                value: 0, 
-                color: 'blue',
-                icon: '🚀',
-                nextMilestone: 5
-              },
-              { 
-                label: 'Interview Opportunities', 
-                value: 0, 
-                color: 'green',
-                icon: '⭐',
-                nextMilestone: 3
-              },
-              { 
-                label: 'Profile Impact', 
-                value: 0, 
-                color: 'purple',
-                icon: '✨',
-                nextMilestone: 10
-              }
-            ].map((item, index) => (
-              <motion.div
-                key={item.label}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 + index * 0.1 }}
-                className={`p-6 bg-gradient-to-br from-${item.color}-50 to-${item.color}-100/30 rounded-2xl relative overflow-hidden group hover:shadow-lg transition-all duration-300`}
-              >
-                <Tooltip content={`Next milestone: ${item.nextMilestone} ${item.label}`}>
-                  {/* Stat Icon */}
-                  <div className="absolute top-4 right-4 text-2xl opacity-20 group-hover:opacity-100 transition-opacity">
-                    {item.icon}
-                  </div>
-
-                  <div className={`text-4xl font-bold text-${item.color}-600 mb-2`}>
-                    {item.value}
-                  </div>
-                  <div className={`text-sm font-medium text-${item.color}-900/70 mb-3`}>
-                    {item.label}
-                  </div>
-
-                  {/* Progress to next milestone */}
-                  <div className="h-1.5 bg-white/50 rounded-full overflow-hidden">
-                    <motion.div
-                      className={`h-full bg-${item.color}-500`}
-                      initial={{ width: "0%" }}
-                      animate={{ width: `${(item.value / item.nextMilestone) * 100}%` }}
-                      transition={{ duration: 1 }}
-                    />
-                  </div>
-                  <div className="mt-2 text-xs text-gray-500">
-                    Next milestone: {item.nextMilestone}
-                  </div>
-
-                  <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
-                </Tooltip>
-              </motion.div>
-            ))}
+          <div className="bg-white rounded-3xl p-6">
+            <h4 className="text-gray-600 text-sm">Interview Opportunities</h4>
+            <div className="mt-2 text-2xl font-bold text-gray-800">0</div>
+            <div className="mt-1 text-sm text-gray-500">Next milestone: 3</div>
           </div>
-        </motion.div>
+
+          <div className="bg-white rounded-3xl p-6">
+            <h4 className="text-gray-600 text-sm">Profile Impact</h4>
+            <div className="mt-2 text-2xl font-bold text-gray-800">0</div>
+            <div className="mt-1 text-sm text-gray-500">Next milestone: 10</div>
+          </div>
+        </div>
       </div>
     </DashboardLayout>
   )

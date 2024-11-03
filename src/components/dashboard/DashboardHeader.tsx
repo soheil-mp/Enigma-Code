@@ -6,12 +6,6 @@ import { motion } from 'framer-motion'
 export default function DashboardHeader() {
   const { data: session } = useSession()
 
-  const quickActions = [
-    { name: 'New Resume', icon: '⚡', href: '/dashboard/resume/new' },
-    { name: 'Quick Apply', icon: '🎯', href: '/dashboard/applications/quick' },
-    { name: 'Practice', icon: '🎮', href: '/dashboard/interviews/practice' },
-  ]
-
   return (
     <header className="bg-white/70 backdrop-blur-md border-b border-white/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -47,41 +41,21 @@ export default function DashboardHeader() {
             </Link>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              {quickActions.map((action) => (
-                <motion.button
-                  key={action.name}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/50 hover:bg-white/80 border border-white/20 text-sm font-medium text-gray-700 transition-all duration-200"
-                >
-                  <span>{action.icon}</span>
-                  <span>{action.name}</span>
-                </motion.button>
-              ))}
+              <div className="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center text-white">
+                {session?.user?.name?.[0] || 'U'}
+              </div>
+              <span className="text-gray-700 font-medium hidden sm:block">
+                {session?.user?.name}
+              </span>
             </div>
-
-            <div className="flex items-center gap-4">
-              <motion.div 
-                whileHover={{ scale: 1.02 }}
-                className="flex items-center gap-3 px-4 py-2 rounded-xl bg-white/80 border border-white/20 shadow-sm"
-              >
-                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-sm font-medium text-white">
-                  {session?.user?.name?.[0] || 'U'}
-                </div>
-                <span className="text-sm font-medium text-gray-700">{session?.user?.name}</span>
-              </motion.div>
-              
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => signOut()}
-                className="text-sm text-gray-500 hover:text-gray-700 px-4 py-2 rounded-xl hover:bg-white/80 transition-colors border border-transparent hover:border-white/20"
-              >
-                Sign out
-              </motion.button>
-            </div>
+            <button 
+              onClick={() => signOut()}
+              className="text-gray-600 hover:text-gray-800 text-sm"
+            >
+              Sign out
+            </button>
           </div>
         </div>
       </div>

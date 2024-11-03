@@ -41,6 +41,40 @@ interface Education {
   achievements: string[];
 }
 
+interface Skill {
+  id: string;
+  name: string;
+  level: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert';
+  category: string;
+}
+
+interface Language {
+  id: string;
+  name: string;
+  proficiency: 'Basic' | 'Conversational' | 'Professional' | 'Native';
+}
+
+interface Certification {
+  id: string;
+  name: string;
+  issuer: string;
+  issueDate: string;
+  expiryDate?: string;
+  credentialId?: string;
+  url?: string;
+}
+
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+  technologies: string[];
+  url?: string;
+  startDate: string;
+  endDate?: string;
+  current: boolean;
+}
+
 export default function ResumeBuilder() {
   const { data: session, status } = useSession()
   const router = useRouter()
@@ -81,6 +115,16 @@ export default function ResumeBuilder() {
     gpa: '',
     achievements: ['']
   });
+  const [skills, setSkills] = useState<Skill[]>([]);
+  const [currentSkill, setCurrentSkill] = useState<Skill>({
+    id: crypto.randomUUID(),
+    name: '',
+    level: 'Intermediate',
+    category: 'Technical'
+  });
+  const [languages, setLanguages] = useState<Language[]>([]);
+  const [certifications, setCertifications] = useState<Certification[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
 
   const steps = [
     { title: 'Choose Template', icon: '🎨' },
@@ -88,6 +132,9 @@ export default function ResumeBuilder() {
     { title: 'Experience', icon: '💼' },
     { title: 'Education', icon: '🎓' },
     { title: 'Skills', icon: '⚡' },
+    { title: 'Languages', icon: '🌐' },
+    { title: 'Projects', icon: '🚀' },
+    { title: 'Certifications', icon: '📜' },
   ]
 
   const templates = [
@@ -96,6 +143,15 @@ export default function ResumeBuilder() {
     { id: 'creative', name: 'Creative', description: 'Unique and eye-catching design' },
     { id: 'minimal', name: 'Minimal', description: 'Simple and straightforward presentation' },
   ]
+
+  const skillCategories = [
+    'Technical',
+    'Soft Skills',
+    'Languages',
+    'Tools',
+    'Frameworks',
+    'Other'
+  ];
 
   if (status === 'loading') {
     return <div>Loading...</div>
@@ -699,6 +755,494 @@ export default function ResumeBuilder() {
                   Pro tip: Include relevant coursework, academic achievements, and extracurricular activities that showcase your skills.
                   Need help highlighting your academic accomplishments? Click the AI Assistant button for suggestions.
                 </p>
+              </div>
+            </motion.div>
+          )}
+
+          {activeStep === 4 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="space-y-6 max-w-3xl mx-auto"
+            >
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-gray-900">Skills</h2>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => {
+                    if (currentSkill.name.trim()) {
+                      setSkills([...skills, currentSkill]);
+                      setCurrentSkill({
+                        id: crypto.randomUUID(),
+                        name: '',
+                        level: 'Intermediate',
+                        category: currentSkill.category
+                      });
+                    }
+                  }}
+                  className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-100"
+                >
+                  + Add Skill
+                </motion.button>
+              </div>
+
+              {/* Skills List */}
+              <div className="space-y-6">
+                {/* Skill Categories */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  {skillCategories.map((category) => {
+                    const categorySkills = skills.filter(skill => skill.category === category);
+                    if (categorySkills.length === 0) return null;
+
+                    return (
+                      <motion.div
+                        key={category}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-gray-50 rounded-xl p-4"
+                      >
+                        <h3 className="text-sm font-medium text-gray-700 mb-3">{category}</h3>
+                        <div className="space-y-2">
+                          {categorySkills.map((skill) => (
+                            <div
+                              key={skill.id}
+                              className="flex items-center justify-between bg-white rounded-lg p-2 group"
+                            >
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm text-gray-900">{skill.name}</span>
+                                <span className={`text-xs px-2 py-1 rounded-full ${
+                                  {
+                                    'Beginner': 'bg-blue-50 text-blue-600',
+                                    'Intermediate': 'bg-green-50 text-green-600',
+                                    'Advanced': 'bg-purple-50 text-purple-600',
+                                    'Expert': 'bg-orange-50 text-orange-600'
+                                  }[skill.level]
+                                }`}>
+                                  {skill.level}
+                                </span>
+                              </div>
+                              <button
+                                onClick={() => setSkills(skills.filter(s => s.id !== skill.id))}
+                                className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-opacity"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+
+                {/* Add New Skill Form */}
+                <div className="bg-white rounded-xl p-6 border border-gray-200">
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">Skill Name</label>
+                      <input
+                        type="text"
+                        value={currentSkill.name}
+                        onChange={(e) => setCurrentSkill({ ...currentSkill, name: e.target.value })}
+                        className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                        placeholder="e.g., React.js, Project Management"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">Category</label>
+                      <select
+                        value={currentSkill.category}
+                        onChange={(e) => setCurrentSkill({ ...currentSkill, category: e.target.value })}
+                        className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                      >
+                        {skillCategories.map((category) => (
+                          <option key={category} value={category}>
+                            {category}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">Proficiency Level</label>
+                      <select
+                        value={currentSkill.level}
+                        onChange={(e) => setCurrentSkill({ 
+                          ...currentSkill, 
+                          level: e.target.value as Skill['level']
+                        })}
+                        className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                      >
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                        <option value="Expert">Expert</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* AI Suggestions */}
+                <div className="mt-8 p-4 bg-indigo-50 rounded-xl">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                      <span className="text-sm">💡</span>
+                    </div>
+                    <h3 className="text-sm font-medium text-indigo-900">AI Suggestions</h3>
+                  </div>
+                  <p className="text-sm text-indigo-700">
+                    Pro tip: Include a mix of technical and soft skills relevant to your target role.
+                    The AI can analyze job descriptions and suggest skills you might want to add.
+                  </p>
+                  <button 
+                    onClick={() => {
+                      // TODO: Implement AI skill suggestions
+                    }}
+                    className="mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                  >
+                    Get AI Suggestions →
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Add these new sections after the Skills section */}
+
+          {/* Languages Section */}
+          {activeStep === 5 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="space-y-6 max-w-3xl mx-auto"
+            >
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-gray-900">Languages</h2>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => {
+                    setLanguages([...languages, {
+                      id: crypto.randomUUID(),
+                      name: '',
+                      proficiency: 'Professional'
+                    }]);
+                  }}
+                  className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-100"
+                >
+                  + Add Language
+                </motion.button>
+              </div>
+
+              <div className="space-y-4">
+                {languages.map((language, index) => (
+                  <motion.div
+                    key={language.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-white rounded-xl p-6 border border-gray-200 relative group"
+                  >
+                    <button
+                      onClick={() => setLanguages(languages.filter(l => l.id !== language.id))}
+                      className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <span className="text-gray-400 hover:text-red-500">✕</span>
+                    </button>
+                    
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700">Language</label>
+                        <input
+                          type="text"
+                          value={language.name}
+                          onChange={(e) => {
+                            const newLanguages = [...languages];
+                            newLanguages[index].name = e.target.value;
+                            setLanguages(newLanguages);
+                          }}
+                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                          placeholder="e.g., English, Spanish"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700">Proficiency</label>
+                        <select
+                          value={language.proficiency}
+                          onChange={(e) => {
+                            const newLanguages = [...languages];
+                            newLanguages[index].proficiency = e.target.value as Language['proficiency'];
+                            setLanguages(newLanguages);
+                          }}
+                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                        >
+                          <option value="Basic">Basic</option>
+                          <option value="Conversational">Conversational</option>
+                          <option value="Professional">Professional</option>
+                          <option value="Native">Native</option>
+                        </select>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Projects Section */}
+          {activeStep === 6 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="space-y-6 max-w-3xl mx-auto"
+            >
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-gray-900">Projects</h2>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => {
+                    setProjects([...projects, {
+                      id: crypto.randomUUID(),
+                      title: '',
+                      description: '',
+                      technologies: [],
+                      startDate: '',
+                      current: false,
+                      url: ''
+                    }]);
+                  }}
+                  className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-100"
+                >
+                  + Add Project
+                </motion.button>
+              </div>
+
+              <div className="space-y-6">
+                {projects.map((project, index) => (
+                  <motion.div
+                    key={project.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-white rounded-xl p-6 border border-gray-200 relative group"
+                  >
+                    <button
+                      onClick={() => setProjects(projects.filter(p => p.id !== project.id))}
+                      className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <span className="text-gray-400 hover:text-red-500">✕</span>
+                    </button>
+
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700">Project Title</label>
+                        <input
+                          type="text"
+                          value={project.title}
+                          onChange={(e) => {
+                            const newProjects = [...projects];
+                            newProjects[index].title = e.target.value;
+                            setProjects(newProjects);
+                          }}
+                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                          placeholder="e.g., E-commerce Platform"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700">Project URL</label>
+                        <input
+                          type="url"
+                          value={project.url}
+                          onChange={(e) => {
+                            const newProjects = [...projects];
+                            newProjects[index].url = e.target.value;
+                            setProjects(newProjects);
+                          }}
+                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                          placeholder="https://..."
+                        />
+                      </div>
+
+                      <div className="col-span-2 space-y-2">
+                        <label className="block text-sm font-medium text-gray-700">Description</label>
+                        <textarea
+                          value={project.description}
+                          onChange={(e) => {
+                            const newProjects = [...projects];
+                            newProjects[index].description = e.target.value;
+                            setProjects(newProjects);
+                          }}
+                          rows={3}
+                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200 resize-none"
+                          placeholder="Describe your project..."
+                        />
+                      </div>
+
+                      <div className="col-span-2 space-y-2">
+                        <label className="block text-sm font-medium text-gray-700">Technologies Used</label>
+                        <div className="flex flex-wrap gap-2">
+                          {project.technologies.map((tech, techIndex) => (
+                            <div
+                              key={techIndex}
+                              className="bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full text-sm flex items-center gap-2"
+                            >
+                              {tech}
+                              <button
+                                onClick={() => {
+                                  const newProjects = [...projects];
+                                  newProjects[index].technologies = project.technologies.filter((_, i) => i !== techIndex);
+                                  setProjects(newProjects);
+                                }}
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ))}
+                          <input
+                            type="text"
+                            placeholder="Add technology..."
+                            className="px-3 py-1 border border-gray-200 rounded-full text-sm focus:outline-none focus:border-indigo-500"
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' && e.currentTarget.value) {
+                                const newProjects = [...projects];
+                                newProjects[index].technologies.push(e.currentTarget.value);
+                                setProjects(newProjects);
+                                e.currentTarget.value = '';
+                              }
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Certifications Section */}
+          {activeStep === 7 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="space-y-6 max-w-3xl mx-auto"
+            >
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-gray-900">Certifications</h2>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => {
+                    setCertifications([...certifications, {
+                      id: crypto.randomUUID(),
+                      name: '',
+                      issuer: '',
+                      issueDate: '',
+                      credentialId: '',
+                      url: ''
+                    }]);
+                  }}
+                  className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-100"
+                >
+                  + Add Certification
+                </motion.button>
+              </div>
+
+              <div className="space-y-6">
+                {certifications.map((cert, index) => (
+                  <motion.div
+                    key={cert.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-white rounded-xl p-6 border border-gray-200 relative group"
+                  >
+                    <button
+                      onClick={() => setCertifications(certifications.filter(c => c.id !== cert.id))}
+                      className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <span className="text-gray-400 hover:text-red-500">✕</span>
+                    </button>
+
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700">Certification Name</label>
+                        <input
+                          type="text"
+                          value={cert.name}
+                          onChange={(e) => {
+                            const newCertifications = [...certifications];
+                            newCertifications[index].name = e.target.value;
+                            setCertifications(newCertifications);
+                          }}
+                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                          placeholder="e.g., AWS Solutions Architect"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700">Issuing Organization</label>
+                        <input
+                          type="text"
+                          value={cert.issuer}
+                          onChange={(e) => {
+                            const newCertifications = [...certifications];
+                            newCertifications[index].issuer = e.target.value;
+                            setCertifications(newCertifications);
+                          }}
+                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                          placeholder="e.g., Amazon Web Services"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700">Issue Date</label>
+                        <input
+                          type="month"
+                          value={cert.issueDate}
+                          onChange={(e) => {
+                            const newCertifications = [...certifications];
+                            newCertifications[index].issueDate = e.target.value;
+                            setCertifications(newCertifications);
+                          }}
+                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700">Credential ID</label>
+                        <input
+                          type="text"
+                          value={cert.credentialId}
+                          onChange={(e) => {
+                            const newCertifications = [...certifications];
+                            newCertifications[index].credentialId = e.target.value;
+                            setCertifications(newCertifications);
+                          }}
+                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                          placeholder="Enter credential ID"
+                        />
+                      </div>
+
+                      <div className="col-span-2 space-y-2">
+                        <label className="block text-sm font-medium text-gray-700">Credential URL</label>
+                        <input
+                          type="url"
+                          value={cert.url}
+                          onChange={(e) => {
+                            const newCertifications = [...certifications];
+                            newCertifications[index].url = e.target.value;
+                            setCertifications(newCertifications);
+                          }}
+                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                          placeholder="https://..."
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
               </div>
             </motion.div>
           )}

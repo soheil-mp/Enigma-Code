@@ -75,6 +75,16 @@ interface Project {
   current: boolean;
 }
 
+interface ValidationError {
+  field: string;
+  message: string;
+}
+
+interface SectionValidation {
+  errors: ValidationError[];
+  isValid: boolean;
+}
+
 export default function ResumeBuilder() {
   const { data: session, status } = useSession()
   const router = useRouter()
@@ -125,6 +135,7 @@ export default function ResumeBuilder() {
   const [languages, setLanguages] = useState<Language[]>([]);
   const [certifications, setCertifications] = useState<Certification[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
 
   const steps = [
     { title: 'Choose Template', icon: '🎨' },
@@ -152,6 +163,185 @@ export default function ResumeBuilder() {
     'Frameworks',
     'Other'
   ];
+
+  const validatePersonalInfo = (info: PersonalInfo): SectionValidation => {
+    const errors: ValidationError[] = [];
+    
+    if (!info.firstName.trim()) {
+      errors.push({ field: 'firstName', message: 'First name is required' });
+    }
+    if (!info.lastName.trim()) {
+      errors.push({ field: 'lastName', message: 'Last name is required' });
+    }
+    if (!info.email.trim()) {
+      errors.push({ field: 'email', message: 'Email is required' });
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(info.email)) {
+      errors.push({ field: 'email', message: 'Please enter a valid email address' });
+    }
+    if (!info.title.trim()) {
+      errors.push({ field: 'title', message: 'Professional title is required' });
+    }
+
+    return {
+      errors,
+      isValid: errors.length === 0
+    };
+  };
+
+  const validateExperience = (exp: Experience): SectionValidation => {
+    const errors: ValidationError[] = [];
+
+    if (!exp.title.trim()) {
+      errors.push({ field: 'title', message: 'Job title is required' });
+    }
+    if (!exp.company.trim()) {
+      errors.push({ field: 'company', message: 'Company name is required' });
+    }
+    if (!exp.startDate) {
+      errors.push({ field: 'startDate', message: 'Start date is required' });
+    }
+    if (!exp.current && !exp.endDate) {
+      errors.push({ field: 'endDate', message: 'End date is required when not current position' });
+    }
+    if (!exp.description.trim()) {
+      errors.push({ field: 'description', message: 'Job description is required' });
+    }
+
+    return {
+      errors,
+      isValid: errors.length === 0
+    };
+  };
+
+  const validateEducation = (edu: Education): SectionValidation => {
+    const errors: ValidationError[] = [];
+
+    if (!edu.school.trim()) {
+      errors.push({ field: 'school', message: 'School name is required' });
+    }
+    if (!edu.degree.trim()) {
+      errors.push({ field: 'degree', message: 'Degree is required' });
+    }
+    if (!edu.field.trim()) {
+      errors.push({ field: 'field', message: 'Field of study is required' });
+    }
+    if (!edu.startDate) {
+      errors.push({ field: 'startDate', message: 'Start date is required' });
+    }
+    if (!edu.current && !edu.endDate) {
+      errors.push({ field: 'endDate', message: 'End date is required when not current' });
+    }
+
+    return {
+      errors,
+      isValid: errors.length === 0
+    };
+  };
+
+  const validateSkill = (skill: Skill): SectionValidation => {
+    const errors: ValidationError[] = [];
+
+    if (!skill.name.trim()) {
+      errors.push({ field: 'name', message: 'Skill name is required' });
+    }
+    if (!skill.category) {
+      errors.push({ field: 'category', message: 'Category is required' });
+    }
+
+    return {
+      errors,
+      isValid: errors.length === 0
+    };
+  };
+
+  const handleNext = () => {
+    let canProceed = true;
+    let currentErrors: ValidationError[] = [];
+
+    switch (activeStep) {
+      case 1: // Personal Info
+        const personalInfoValidation = validatePersonalInfo(personalInfo);
+        if (!personalInfoValidation.isValid) {
+          canProceed = false;
+          currentErrors = personalInfoValidation.errors;
+        }
+        break;
+
+      case 2: // Experience
+        if (currentExperience.title || currentExperience.company) {
+          const expValidation = validateExperience(currentExperience);
+          if (!expValidation.isValid) {
+            canProceed = false;
+            currentErrors = expValidation.errors;
+          }
+        }
+        if (experiences.length === 0) {
+          canProceed = false;
+          currentErrors.push({ field: 'experience', message: 'Add at least one work experience' });
+        }
+        break;
+
+      case 3: // Education
+        if (currentEducation.school || currentEducation.degree) {
+          const eduValidation = validateEducation(currentEducation);
+          if (!eduValidation.isValid) {
+            canProceed = false;
+            currentErrors = eduValidation.errors;
+          }
+        }
+        if (educations.length === 0) {
+          canProceed = false;
+          currentErrors.push({ field: 'education', message: 'Add at least one education entry' });
+        }
+        break;
+
+      case 4: // Skills
+        if (currentSkill.name) {
+          const skillValidation = validateSkill(currentSkill);
+          if (!skillValidation.isValid) {
+            canProceed = false;
+            currentErrors = skillValidation.errors;
+          }
+        }
+        if (skills.length === 0) {
+          canProceed = false;
+          currentErrors.push({ field: 'skills', message: 'Add at least one skill' });
+        }
+        break;
+    }
+
+    setValidationErrors(currentErrors);
+
+    if (canProceed) {
+      setActiveStep(Math.min(steps.length - 1, activeStep + 1));
+    }
+  };
+
+  const ValidationErrors = ({ errors }: { errors: ValidationError[] }) => {
+    if (errors.length === 0) return null;
+
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-4 p-4 bg-red-50 rounded-xl border border-red-200"
+      >
+        <div className="flex items-center gap-2 mb-2">
+          <svg className="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+          </svg>
+          <h4 className="text-sm font-medium text-red-800">Please fix the following errors:</h4>
+        </div>
+        <ul className="list-disc list-inside space-y-1">
+          {errors.map((error, index) => (
+            <li key={index} className="text-sm text-red-700">
+              {error.message}
+            </li>
+          ))}
+        </ul>
+      </motion.div>
+    );
+  };
 
   if (status === 'loading') {
     return <div>Loading...</div>
@@ -1252,7 +1442,10 @@ export default function ResumeBuilder() {
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => setActiveStep(Math.max(0, activeStep - 1))}
+              onClick={() => {
+                setActiveStep(Math.max(0, activeStep - 1));
+                setValidationErrors([]);
+              }}
               className={`px-6 py-2 rounded-xl text-sm font-medium ${
                 activeStep === 0
                   ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
@@ -1265,7 +1458,7 @@ export default function ResumeBuilder() {
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => setActiveStep(Math.min(steps.length - 1, activeStep + 1))}
+              onClick={handleNext}
               className="bg-indigo-600 text-white px-6 py-2 rounded-xl text-sm font-medium hover:bg-indigo-700"
             >
               {activeStep === steps.length - 1 ? 'Finish' : 'Next'}

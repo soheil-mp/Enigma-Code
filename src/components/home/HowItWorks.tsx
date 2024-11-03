@@ -43,14 +43,14 @@ export default function HowItWorks() {
         <div className="mt-20 grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
           {steps.map((step, index) => (
             <div key={index} className="relative">
-              <div className="overflow-hidden rounded-2xl bg-gray-800/50 p-8">
+              <div className="overflow-hidden rounded-2xl bg-gray-800 p-8 shadow-lg transition-all hover:scale-105">
                 <div className={`absolute inset-0 opacity-10 bg-gradient-to-br ${step.gradient}`} />
                 <div className="relative">
                   <span className={`bg-gradient-to-r ${step.gradient} bg-clip-text text-4xl font-bold text-transparent`}>
                     {step.number}
                   </span>
                   <h3 className="mt-4 text-xl font-semibold text-white">{step.title}</h3>
-                  <p className="mt-2 text-gray-400">{step.description}</p>
+                  <p className="mt-2 text-gray-300">{step.description}</p>
                 </div>
               </div>
             </div>

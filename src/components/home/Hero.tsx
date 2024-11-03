@@ -18,10 +18,12 @@ export default function Hero() {
           >
             <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl lg:text-8xl">
               <span className="block bg-gradient-to-r from-[#4F46E5] via-[#06B6D4] to-[#4F46E5] bg-clip-text text-transparent">
-                Job Search Journey
+                Accelerate Your
+                <br />
+                Job Search with AI
               </span>
               <span className="block text-3xl sm:text-4xl mt-4 font-light text-gray-300">
-                Powered by AI
+                Land your dream job faster
               </span>
             </h1>
           </motion.div>
@@ -43,7 +45,7 @@ export default function Hero() {
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
+            transition={{ duration: 0.8, delay: 0.7 }}
             className="mt-12 flex flex-col items-center space-y-6"
           >
             <div className="flex flex-col space-y-4 sm:flex-row sm:space-x-6 sm:space-y-0">
@@ -66,43 +68,19 @@ export default function Hero() {
                 className="group flex items-center rounded-xl bg-white/10 px-8 py-4 font-bold text-white backdrop-blur-sm transition-all hover:bg-white/20"
               >
                 <span className="mr-2">Watch Demo</span>
-                <motion.div
-                  animate={{
-                    scale: [1, 1.2, 1],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                  }}
-                  className="relative"
-                >
-                  <div className="absolute -inset-1 rounded-full bg-white/20 animate-ping"></div>
-                  <svg
-                    className="relative h-5 w-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
-                  </svg>
-                </motion.div>
+                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
+                </svg>
               </motion.button>
             </div>
 
             {/* Trust indicators */}
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.7 }}
-              className="text-sm font-medium text-gray-400"
-            >
+            <p className="text-sm font-medium text-gray-400">
               No credit card required • 14-day free trial
-            </motion.p>
+            </p>
           </motion.div>
         </div>
       </div>
-
-      {/* Bottom gradient fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#0F172A] to-transparent" />
 
       {/* Video Modal */}
       {showDemo && (

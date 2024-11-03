@@ -1,0 +1,23 @@
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+.typing-animation {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 3s steps(40, end);
+}
+
+.typing-animation-delay-1 {
+  animation-delay: 1s;
+}
+
+.typing-animation-delay-2 {
+  animation-delay: 2s;
+}
+
+.typing-animation-delay-3 {
+  animation-delay: 3s;
+} 

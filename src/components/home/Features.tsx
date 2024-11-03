@@ -1,3 +1,5 @@
+import AnimatedBackground from '@/components/effects/AnimatedBackground'
+
 const features = [
   {
     icon: '📄',
@@ -45,12 +47,7 @@ const features = [
 
 export default function Features() {
   return (
-    <div id="features" className="relative overflow-hidden bg-gray-900 py-24">
-      {/* Background decorative elements */}
-      <div className="absolute top-0 right-0 -mt-24 -mr-24 hidden lg:block">
-        <div className="h-96 w-96 rounded-full bg-gradient-to-br from-purple-400 to-indigo-600 opacity-10 blur-3xl"></div>
-      </div>
-
+    <div className="py-24" id="features">
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="bg-gradient-to-r from-teal-200 to-cyan-400 bg-clip-text text-3xl font-extrabold text-transparent sm:text-4xl">

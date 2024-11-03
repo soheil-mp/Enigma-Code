@@ -1,3 +1,5 @@
+import AnimatedBackgroundLight from '@/components/effects/AnimatedBackgroundLight'
+
 const steps = [
   {
     number: '01',
@@ -27,13 +29,13 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <div id="how-it-works" className="relative bg-gray-900 py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="py-24">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
+          <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
             Four Simple Steps to Success
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-400">
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600">
             Getting started with Enigma Code is easy. Our streamlined process gets you from sign-up to job applications in minutes.
           </p>
         </div>

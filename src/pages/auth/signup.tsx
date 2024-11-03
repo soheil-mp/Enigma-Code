@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 
 export default function SignUp() {
   const router = useRouter()
@@ -24,95 +25,101 @@ export default function SignUp() {
         body: JSON.stringify({ name, email, password }),
       })
 
-      const data = await res.json()
-
-      if (!res.ok) {
-        throw new Error(data.message || 'Something went wrong')
+      if (res.ok) {
+        router.push('/auth/signin')
+      } else {
+        const data = await res.json()
+        setError(data.message)
       }
-
-      router.push('/auth/signin?registered=true')
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'An error occurred')
+      setError('An error occurred. Please try again.')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-800 to-pink-800 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white/10 backdrop-blur-lg p-8 rounded-xl">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
-            Create your account
+    <div className="min-h-screen bg-gradient-to-br from-[#4B2D84] via-[#563A9F] to-[#6246BB] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div className="text-center space-y-2">
+          <h2 className="text-3xl font-bold tracking-tight text-white">
+            Create an account
           </h2>
+          <p className="text-sm text-white/60">
+            Join us to start your journey
+          </p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-500/10 border border-red-500 text-red-200 px-4 py-3 rounded">
-              {error}
-            </div>
-          )}
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="name" className="sr-only">
-                Full name
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                placeholder="Full name"
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-              />
-            </div>
-          </div>
 
-          <div>
+        <div className="bg-white/[0.08] backdrop-blur-xl rounded-2xl p-8 shadow-xl border border-white/[0.05]">
+          <form className="space-y-7" onSubmit={handleSubmit}>
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <label htmlFor="name" className="block text-sm font-medium text-white/80">
+                  Full name
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  required
+                  className="mt-1 block w-full px-4 py-3.5 bg-white/[0.07] rounded-xl text-white placeholder-white/40 border border-white/[0.1] focus:border-white/20 focus:ring-0 transition-colors"
+                  placeholder="Enter your full name"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="email" className="block text-sm font-medium text-white/80">
+                  Email address
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  className="mt-1 block w-full px-4 py-3.5 bg-white/[0.07] rounded-xl text-white placeholder-white/40 border border-white/[0.1] focus:border-white/20 focus:ring-0 transition-colors"
+                  placeholder="Enter your email"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="password" className="block text-sm font-medium text-white/80">
+                  Password
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  className="mt-1 block w-full px-4 py-3.5 bg-white/[0.07] rounded-xl text-white placeholder-white/40 border border-white/[0.1] focus:border-white/20 focus:ring-0 transition-colors"
+                  placeholder="Create a password"
+                />
+              </div>
+            </div>
+
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="relative w-full py-3.5 px-4 bg-[#4361EE] text-white rounded-xl font-medium hover:bg-[#4361EE]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden group"
             >
-              {loading ? 'Creating account...' : 'Sign up'}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.1] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500" />
+              <span className="relative">
+                {loading ? 'Creating account...' : 'Sign up'}
+              </span>
             </button>
-          </div>
+          </form>
 
-          <div className="text-center text-sm text-gray-200">
-            Already have an account?{' '}
-            <Link href="/auth/signin" className="font-medium text-primary-300 hover:text-primary-200">
-              Sign in
-            </Link>
+          <div className="mt-8 text-center">
+            <p className="text-white/50 text-sm">
+              Already have an account?{' '}
+              <Link 
+                href="/auth/signin" 
+                className="text-[#4361EE] hover:text-[#4361EE]/80 font-medium transition-colors"
+              >
+                Sign in
+              </Link>
+            </p>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   )

@@ -25,6 +25,7 @@ module.exports = {
         'gradient-x': 'gradient-x 15s ease infinite',
         'float': 'float 6s ease-in-out infinite',
         'float-delayed': 'float 6s ease-in-out infinite 3s',
+        blob: "blob 7s infinite",
       },
       keyframes: {
         'gradient-x': {
@@ -41,6 +42,20 @@ module.exports = {
           },
           '50%': {
             transform: 'translateY(-20px)',
+          },
+        },
+        blob: {
+          "0%": {
+            transform: "translate(0px, 0px) scale(1)",
+          },
+          "33%": {
+            transform: "translate(30px, -50px) scale(1.1)",
+          },
+          "66%": {
+            transform: "translate(-20px, 20px) scale(0.9)",
+          },
+          "100%": {
+            transform: "translate(0px, 0px) scale(1)",
           },
         },
       },

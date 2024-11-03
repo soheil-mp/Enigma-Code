@@ -10,6 +10,9 @@ import FormField from '@/components/common/FormField';
 import AISuggestions from '@/components/resume-builder/AISuggestions';
 import ResumePreview from '@/components/resume-builder/ResumePreview';
 import Image from 'next/image'
+import { saveResume } from '@/services/resumeService';
+import Notification from '@/components/common/Notification';
+import { loadResume } from '@/services/resumeService';
 
 interface PersonalInfo {
   firstName: string;
@@ -120,6 +123,9 @@ const proficiencyLevels: Record<LanguageProficiency, { color: string, descriptio
   }
 };
 
+// Add this type
+type SectionType = 'skills' | 'experience' | 'education' | 'languages' | 'projects' | 'certifications';
+
 export default function ResumeBuilder() {
   const { data: session, status } = useSession()
   const router = useRouter()
@@ -187,6 +193,7 @@ export default function ResumeBuilder() {
   const [completedSections, setCompletedSections] = useState<number[]>([]);
   const [hasNoExperience, setHasNoExperience] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<string>('modern');
+  const [isSaving, setIsSaving] = useState(false);
 
   const steps = [
     { title: 'Choose Template', icon: '🎨' },
@@ -426,6 +433,30 @@ export default function ResumeBuilder() {
     }
   }, [personalInfo, experiences, educations, skills, languages, certifications, projects, isDirty]);
 
+  useEffect(() => {
+    const loadExistingResume = async () => {
+      if (session?.user?.id) {
+        try {
+          const existingResume = await loadResume(session.user.id);
+          if (existingResume) {
+            setSelectedTemplate(existingResume.template);
+            setPersonalInfo(existingResume.personalInfo);
+            setExperiences(existingResume.experiences);
+            setEducations(existingResume.education);
+            setSkills(existingResume.skills);
+            setLanguages(existingResume.languages);
+            setProjects(existingResume.projects);
+            setCertifications(existingResume.certifications);
+          }
+        } catch (error) {
+          console.error('Failed to load resume:', error);
+        }
+      }
+    };
+
+    loadExistingResume();
+  }, [session?.user?.id]);
+
   const handleFormSubmit = async () => {
     setIsSubmitting(true);
     try {
@@ -439,8 +470,18 @@ export default function ResumeBuilder() {
         throw new Error('Please complete all required fields');
       }
 
-      // TODO: Implement API call to save resume
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulated API call
+      // Save to database
+      const savedResume = await saveResume({
+        title: `${personalInfo.firstName}'s Resume`,
+        template: selectedTemplate,
+        personalInfo,
+        experiences,
+        education: educations,
+        skills,
+        languages,
+        projects,
+        certifications
+      });
 
       setNotification({
         type: 'success',
@@ -453,10 +494,13 @@ export default function ResumeBuilder() {
         setNotification(prev => ({ ...prev, isVisible: false }));
       }, 3000);
 
+      // Clear draft from localStorage after successful save
+      localStorage.removeItem('resume_draft');
+
     } catch (error) {
       setNotification({
         type: 'error',
-        message: error instanceof Error ? error.message : 'An error occurred',
+        message: error instanceof Error ? error.message : 'An error occurred while saving',
         isVisible: true
       });
     } finally {
@@ -488,7 +532,7 @@ export default function ResumeBuilder() {
   };
 
   // Add AI suggestion handling
-  const handleAISuggestion = async (section: string) => {
+  const handleAISuggestion = async (section: SectionType) => {
     setLoadingSection(activeStep);
     try {
       // TODO: Implement AI API call
@@ -503,13 +547,13 @@ export default function ResumeBuilder() {
 
       // Apply suggestions based on section
       switch (section) {
-        case 'Skills':
+        case 'skills':
           setSkills(prev => [
             ...prev,
             ...suggestions.skills.map(skill => ({
               id: crypto.randomUUID(),
               name: skill,
-              level: 'Intermediate',
+              level: 'Intermediate' as const,
               category: 'Technical'
             }))
           ]);
@@ -565,6 +609,57 @@ export default function ResumeBuilder() {
       url: '',
       highlights: ['']
     };
+  };
+
+  const handleSave = async () => {
+    if (!session?.user?.email) {
+      setNotification({
+        type: 'error',
+        message: 'Please sign in to save your resume',
+        isVisible: true
+      });
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const resumeData = {
+        title: `${personalInfo.firstName}'s Resume`,
+        template: selectedTemplate,
+        personalInfo,
+        experiences,
+        education: educations,
+        skills,
+        languages,
+        projects,
+        certifications
+      };
+
+      console.log('Saving resume:', resumeData); // Debug log
+
+      const savedResume = await saveResume(resumeData);
+
+      setNotification({
+        type: 'success',
+        message: 'Resume saved successfully!',
+        isVisible: true
+      });
+
+      // Auto-hide notification after 3 seconds
+      setTimeout(() => {
+        setNotification(prev => ({ ...prev, isVisible: false }));
+      }, 3000);
+
+    } catch (error) {
+      console.error('Save error:', error); // Debug log
+      setNotification({
+        type: 'error',
+        message: error instanceof Error ? error.message : 'Failed to save resume. Please try again.',
+        isVisible: true
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   if (status === 'loading') {
@@ -2065,22 +2160,35 @@ export default function ResumeBuilder() {
               >
                 Previous
               </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={handleNext}
-                className="px-6 py-2 rounded-xl text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700"
-              >
-                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-              </motion.button>
+              {activeStep < 7 && (
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setActiveStep(Math.min(7, activeStep + 1))}
+                  className="px-6 py-2 rounded-xl text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700"
+                >
+                  Next
+                </motion.button>
+              )}
             </div>
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={handleFormSubmit}
-              className="px-6 py-2 rounded-xl text-sm font-medium bg-green-600 text-white hover:bg-green-700"
+              onClick={handleSave}
+              disabled={isSaving}
+              className={`px-6 py-2 rounded-xl text-sm font-medium bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2`}
             >
-              Save Resume
+              {isSaving ? (
+                <>
+                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  Saving...
+                </>
+              ) : (
+                'Save Resume'
+              )}
             </motion.button>
           </div>
         </div>
@@ -2104,6 +2212,14 @@ export default function ResumeBuilder() {
             Ask for help
           </button>
         </motion.div>
+
+        {/* Add Notification component */}
+        <Notification
+          type={notification.type}
+          message={notification.message}
+          isVisible={notification.isVisible}
+          onClose={() => setNotification(prev => ({ ...prev, isVisible: false }))}
+        />
       </div>
     </DashboardLayout>
   )

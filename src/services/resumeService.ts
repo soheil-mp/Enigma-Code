@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 export async function saveResume(data: {
-  id?: string;
   title: string;
   template: string;
   personalInfo: any;
@@ -13,28 +12,20 @@ export async function saveResume(data: {
   certifications: any[];
 }) {
   try {
-    const response = await axios.post('/api/resumes/save', data, {
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    });
-    
-    if (!response.data) {
-      throw new Error('No data received from server');
-    }
-    
+    const response = await axios.post('/api/resumes/save', data);
     return response.data;
   } catch (error) {
     console.error('Resume save error:', error);
-    throw new Error(error instanceof Error ? error.message : 'Failed to save resume');
+    throw new Error('Failed to save resume');
   }
 }
 
 export async function loadResume(userId: string) {
   try {
-    const response = await axios.get(`/api/resumes/load?userId=${userId}`);
+    const response = await axios.get(`/api/resumes/load`);
     return response.data;
   } catch (error) {
+    console.error('Resume load error:', error);
     throw new Error('Failed to load resume');
   }
 } 

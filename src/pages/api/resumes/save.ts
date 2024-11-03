@@ -25,7 +25,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const {
-      id,
       title,
       template,
       personalInfo,
@@ -37,40 +36,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       certifications
     } = req.body;
 
-    // Find existing resume for this user
-    const existingResume = await prisma.resume.findFirst({
-      where: {
-        userId: user.id,
-        title: title || 'My Resume'
-      }
-    });
-
-    // Create or update resume
-    const resume = await prisma.resume.upsert({
-      where: {
-        id: existingResume?.id || 'new',
-      },
-      update: {
-        template,
-        personalInfo: personalInfo as any,
-        experiences: experiences as any[],
-        education: education as any[],
-        skills: skills as any[],
-        languages: languages as any[],
-        projects: projects as any[],
-        certifications: certifications as any[]
-      },
-      create: {
+    // Create new resume
+    const resume = await prisma.resume.create({
+      data: {
         userId: user.id,
         title: title || 'My Resume',
         template,
-        personalInfo: personalInfo as any,
-        experiences: experiences as any[],
-        education: education as any[],
-        skills: skills as any[],
-        languages: languages as any[],
-        projects: projects as any[],
-        certifications: certifications as any[]
+        personalInfo,
+        experiences,
+        education,
+        skills,
+        languages,
+        projects,
+        certifications
       }
     });
 

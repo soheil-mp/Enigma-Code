@@ -13,6 +13,7 @@ import Image from 'next/image'
 import { saveResume } from '@/services/resumeService';
 import Notification from '@/components/common/Notification';
 import { loadResume } from '@/services/resumeService';
+import { templates } from '@/templates/resumes';
 
 interface PersonalInfo {
   firstName: string;
@@ -204,6 +205,7 @@ export default function ResumeBuilder() {
   const [previewTab, setPreviewTab] = useState<'preview' | 'latex'>('preview');
 
   const steps = [
+    { title: 'Templates', icon: '🎨' },     // Add Templates step
     { title: 'Personal Info', icon: '👤' },
     { title: 'Experience', icon: '💼' },
     { title: 'Education', icon: '🎓' },
@@ -661,40 +663,11 @@ export default function ResumeBuilder() {
     }
   };
 
-  const templates = [
-    { 
-      id: 'modern', 
-      name: 'Modern', 
-      description: 'Clean and contemporary design',
-      preview: '/templates/modern-preview.png',
-      fallbackPreview: 'https://via.placeholder.com/300x400?text=Modern+Template',
-      features: ['Clean layout', 'Professional fonts', 'Minimalist design']
-    },
-    { 
-      id: 'professional', 
-      name: 'Professional', 
-      description: 'Traditional and elegant layout',
-      preview: '/templates/professional-preview.png',
-      fallbackPreview: 'https://via.placeholder.com/300x400?text=Professional+Template',
-      features: ['Classic style', 'ATS-friendly', 'Structured sections']
-    },
-    { 
-      id: 'creative', 
-      name: 'Creative', 
-      description: 'Unique and eye-catching design',
-      preview: '/templates/creative-preview.png',
-      fallbackPreview: 'https://via.placeholder.com/300x400?text=Creative+Template',
-      features: ['Bold colors', 'Custom sections', 'Visual elements']
-    },
-    { 
-      id: 'minimal', 
-      name: 'Minimal', 
-      description: 'Simple and straightforward presentation',
-      preview: '/templates/minimal-preview.png',
-      fallbackPreview: 'https://via.placeholder.com/300x400?text=Minimal+Template',
-      features: ['Space-efficient', 'Easy to read', 'Focus on content']
-    }
-  ];
+  // Remove the local templates array and use the imported one
+  const getTemplateContent = (templateId: string) => {
+    const template = templates.find(t => t.id === templateId);
+    return template?.template || '';
+  };
 
   if (status === 'loading') {
     return <div>Loading...</div>
@@ -748,7 +721,7 @@ export default function ResumeBuilder() {
 
         {/* Main Content Area */}
         <div className="bg-white rounded-[24px] p-8">
-          {/* Template selection step remains full width */}
+          {/* Templates step */}
           {activeStep === 0 && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -769,7 +742,8 @@ export default function ResumeBuilder() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Template grid */}
+              <div className="grid grid-cols-2 gap-6">
                 {templates.map((template) => (
                   <motion.div
                     key={template.id}
@@ -848,22 +822,6 @@ export default function ResumeBuilder() {
                   </motion.div>
                 ))}
               </div>
-
-              {/* AI Suggestions */}
-              <div className="mt-8 p-4 bg-indigo-50 rounded-xl">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-                    <span className="text-sm">💡</span>
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-indigo-900">AI Suggestions</h3>
-                    <p className="text-sm text-indigo-700">
-                      Based on your industry and experience level, we recommend the {templates.find(t => t.id === selectedTemplate)?.name} template.
-                      It's optimized for your target roles and highlights your key strengths effectively.
-                    </p>
-                  </div>
-                </div>
-              </div>
             </motion.div>
           )}
 
@@ -872,7 +830,6 @@ export default function ResumeBuilder() {
             <div className="grid grid-cols-[2fr,1fr] gap-8">
               {/* Left Column - Forms */}
               <div className="space-y-6">
-                {/* Existing form content for each step goes here */}
                 {activeStep === 1 && (
                   <motion.div
                     initial={{ opacity: 0 }}
@@ -2222,170 +2179,7 @@ export default function ResumeBuilder() {
                         <div className="h-[600px] overflow-y-auto rounded-lg bg-gray-50">
                           <pre className="p-4 text-xs text-gray-700 whitespace-pre">
                             <code>
-                              {selectedTemplate === 'modern' ? (
-                                `% Modern Resume Template
-\\documentclass[11pt,a4paper]{article}
-
-\\usepackage[utf8]{inputenc}
-\\usepackage[T1]{fontenc}
-\\usepackage{geometry}
-\\usepackage{xcolor}
-\\usepackage{fontawesome5}
-\\usepackage{titlesec}
-\\usepackage{hyperref}
-
-% Define colors
-\\definecolor{primary}{RGB}{79, 70, 229} % Indigo-600
-\\definecolor{text}{RGB}{17, 24, 39} % Gray-900
-
-% Page geometry
-\\geometry{
-    top=1.5cm,
-    bottom=1.5cm,
-    left=2cm,
-    right=2cm
-}
-
-% Section formatting
-\\titleformat{\\section}
-    {\\\Large\\bfseries\\color{primary}}
-    {}{0em}
-    {}[\\titlerule]
-
-\\begin{document}
-
-% Header
-\\begin{center}
-    {\\Huge\\bfseries\\color{text} ${personalInfo.firstName} ${personalInfo.lastName}}\\\\[0.5em]
-    {\\large\\color{primary} ${personalInfo.title}}\\\\[0.5em]
-    \\faEnvelope\\ ${personalInfo.email} \\quad
-    \\faPhone\\ ${personalInfo.phone} \\quad
-    \\faMapMarker\\ ${personalInfo.location}
-    ${personalInfo.linkedin ? `\\quad \\faLinkedin\\ \\href{${personalInfo.linkedin}}{LinkedIn}` : ''}
-    ${personalInfo.website ? `\\quad \\faGlobe\\ \\href{${personalInfo.website}}{Website}` : ''}
-\\end{center}
-
-% Summary
-\\section*{Professional Summary}
-${personalInfo.summary}
-
-% Experience Section
-\\section*{Experience}
-${experiences.map(exp => `
-    \\textbf{${exp.title}} | \\textit{${exp.company}}\\\\
-    ${exp.location} | ${exp.startDate} - ${exp.current ? 'Present' : exp.endDate}
-    \\begin{itemize}
-        \\item ${exp.description}
-        ${exp.achievements.map(achievement => `\\item ${achievement}`).join('\n        ')}
-    \\end{itemize}
-`).join('\n')}
-
-% Education Section
-\\section*{Education}
-${educations.map(edu => `
-    \\textbf{${edu.degree} in ${edu.field}} | \\textit{${edu.school}}\\\\
-    ${edu.location} | ${edu.startDate} - ${edu.current ? 'Present' : edu.endDate}
-    ${edu.gpa ? `\\quad GPA: ${edu.gpa}` : ''}
-    ${edu.achievements.length ? `
-    \\begin{itemize}
-        ${edu.achievements.map(achievement => `\\item ${achievement}`).join('\n        ')}
-    \\end{itemize}` : ''}
-`).join('\n')}
-
-% Skills Section
-\\section*{Skills}
-${Object.entries(skills.reduce((acc, skill) => {
-  if (!acc[skill.category]) acc[skill.category] = [];
-  acc[skill.category].push(skill.name);
-  return acc;
-}, {} as Record<string, string[]>)).map(([category, skills]) => `
-    \\textbf{${category}}: ${skills.join(', ')}\\\\
-`).join('\n')}
-
-\\end{document}`
-                              ) : selectedTemplate === 'professional' ? (
-                                `% Professional Resume Template
-\\documentclass[11pt,a4paper]{article}
-
-\\usepackage[utf8]{inputenc}
-\\usepackage[T1]{fontenc}
-\\usepackage{geometry}
-\\usepackage{xcolor}
-\\usepackage{fontawesome5}
-\\usepackage{titlesec}
-\\usepackage{hyperref}
-\\usepackage{enumitem}
-
-% Define colors
-\\definecolor{primary}{RGB}{31, 41, 55} % Gray-800
-\\definecolor{accent}{RGB}{59, 130, 246} % Blue-500
-
-% Page geometry
-\\geometry{
-    top=1.5cm,
-    bottom=1.5cm,
-    left=2.5cm,
-    right=2.5cm
-}
-
-% Section formatting
-\\titleformat{\\section}
-    {\\\Large\\bfseries\\color{primary}}
-    {}{0em}
-    {}[\\titlerule]
-
-\\begin{document}
-
-% Header
-\\begin{center}
-    {\\Huge\\bfseries\\color{text} ${personalInfo.firstName} ${personalInfo.lastName}}\\\\[0.5em]
-    {\\large\\color{primary} ${personalInfo.title}}\\\\[0.5em]
-    \\faEnvelope\\ ${personalInfo.email} \\quad
-    \\faPhone\\ ${personalInfo.phone} \\quad
-    \\faMapMarker\\ ${personalInfo.location}
-    ${personalInfo.linkedin ? `\\quad \\faLinkedin\\ \\href{${personalInfo.linkedin}}{LinkedIn}` : ''}
-    ${personalInfo.website ? `\\quad \\faGlobe\\ \\href{${personalInfo.website}}{Website}` : ''}
-\\end{center}
-
-% Summary
-\\section*{Professional Summary}
-${personalInfo.summary}
-
-% Experience Section
-\\section*{Experience}
-${experiences.map(exp => `
-    \\textbf{${exp.title}} | \\textit{${exp.company}}\\\\
-    ${exp.location} | ${exp.startDate} - ${exp.current ? 'Present' : exp.endDate}
-    \\begin{itemize}
-        \\item ${exp.description}
-        ${exp.achievements.map(achievement => `\\item ${achievement}`).join('\n        ')}
-    \\end{itemize}
-`).join('\n')}
-
-% Education Section
-\\section*{Education}
-${educations.map(edu => `
-    \\textbf{${edu.degree} in ${edu.field}} | \\textit{${edu.school}}\\\\
-    ${edu.location} | ${edu.startDate} - ${edu.current ? 'Present' : edu.endDate}
-    ${edu.gpa ? `\\quad GPA: ${edu.gpa}` : ''}
-    ${edu.achievements.length ? `
-    \\begin{itemize}
-        ${edu.achievements.map(achievement => `\\item ${achievement}`).join('\n        ')}
-    \\end{itemize}` : ''}
-`).join('\n')}
-
-% Skills Section
-\\section*{Skills}
-${Object.entries(skills.reduce((acc, skill) => {
-  if (!acc[skill.category]) acc[skill.category] = [];
-  acc[skill.category].push(skill.name);
-  return acc;
-}, {} as Record<string, string[]>)).map(([category, skills]) => `
-    \\textbf{${category}}: ${skills.join(', ')}\\\\
-`).join('\n')}
-
-\\end{document}`
-                              ) : 'Template code will appear here'}
+                              {getTemplateContent(selectedTemplate)}
                             </code>
                           </pre>
                         </div>

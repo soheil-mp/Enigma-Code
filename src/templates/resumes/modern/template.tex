@@ -1,131 +1,247 @@
 % Modern Resume Template
-\documentclass[11pt,a4paper]{article}
+\documentclass[10pt, letterpaper]{article}
 
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{geometry}
-\usepackage{xcolor}
-\usepackage{fontawesome5}
+% Packages:
+\usepackage[
+    ignoreheadfoot,
+    top=2 cm,
+    bottom=2 cm,
+    left=2 cm,
+    right=2 cm,
+    footskip=1.0 cm,
+]{geometry}
 \usepackage{titlesec}
-\usepackage{hyperref}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{primaryColor}{RGB}{0, 79, 144}
+\usepackage{enumitem}
+\usepackage{fontawesome5}
+\usepackage{amsmath}
+\usepackage[
+    pdftitle={Resume},
+    pdfauthor={},
+    pdfcreator={LaTeX with RenderCV},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref}
+\usepackage[pscoord]{eso-pic}
+\usepackage{calc}
+\usepackage{bookmark}
+\usepackage{lastpage}
+\usepackage{changepage}
+\usepackage{paracol}
+\usepackage{ifthen}
+\usepackage{needspace}
+\usepackage{iftex}
 
-% Define colors
-\definecolor{primary}{RGB}{79, 70, 229} % Indigo-600
-\definecolor{text}{RGB}{17, 24, 39} % Gray-900
+% ATS Readability
+\ifPDFTeX
+    \input{glyphtounicode}
+    \pdfgentounicode=1
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
+\fi
 
-% Page geometry
-\geometry{
-    top=1.5cm,
-    bottom=1.5cm,
-    left=2cm,
-    right=2cm
-}
+% Settings
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt}
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\topskip}{0pt}
+\setlength{\columnsep}{0cm}
+
+% Custom footer
+\makeatletter
+\let\ps@customFooterStyle\ps@plain
+\patchcmd{\ps@customFooterStyle}{\thepage}{
+    \color{gray}\textit{\small {{firstName}} {{lastName}} - Page \thepage{} of \pageref*{LastPage}}
+}{}{} 
+\makeatother
+\pagestyle{customFooterStyle}
 
 % Section formatting
-\titleformat{\section}
-    {\Large\bfseries\color{primary}}
-    {}{0em}
-    {}[\titlerule]
+\titleformat{\section}{\needspace{4\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
+\titlespacing{\section}{-1pt}{0.3 cm}{0.2 cm}
+
+% Custom environments
+\renewcommand\labelitemi{$\circ$}
+
+\newenvironment{highlights}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=0.4 cm + 10pt
+    ]
+}{
+    \end{itemize}
+}
+
+\newenvironment{highlightsforbulletentries}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=10pt
+    ]
+}{
+    \end{itemize}
+}
+
+\newenvironment{onecolentry}{
+    \begin{adjustwidth}{0.2 cm + 0.00001 cm}{0.2 cm + 0.00001 cm}
+}{
+    \end{adjustwidth}
+}
+
+\newenvironment{twocolentry}[2][]{
+    \onecolentry
+    \def\secondColumn{#2}
+    \setcolumnwidth{\fill, 4.5 cm}
+    \begin{paracol}{2}
+}{
+    \switchcolumn \raggedleft \secondColumn
+    \end{paracol}
+    \endonecolentry
+}
+
+\newenvironment{header}{
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.5}
+}{
+    \par\kern\topsep
+}
+
+% Commands
+\let\hrefWithoutArrow\href
+\renewcommand{\href}[2]{\hrefWithoutArrow{#1}{\ifthenelse{\equal{#2}{}}{ }{#2 }\raisebox{.15ex}{\footnotesize \faExternalLink*}}}
 
 \begin{document}
+    \newcommand{\AND}{\unskip
+        \cleaders\copy\ANDbox\hskip\wd\ANDbox
+        \ignorespaces
+    }
+    \newsavebox\ANDbox
+    \sbox\ANDbox{}
 
-% Header
-\begin{center}
-    {\Huge\bfseries\color{text} {{firstName}} {{lastName}}}\\[0.5em]
-    {\large\color{primary} {{title}}}\\[0.5em]
-    \faEnvelope\ {{email}} \quad
-    \faPhone\ {{phone}} \quad
-    \faMapMarker\ {{location}}
-    {{#if linkedin}}
-        \quad \faLinkedin\ \href{ {{linkedin}} }{LinkedIn}
-    {{/if}}
-    {{#if website}}
-        \quad \faGlobe\ \href{ {{website}} }{Website}
-    {{/if}}
-\end{center}
+    \begin{header}
+        \textbf{\fontsize{24 pt}{24 pt}\selectfont {{firstName}} {{lastName}}}
 
-% Summary
-\section*{Professional Summary}
-{{summary}}
+        \vspace{0.3 cm}
 
-% Experience Section
-\section*{Experience}
-{{#each experiences}}
-    \textbf{ {{title}} } | \textit{ {{company}} }\\
-    {{location}} | {{startDate}} - {{#if current}}Present{{else}}{{endDate}}{{/if}}
-    \begin{itemize}
-        \item {{description}}
-        {{#each achievements}}
-            \item {{this}}
-        {{/each}}
-    \end{itemize}
-{{/each}}
-
-% Education Section
-\section*{Education}
-{{#each educations}}
-    \textbf{ {{degree}} in {{field}} } | \textit{ {{school}} }\\
-    {{location}} | {{startDate}} - {{#if current}}Present{{else}}{{endDate}}{{/if}}
-    {{#if gpa}}
-        \quad GPA: {{gpa}}
-    {{/if}}
-    {{#if achievements.length}}
-        \begin{itemize}
-            {{#each achievements}}
-                \item {{this}}
-            {{/each}}
-        \end{itemize}
-    {{/if}}
-{{/each}}
-
-% Skills Section
-\section*{Skills}
-{{#each skillsByCategory}}
-    \textbf{ {{category}} }:
-    {{#each skills}}
-        {{name}}{{#unless @last}}, {{/unless}}
-    {{/each}}\\
-{{/each}}
-
-% Languages Section
-{{#if languages.length}}
-    \section*{Languages}
-    {{#each languages}}
-        \textbf{ {{name}} }: {{proficiency}}{{#unless @last}}, {{/unless}}
-    {{/each}}
-{{/if}}
-
-% Projects Section
-{{#if projects.length}}
-    \section*{Projects}
-    {{#each projects}}
-        \textbf{ {{title}} }
-        {{#if url}}
-            | \href{ {{url}} }{Project Link}
+        \normalsize
+        \mbox{{\color{black}\footnotesize\faMapMarker*}\hspace*{0.13cm}{{location}}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{mailto:{{email}}}{\color{black}{\footnotesize\faEnvelope[regular]}\hspace*{0.13cm}{{email}}}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{tel:{{phone}}}{\color{black}{\footnotesize\faPhone*}\hspace*{0.13cm}{{phone}}}}%
+        {{#if website}}
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{{{website}}}{\color{black}{\footnotesize\faLink}\hspace*{0.13cm}{{website}}}}%
         {{/if}}
-        \begin{itemize}
+        {{#if linkedin}}
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{{{linkedin}}}{\color{black}{\footnotesize\faLinkedinIn}\hspace*{0.13cm}LinkedIn}}%
+        {{/if}}
+    \end{header}
+
+    \vspace{0.3 cm}
+
+    {{#if summary}}
+    \section{Summary}
+    \begin{onecolentry}
+        {{summary}}
+    \end{onecolentry}
+    {{/if}}
+
+    {{#if experiences.length}}
+    \section{Experience}
+    {{#each experiences}}
+    \begin{twocolentry}{
+    \textit{ {{location}} }    
+    \textit{ {{startDate}} {{#if current}}– Present{{else}}– {{endDate}}{{/if}} }}
+        \textbf{ {{title}} }
+        \textit{ {{company}} }
+    \end{twocolentry}
+
+    \vspace{0.10 cm}
+    \begin{onecolentry}
+        \begin{highlights}
+            \item {{description}}
+            {{#each achievements}}
+            \item {{this}}
+            {{/each}}
+        \end{highlights}
+    \end{onecolentry}
+    {{#unless @last}}\vspace{0.2 cm}{{/unless}}
+    {{/each}}
+    {{/if}}
+
+    {{#if educations.length}}
+    \section{Education}
+    {{#each educations}}
+    \begin{twocolentry}{
+    \textit{ {{startDate}} {{#if current}}– Present{{else}}– {{endDate}}{{/if}} }}
+        \textbf{ {{school}} }
+        \textit{ {{degree}} in {{field}} }
+    \end{twocolentry}
+
+    \vspace{0.10 cm}
+    \begin{onecolentry}
+        \begin{highlights}
+            {{#if gpa}}\item GPA: {{gpa}}{{/if}}
+            {{#each achievements}}
+            \item {{this}}
+            {{/each}}
+        \end{highlights}
+    \end{onecolentry}
+    {{#unless @last}}\vspace{0.2 cm}{{/unless}}
+    {{/each}}
+    {{/if}}
+
+    {{#if skills.length}}
+    \section{Skills}
+    {{#each skillsByCategory}}
+    \begin{onecolentry}
+        \textbf{ {{category}} :} {{#each skills}}{{name}}{{#unless @last}}, {{/unless}}{{/each}}
+    \end{onecolentry}
+    {{#unless @last}}\vspace{0.2 cm}{{/unless}}
+    {{/each}}
+    {{/if}}
+
+    {{#if projects.length}}
+    \section{Projects}
+    {{#each projects}}
+    \begin{twocolentry}{
+    {{#if url}}\textit{\href{ {{url}} }{ {{url}} }}{{/if}}
+    }
+        \textbf{ {{title}} }
+    \end{twocolentry}
+
+    \vspace{0.10 cm}
+    \begin{onecolentry}
+        \begin{highlights}
             \item {{description}}
             {{#each highlights}}
-                \item {{this}}
+            \item {{this}}
             {{/each}}
-        \end{itemize}
-        \textit{Technologies}: {{technologies}}\\
+            {{#if technologies.length}}
+            \item \textbf{Technologies:} {{technologies}}
+            {{/if}}
+        \end{highlights}
+    \end{onecolentry}
+    {{#unless @last}}\vspace{0.2 cm}{{/unless}}
     {{/each}}
-{{/if}}
-
-% Certifications Section
-{{#if certifications.length}}
-    \section*{Certifications}
-    {{#each certifications}}
-        \textbf{ {{name}} } | {{issuer}}\\
-        {{issueDate}}{{#if expiryDate}} - {{expiryDate}}{{/if}}
-        {{#if credentialId}}
-            | ID: {{credentialId}}
-        {{/if}}
-        {{#if url}}
-            | \href{ {{url}} }{Verify}
-        {{/if}}\\
-    {{/each}}
-{{/if}}
+    {{/if}}
 
 \end{document} 

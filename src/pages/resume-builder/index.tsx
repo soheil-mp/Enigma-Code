@@ -2218,10 +2218,12 @@ export default function ResumeBuilder() {
                   ) : (
                     <div className="bg-gray-50 rounded-xl p-4">
                       <div className="bg-white rounded-lg p-4 shadow-sm">
-                        <pre className="text-xs text-gray-700 overflow-x-auto">
-                          <code>
-                            {selectedTemplate === 'modern' ? (
-                              `% Modern Resume Template
+                        {/* Fixed height container with scrolling */}
+                        <div className="h-[600px] overflow-y-auto rounded-lg bg-gray-50">
+                          <pre className="p-4 text-xs text-gray-700 whitespace-pre">
+                            <code>
+                              {selectedTemplate === 'modern' ? (
+                                `% Modern Resume Template
 \\documentclass[11pt,a4paper]{article}
 
 \\usepackage[utf8]{inputenc}
@@ -2251,10 +2253,58 @@ export default function ResumeBuilder() {
     {}[\\titlerule]
 
 \\begin{document}
-...
-`
-                            ) : selectedTemplate === 'professional' ? (
-                              `% Professional Resume Template
+
+% Header
+\\begin{center}
+    {\\Huge\\bfseries\\color{text} ${personalInfo.firstName} ${personalInfo.lastName}}\\\\[0.5em]
+    {\\large\\color{primary} ${personalInfo.title}}\\\\[0.5em]
+    \\faEnvelope\\ ${personalInfo.email} \\quad
+    \\faPhone\\ ${personalInfo.phone} \\quad
+    \\faMapMarker\\ ${personalInfo.location}
+    ${personalInfo.linkedin ? `\\quad \\faLinkedin\\ \\href{${personalInfo.linkedin}}{LinkedIn}` : ''}
+    ${personalInfo.website ? `\\quad \\faGlobe\\ \\href{${personalInfo.website}}{Website}` : ''}
+\\end{center}
+
+% Summary
+\\section*{Professional Summary}
+${personalInfo.summary}
+
+% Experience Section
+\\section*{Experience}
+${experiences.map(exp => `
+    \\textbf{${exp.title}} | \\textit{${exp.company}}\\\\
+    ${exp.location} | ${exp.startDate} - ${exp.current ? 'Present' : exp.endDate}
+    \\begin{itemize}
+        \\item ${exp.description}
+        ${exp.achievements.map(achievement => `\\item ${achievement}`).join('\n        ')}
+    \\end{itemize}
+`).join('\n')}
+
+% Education Section
+\\section*{Education}
+${educations.map(edu => `
+    \\textbf{${edu.degree} in ${edu.field}} | \\textit{${edu.school}}\\\\
+    ${edu.location} | ${edu.startDate} - ${edu.current ? 'Present' : edu.endDate}
+    ${edu.gpa ? `\\quad GPA: ${edu.gpa}` : ''}
+    ${edu.achievements.length ? `
+    \\begin{itemize}
+        ${edu.achievements.map(achievement => `\\item ${achievement}`).join('\n        ')}
+    \\end{itemize}` : ''}
+`).join('\n')}
+
+% Skills Section
+\\section*{Skills}
+${Object.entries(skills.reduce((acc, skill) => {
+  if (!acc[skill.category]) acc[skill.category] = [];
+  acc[skill.category].push(skill.name);
+  return acc;
+}, {} as Record<string, string[]>)).map(([category, skills]) => `
+    \\textbf{${category}}: ${skills.join(', ')}\\\\
+`).join('\n')}
+
+\\end{document}`
+                              ) : selectedTemplate === 'professional' ? (
+                                `% Professional Resume Template
 \\documentclass[11pt,a4paper]{article}
 
 \\usepackage[utf8]{inputenc}
@@ -2277,11 +2327,68 @@ export default function ResumeBuilder() {
     left=2.5cm,
     right=2.5cm
 }
-...
-`
-                            ) : 'Template code will appear here'}
-                          </code>
-                        </pre>
+
+% Section formatting
+\\titleformat{\\section}
+    {\\\Large\\bfseries\\color{primary}}
+    {}{0em}
+    {}[\\titlerule]
+
+\\begin{document}
+
+% Header
+\\begin{center}
+    {\\Huge\\bfseries\\color{text} ${personalInfo.firstName} ${personalInfo.lastName}}\\\\[0.5em]
+    {\\large\\color{primary} ${personalInfo.title}}\\\\[0.5em]
+    \\faEnvelope\\ ${personalInfo.email} \\quad
+    \\faPhone\\ ${personalInfo.phone} \\quad
+    \\faMapMarker\\ ${personalInfo.location}
+    ${personalInfo.linkedin ? `\\quad \\faLinkedin\\ \\href{${personalInfo.linkedin}}{LinkedIn}` : ''}
+    ${personalInfo.website ? `\\quad \\faGlobe\\ \\href{${personalInfo.website}}{Website}` : ''}
+\\end{center}
+
+% Summary
+\\section*{Professional Summary}
+${personalInfo.summary}
+
+% Experience Section
+\\section*{Experience}
+${experiences.map(exp => `
+    \\textbf{${exp.title}} | \\textit{${exp.company}}\\\\
+    ${exp.location} | ${exp.startDate} - ${exp.current ? 'Present' : exp.endDate}
+    \\begin{itemize}
+        \\item ${exp.description}
+        ${exp.achievements.map(achievement => `\\item ${achievement}`).join('\n        ')}
+    \\end{itemize}
+`).join('\n')}
+
+% Education Section
+\\section*{Education}
+${educations.map(edu => `
+    \\textbf{${edu.degree} in ${edu.field}} | \\textit{${edu.school}}\\\\
+    ${edu.location} | ${edu.startDate} - ${edu.current ? 'Present' : edu.endDate}
+    ${edu.gpa ? `\\quad GPA: ${edu.gpa}` : ''}
+    ${edu.achievements.length ? `
+    \\begin{itemize}
+        ${edu.achievements.map(achievement => `\\item ${achievement}`).join('\n        ')}
+    \\end{itemize}` : ''}
+`).join('\n')}
+
+% Skills Section
+\\section*{Skills}
+${Object.entries(skills.reduce((acc, skill) => {
+  if (!acc[skill.category]) acc[skill.category] = [];
+  acc[skill.category].push(skill.name);
+  return acc;
+}, {} as Record<string, string[]>)).map(([category, skills]) => `
+    \\textbf{${category}}: ${skills.join(', ')}\\\\
+`).join('\n')}
+
+\\end{document}`
+                              ) : 'Template code will appear here'}
+                            </code>
+                          </pre>
+                        </div>
                       </div>
                     </div>
                   )}

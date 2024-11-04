@@ -7,6 +7,10 @@ const nextConfig = {
   env: {
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   },
+  webpack: (config) => {
+    config.resolve.alias.canvas = false;
+    return config;
+  }
 }
 
 module.exports = nextConfig 

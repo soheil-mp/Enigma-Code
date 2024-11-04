@@ -14,6 +14,8 @@ import { saveResume } from '@/services/resumeService';
 import Notification from '@/components/common/Notification';
 import { loadResume } from '@/services/resumeService';
 import { templates } from '@/templates/resumes';
+import LivePreview from '@/components/resume-builder/LivePreview';
+import { generatePDF, downloadPDF } from '@/services/latexService';
 
 interface PersonalInfo {
   firstName: string;
@@ -2415,11 +2417,27 @@ export default function ResumeBuilder() {
                   {/* Tab Content */}
                   <div className="h-[400px] lg:h-[800px] bg-gray-50 rounded-xl">
                     {previewTab === 'preview' ? (
-                      <div className="h-full p-4 flex items-center justify-center">
-                        <p className="text-gray-500 text-sm">
-                          Live preview of your resume will appear here
-                        </p>
-                      </div>
+                      <LivePreview
+                        latexContent={getTemplateContent(selectedTemplate)}
+                        onDownloadPDF={async () => {
+                          try {
+                            const pdfBlob = await generatePDF(getTemplateContent(selectedTemplate));
+                            downloadPDF(pdfBlob, `${personalInfo.firstName}-${personalInfo.lastName}-Resume.pdf`);
+                            
+                            setNotification({
+                              type: 'success',
+                              message: 'PDF generated successfully!',
+                              isVisible: true
+                            });
+                          } catch (error) {
+                            setNotification({
+                              type: 'error',
+                              message: 'Failed to generate PDF. Please try again.',
+                              isVisible: true
+                            });
+                          }
+                        }}
+                      />
                     ) : (
                       <div className="h-full p-4">
                         <div className="h-full bg-white rounded-lg p-4 shadow-sm">

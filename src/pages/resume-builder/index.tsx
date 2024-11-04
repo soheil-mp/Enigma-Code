@@ -833,7 +833,6 @@ export default function ResumeBuilder() {
 
   return (
     <DashboardLayout>
-      {/* Change max-w-[1600px] to w-[90%] to use 90% of the page width */}
       <div className="w-[90%] mx-auto">
         {/* Header Section */}
         <motion.div 
@@ -2440,71 +2439,87 @@ export default function ResumeBuilder() {
             </div>
           )}
 
-          {/* Navigation Buttons */}
-          <div className="flex flex-col sm:flex-row justify-between mt-8 space-y-4 sm:space-y-0">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => setActiveStep(Math.max(0, activeStep - 1))}
-                className="w-full sm:w-auto px-6 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
-              >
-                Previous
-              </motion.button>
-              {activeStep < 7 && (
+          {/* Navigation and Action Buttons */}
+          <div className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t border-gray-200 shadow-lg z-50">
+            <div className="w-[90%] mx-auto py-4 px-6 flex items-center justify-between">
+              {/* Left side - Navigation */}
+              <div className="flex items-center gap-3">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => setActiveStep(Math.min(7, activeStep + 1))}
-                  className="w-full sm:w-auto px-6 py-2 rounded-xl text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700"
+                  onClick={() => setActiveStep(Math.max(0, activeStep - 1))}
+                  className="px-6 py-2.5 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 flex items-center gap-2"
                 >
-                  Next
-                </motion.button>
-              )}
-            </div>
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleSave}
-              disabled={isSaving}
-              className="w-full sm:w-auto px-6 py-2 rounded-xl text-sm font-medium bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              {isSaving ? (
-                <>
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
-                  Saving...
-                </>
-              ) : (
-                'Save Resume'
-              )}
-            </motion.button>
+                  Previous
+                </motion.button>
+                
+                {activeStep < steps.length - 1 && (
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setActiveStep(Math.min(steps.length - 1, activeStep + 1))}
+                    className="px-6 py-2.5 rounded-xl text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 flex items-center gap-2"
+                  >
+                    Next
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </motion.button>
+                )}
+              </div>
+
+              {/* Center - Progress Indicator */}
+              <div className="hidden sm:flex items-center gap-2">
+                {steps.map((_, index) => (
+                  <div
+                    key={index}
+                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                      index === activeStep 
+                        ? 'w-8 bg-indigo-600' 
+                        : index < activeStep
+                        ? 'bg-indigo-400'
+                        : 'bg-gray-200'
+                    }`}
+                  />
+                ))}
+              </div>
+
+              {/* Right side - Save Action */}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleSave}
+                disabled={isSaving}
+                className="px-6 py-2.5 rounded-xl text-sm font-medium bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 min-w-[120px] justify-center"
+              >
+                {isSaving ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                    </svg>
+                    Save Resume
+                  </>
+                )}
+              </motion.button>
+            </div>
           </div>
+
+          {/* Add padding at the bottom to account for fixed buttons */}
+          <div className="h-24" />
         </div>
 
-        {/* AI Assistant */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="fixed bottom-6 right-6 bg-white rounded-2xl p-4 shadow-lg border border-gray-100"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
-              <span className="text-xl">🤖</span>
-            </div>
-            <div>
-              <h4 className="text-sm font-medium text-gray-900">AI Assistant</h4>
-              <p className="text-xs text-gray-500">Here to help with your resume</p>
-            </div>
-          </div>
-          <button className="w-full mt-3 bg-indigo-50 text-indigo-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-100">
-            Ask for help
-          </button>
-        </motion.div>
-
-        {/* Add Notification component */}
+        {/* Notification component */}
         <Notification
           type={notification.type}
           message={notification.message}

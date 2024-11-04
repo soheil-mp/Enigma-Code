@@ -1,58 +1,178 @@
 % Professional Resume Template
-\documentclass[11pt,a4paper]{article}
+\documentclass[10pt, letterpaper]{article}
 
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
+% Packages:
 \usepackage[
     ignoreheadfoot,
     top=2 cm,
     bottom=2 cm,
     left=1.2cm,
     right=1.2cm,
-    footskip=1.0 cm
+    footskip=1.0 cm,
 ]{geometry}
-\usepackage{xcolor}
-\usepackage{fontawesome5}
 \usepackage{titlesec}
-\usepackage{hyperref}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{primaryColor}{RGB}{79, 70, 229} % Indigo-600
+\definecolor{accentColor}{RGB}{139, 92, 246} % Purple-500
+\definecolor{textColor}{RGB}{17, 24, 39} % Gray-900
 \usepackage{enumitem}
+\usepackage{fontawesome5}
+\usepackage{amsmath}
+\usepackage[
+    pdftitle={ {{firstName}}'s Resume},
+    pdfauthor={ {{firstName}} {{lastName}} },
+    pdfcreator={LaTeX with RenderCV},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref}
+\usepackage[pscoord]{eso-pic}
+\usepackage{calc}
+\usepackage{bookmark}
+\usepackage{lastpage}
+\usepackage{changepage}
+\usepackage{paracol}
+\usepackage{ifthen}
+\usepackage{needspace}
+\usepackage{iftex}
 
-% Define colors
-\definecolor{primary}{RGB}{31, 41, 55} % Gray-800
-\definecolor{accent}{RGB}{59, 130, 246} % Blue-500
+% ATS Readability
+\ifPDFTeX
+    \input{glyphtounicode}
+    \pdfgentounicode=1
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
+\fi
 
-% Page geometry
-\geometry{
-    top=1.5cm,
-    bottom=1.5cm,
-    left=1.2cm,
-    right=1.2cm
+% Settings
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt}
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\topskip}{0pt}
+\setlength{\columnsep}{0cm}
+
+% Custom footer
+\makeatletter
+\let\ps@customFooterStyle\ps@plain
+\patchcmd{\ps@customFooterStyle}{\thepage}{
+    \color{gray}\textit{\small {{firstName}} {{lastName}} - Page \thepage{} of \pageref*{LastPage}}
+}{}{} 
+\makeatother
+\pagestyle{customFooterStyle}
+
+% Section formatting with gradient effect
+\titleformat{\section}
+    {\needspace{4\baselineskip}\Large\bfseries\color{primaryColor}}
+    {}{0em}
+    {}[\vspace{1pt}\titlerule[2pt]]
+\titlespacing{\section}{-1pt}{0.5cm}{0.3cm}
+
+% Custom environments
+\renewcommand\labelitemi{$\circ$}
+
+\newenvironment{highlights}{
+    \begin{itemize}[
+        topsep=0.10cm,
+        parsep=0.10cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=0.4cm + 10pt
+    ]
+}{
+    \end{itemize}
 }
 
-% Section formatting
-\titleformat{\section}
-    {\Large\bfseries\color{primary}}
-    {}{0em}
-    {}[\vspace{-0.5em}\rule{\textwidth}{0.4pt}]
+\newenvironment{onecolentry}{
+    \begin{adjustwidth}{0.2cm + 0.00001cm}{0.2cm + 0.00001cm}
+}{
+    \end{adjustwidth}
+}
+
+\newenvironment{twocolentry}[2][]{
+    \onecolentry
+    \def\secondColumn{#2}
+    \setcolumnwidth{\fill, 4.5cm}
+    \begin{paracol}{2}
+}{
+    \switchcolumn \raggedleft \secondColumn
+    \end{paracol}
+    \endonecolentry
+}
+
+\newenvironment{header}{
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.5}
+}{
+    \par\kern\topsep
+}
+
+% Commands
+\let\hrefWithoutArrow\href
+\renewcommand{\href}[2]{\hrefWithoutArrow{#1}{\ifthenelse{\equal{#2}{}}{ }{#2 }\raisebox{.15ex}{\footnotesize \faExternalLink*}}}
 
 \begin{document}
-
-% Header
-\begin{center}
-    {\LARGE\bfseries {{firstName}} {{lastName}}}\\[0.3em]
-    {\large {{title}}}\\[0.3em]
-    \small{
-        {{email}} | {{phone}} | {{location}}
-        {{#if linkedin}}
-            | \href{ {{linkedin}} }{LinkedIn}
-        {{/if}}
+    \begin{header}
+        {\fontsize{28pt}{28pt}\selectfont\color{primaryColor}\textbf{ {{firstName}} }\color{accentColor}\textbf{ {{lastName}} }}\\[0.5em]
+        {\large\color{textColor} {{title}} }\\[0.5em]
+        
+        \normalsize
+        \mbox{\faMapMarker*\hspace{0.13cm}\color{textColor} {{location}} }%
+        \kern 0.5cm%
+        \textcolor{gray}{|}%
+        \kern 0.5cm%
+        \mbox{\href{mailto:{{email}}}{\faEnvelope[regular]\hspace{0.13cm} {{email}} }}%
+        \kern 0.5cm%
+        \textcolor{gray}{|}%
+        \kern 0.5cm%
+        \mbox{\href{tel:{{phone}}}{\faPhone*\hspace{0.13cm} {{phone}} }}%
         {{#if website}}
-            | \href{ {{website}} }{Portfolio}
+            \kern 0.5cm%
+            \textcolor{gray}{|}%
+            \kern 0.5cm%
+            \mbox{\href{ {{website}} }{\faGlobe\hspace{0.13cm} {{website}} }}%
         {{/if}}
+        {{#if linkedin}}
+            \kern 0.5cm%
+            \textcolor{gray}{|}%
+            \kern 0.5cm%
+            \mbox{\href{ {{linkedin}} }{\faLinkedinIn\hspace{0.13cm}LinkedIn}}%
+        {{/if}}
+    \end{header}
+
+    \vspace{0.3cm}
+
+    {{#if summary}}
+    \section{Summary}
+    \begin{onecolentry}
+        {{summary}}
+    \end{onecolentry}
+    {{/if}}
+
+    {{#if experiences.length}}
+    \section{Experience}
+    {{#each experiences}}
+    \begin{twocolentry}{
+    \textit{ {{location}} }\\
+    \textit{ {{startDate}} {{#if current}}– Present{{else}}– {{endDate}}{{/if}} }}
     }
-\end{center}
+        \textbf{ {{title}} }\\
+        \textit{ {{company}} }
+    \end{twocolentry}
 
-% Rest of the template follows similar structure to modern but with more traditional formatting
-% ...
+    \vspace{0.10cm}
+    \begin{onecolentry}
+        \begin{highlights}
+            \item {{description}}
+            {{#each achievements}}
+            \item {{this}}
+            {{/each}}
+        \end{highlights}
+    \end{onecolentry}
+    {{#unless @last}}\vspace{0.3cm}{{/unless}}
+    {{/each}}
+    {{/if}}
 
+    % ... Rest of the sections (Education, Skills, etc.) follow the same pattern
+    % with enhanced styling and spacing
 \end{document} 

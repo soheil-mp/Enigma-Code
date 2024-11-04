@@ -663,10 +663,168 @@ export default function ResumeBuilder() {
     }
   };
 
-  // Remove the local templates array and use the imported one
+  // Update the getTemplateContent function
   const getTemplateContent = (templateId: string) => {
     const template = templates.find(t => t.id === templateId);
-    return template?.template || '';
+    if (!template) return '';
+
+    let content = template.template;
+    
+    // Replace personal info
+    content = content.replace(/\{\{firstName\}\}/g, personalInfo.firstName || 'John')
+                    .replace(/\{\{lastName\}\}/g, personalInfo.lastName || 'Doe')
+                    .replace(/\{\{email\}\}/g, personalInfo.email || 'email@example.com')
+                    .replace(/\{\{phone\}\}/g, personalInfo.phone || '+1 234 567 890')
+                    .replace(/\{\{location\}\}/g, personalInfo.location || 'City, Country')
+                    .replace(/\{\{title\}\}/g, personalInfo.title || 'Professional Title')
+                    .replace(/\{\{summary\}\}/g, personalInfo.summary || '')
+                    .replace(/\{\{linkedin\}\}/g, personalInfo.linkedin || '')
+                    .replace(/\{\{website\}\}/g, personalInfo.website || '');
+
+    // Replace current date
+    const currentDate = new Date().toLocaleDateString('en-US', { 
+      month: 'long',
+      year: 'numeric'
+    });
+    content = content.replace(/\{\{currentDate\}\}/g, currentDate);
+
+    // Replace conditional sections
+    content = content.replace(
+      /\{\{#if summary\}\}([\s\S]*?)\{\{\/if\}\}/g,
+      personalInfo.summary ? '$1' : ''
+    );
+
+    content = content.replace(
+      /\{\{#if website\}\}([\s\S]*?)\{\{\/if\}\}/g,
+      personalInfo.website ? '$1' : ''
+    );
+
+    content = content.replace(
+      /\{\{#if linkedin\}\}([\s\S]*?)\{\{\/if\}\}/g,
+      personalInfo.linkedin ? '$1' : ''
+    );
+
+    // Replace experiences section
+    if (experiences.length > 0) {
+      const experiencesSection = experiences.map((exp, index) => {
+        let section = `\\begin{twocolentry}{\\textit{${exp.location}}\\\\\\textit{${exp.startDate}${exp.current ? ' – Present' : ` – ${exp.endDate}`}}}
+          \\textbf{${exp.title}}
+          \\textit{${exp.company}}
+        \\end{twocolentry}
+
+        \\vspace{0.10 cm}
+        \\begin{onecolentry}
+          \\begin{highlights}
+            \\item ${exp.description}
+            ${exp.achievements.map(achievement => `\\item ${achievement}`).join('\n')}
+          \\end{highlights}
+        \\end{onecolentry}`;
+
+        if (index < experiences.length - 1) {
+          section += '\\vspace{0.2 cm}';
+        }
+
+        return section;
+      }).join('\n\n');
+
+      content = content.replace(/\{\{#if experiences\.length\}\}([\s\S]*?)\{\{\/if\}\}/g, 
+        `\\section{Experience}\n${experiencesSection}`
+      );
+    } else {
+      content = content.replace(/\{\{#if experiences\.length\}\}[\s\S]*?\{\{\/if\}\}/g, '');
+    }
+
+    // Replace education section
+    if (educations.length > 0) {
+      const educationsSection = educations.map((edu, index) => {
+        let section = `\\begin{twocolentry}{\\textit{${edu.startDate}${edu.current ? ' – Present' : ` – ${edu.endDate}`}}}
+          \\textbf{${edu.school}}
+          \\textit{${edu.degree} in ${edu.field}}
+        \\end{twocolentry}
+
+        \\vspace{0.10 cm}
+        \\begin{onecolentry}
+          \\begin{highlights}
+            ${edu.gpa ? `\\item GPA: ${edu.gpa}` : ''}
+            ${edu.achievements.map(achievement => `\\item ${achievement}`).join('\n')}
+          \\end{highlights}
+        \\end{onecolentry}`;
+
+        if (index < educations.length - 1) {
+          section += '\\vspace{0.2 cm}';
+        }
+
+        return section;
+      }).join('\n\n');
+
+      content = content.replace(/\{\{#if educations\.length\}\}([\s\S]*?)\{\{\/if\}\}/g,
+        `\\section{Education}\n${educationsSection}`
+      );
+    } else {
+      content = content.replace(/\{\{#if educations\.length\}\}[\s\S]*?\{\{\/if\}\}/g, '');
+    }
+
+    // Replace skills section
+    if (skills.length > 0) {
+      const skillsByCategory = skills.reduce((acc, skill) => {
+        if (!acc[skill.category]) acc[skill.category] = [];
+        acc[skill.category].push(skill.name);
+        return acc;
+      }, {} as Record<string, string[]>);
+
+      const skillsSection = Object.entries(skillsByCategory).map(([category, skillNames], index, array) => {
+        let section = `\\begin{onecolentry}
+          \\textbf{${category}:} ${skillNames.join(', ')}
+        \\end{onecolentry}`;
+
+        if (index < array.length - 1) {
+          section += '\\vspace{0.2 cm}';
+        }
+
+        return section;
+      }).join('\n\n');
+
+      content = content.replace(/\{\{#if skills\.length\}\}([\s\S]*?)\{\{\/if\}\}/g,
+        `\\section{Skills}\n${skillsSection}`
+      );
+    } else {
+      content = content.replace(/\{\{#if skills\.length\}\}[\s\S]*?\{\{\/if\}\}/g, '');
+    }
+
+    // Replace projects section
+    if (projects.length > 0) {
+      const projectsSection = projects.map((proj, index) => {
+        let section = `\\begin{twocolentry}{${proj.url ? `\\textit{\\href{${proj.url}}{${proj.url}}}` : ''}}
+          \\textbf{${proj.title}}
+        \\end{twocolentry}
+
+        \\vspace{0.10 cm}
+        \\begin{onecolentry}
+          \\begin{highlights}
+            \\item ${proj.description}
+            ${proj.highlights.map(highlight => `\\item ${highlight}`).join('\n')}
+            ${proj.technologies.length > 0 ? `\\item \\textbf{Technologies:} ${proj.technologies.join(', ')}` : ''}
+          \\end{highlights}
+        \\end{onecolentry}`;
+
+        if (index < projects.length - 1) {
+          section += '\\vspace{0.2 cm}';
+        }
+
+        return section;
+      }).join('\n\n');
+
+      content = content.replace(/\{\{#if projects\.length\}\}([\s\S]*?)\{\{\/if\}\}/g,
+        `\\section{Projects}\n${projectsSection}`
+      );
+    } else {
+      content = content.replace(/\{\{#if projects\.length\}\}[\s\S]*?\{\{\/if\}\}/g, '');
+    }
+
+    // Clean up any remaining Handlebars-style tags
+    content = content.replace(/\{\{.*?\}\}/g, '');
+
+    return content;
   };
 
   if (status === 'loading') {
@@ -2166,26 +2324,27 @@ export default function ResumeBuilder() {
                   </div>
 
                   {/* Tab Content */}
-                  {previewTab === 'preview' ? (
-                    <div className="bg-gray-50 rounded-xl p-4 aspect-[1/1.4] flex items-center justify-center">
-                      <p className="text-gray-500 text-sm">
-                        Live preview of your resume will appear here
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="bg-gray-50 rounded-xl p-4">
-                      <div className="bg-white rounded-lg p-4 shadow-sm">
-                        {/* Fixed height container with scrolling */}
-                        <div className="h-[600px] overflow-y-auto rounded-lg bg-gray-50">
-                          <pre className="p-4 text-xs text-gray-700 whitespace-pre">
-                            <code>
-                              {getTemplateContent(selectedTemplate)}
-                            </code>
-                          </pre>
+                  <div className="h-[800px] bg-gray-50 rounded-xl">
+                    {previewTab === 'preview' ? (
+                      <div className="h-full p-4 flex items-center justify-center">
+                        <p className="text-gray-500 text-sm">
+                          Live preview of your resume will appear here
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="h-full p-4">
+                        <div className="h-full bg-white rounded-lg p-4 shadow-sm">
+                          <div className="h-full overflow-y-auto rounded-lg bg-gray-50">
+                            <pre className="p-4 text-xs text-gray-700 whitespace-pre-wrap break-all">
+                              <code className="block max-w-[400px]">
+                                {getTemplateContent(selectedTemplate)}
+                              </code>
+                            </pre>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

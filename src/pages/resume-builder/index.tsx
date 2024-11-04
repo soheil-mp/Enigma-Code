@@ -200,6 +200,8 @@ export default function ResumeBuilder() {
   const [hasNoExperience, setHasNoExperience] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<string>('modern');
   const [isSaving, setIsSaving] = useState(false);
+  // Add this state for managing tabs
+  const [previewTab, setPreviewTab] = useState<'preview' | 'latex'>('preview');
 
   const steps = [
     { title: 'Personal Info', icon: '👤' },
@@ -2178,12 +2180,111 @@ export default function ResumeBuilder() {
               {/* Right Column - Preview */}
               <div className="border-l border-gray-200 pl-8">
                 <div className="sticky top-8">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Preview</h2>
-                  <div className="bg-gray-50 rounded-xl p-4 aspect-[1/1.4] flex items-center justify-center">
-                    <p className="text-gray-500 text-sm">
-                      Live preview of your resume will appear here
-                    </p>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-semibold text-gray-900">Preview</h2>
+                    
+                    {/* Tabs */}
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setPreviewTab('preview')}
+                        className={`px-3 py-1 text-sm rounded-lg transition-colors ${
+                          previewTab === 'preview'
+                            ? 'bg-indigo-100 text-indigo-700'
+                            : 'text-gray-600 hover:bg-gray-100'
+                        }`}
+                      >
+                        Live Preview
+                      </button>
+                      <button
+                        onClick={() => setPreviewTab('latex')}
+                        className={`px-3 py-1 text-sm rounded-lg transition-colors ${
+                          previewTab === 'latex'
+                            ? 'bg-indigo-100 text-indigo-700'
+                            : 'text-gray-600 hover:bg-gray-100'
+                        }`}
+                      >
+                        LaTeX
+                      </button>
+                    </div>
                   </div>
+
+                  {/* Tab Content */}
+                  {previewTab === 'preview' ? (
+                    <div className="bg-gray-50 rounded-xl p-4 aspect-[1/1.4] flex items-center justify-center">
+                      <p className="text-gray-500 text-sm">
+                        Live preview of your resume will appear here
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="bg-gray-50 rounded-xl p-4">
+                      <div className="bg-white rounded-lg p-4 shadow-sm">
+                        <pre className="text-xs text-gray-700 overflow-x-auto">
+                          <code>
+                            {selectedTemplate === 'modern' ? (
+                              `% Modern Resume Template
+\\documentclass[11pt,a4paper]{article}
+
+\\usepackage[utf8]{inputenc}
+\\usepackage[T1]{fontenc}
+\\usepackage{geometry}
+\\usepackage{xcolor}
+\\usepackage{fontawesome5}
+\\usepackage{titlesec}
+\\usepackage{hyperref}
+
+% Define colors
+\\definecolor{primary}{RGB}{79, 70, 229} % Indigo-600
+\\definecolor{text}{RGB}{17, 24, 39} % Gray-900
+
+% Page geometry
+\\geometry{
+    top=1.5cm,
+    bottom=1.5cm,
+    left=2cm,
+    right=2cm
+}
+
+% Section formatting
+\\titleformat{\\section}
+    {\\\Large\\bfseries\\color{primary}}
+    {}{0em}
+    {}[\\titlerule]
+
+\\begin{document}
+...
+`
+                            ) : selectedTemplate === 'professional' ? (
+                              `% Professional Resume Template
+\\documentclass[11pt,a4paper]{article}
+
+\\usepackage[utf8]{inputenc}
+\\usepackage[T1]{fontenc}
+\\usepackage{geometry}
+\\usepackage{xcolor}
+\\usepackage{fontawesome5}
+\\usepackage{titlesec}
+\\usepackage{hyperref}
+\\usepackage{enumitem}
+
+% Define colors
+\\definecolor{primary}{RGB}{31, 41, 55} % Gray-800
+\\definecolor{accent}{RGB}{59, 130, 246} % Blue-500
+
+% Page geometry
+\\geometry{
+    top=1.5cm,
+    bottom=1.5cm,
+    left=2.5cm,
+    right=2.5cm
+}
+...
+`
+                            ) : 'Template code will appear here'}
+                          </code>
+                        </pre>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

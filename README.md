@@ -311,9 +311,9 @@ Ensure you have the following installed:
 ```
 4. **Set Up the Database**
    Use Prisma to initialize the PostgreSQL database and run migrations.
-
+```bash
    npx prisma migrate dev --name init
-
+```
    This command creates tables in your PostgreSQL database based on the Prisma schema and sets up the initial structure.
 
 5. **Generate Prisma Client**

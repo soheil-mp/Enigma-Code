@@ -10,12 +10,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const session = await getServerSession(req, res, authOptions);
-
+    
     if (!session?.user?.email) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    // Get user ID from email
     const user = await prisma.user.findUnique({
       where: { email: session.user.email }
     });
@@ -25,23 +24,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const {
-      title,
-      template,
-      personalInfo,
-      experiences,
-      education,
-      skills,
-      languages,
-      projects,
-      certifications
+      title = 'My Resume',
+      template = 'modern',
+      personalInfo = {},
+      experiences = [],
+      education = [],
+      skills = [],
+      languages = [],
+      projects = [],
+      certifications = []
     } = req.body;
 
-    // Create new resume
-    const resume = await prisma.resume.create({
-      data: {
-        userId: user.id,
-        title: title || 'My Resume',
-        template,
+    // Validate required fields
+    if (!personalInfo || !Array.isArray(experiences) || !Array.isArray(education) || !Array.isArray(skills)) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    const resumeData = {
+      title,
+      template,
+      content: {
         personalInfo,
         experiences,
         education,
@@ -50,7 +52,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         projects,
         certifications
       }
+    };
+
+    const existingResume = await prisma.resume.findFirst({
+      where: { userId: user.id }
     });
+
+    const resume = existingResume 
+      ? await prisma.resume.update({
+          where: { id: existingResume.id },
+          data: resumeData
+        })
+      : await prisma.resume.create({
+          data: {
+            userId: user.id,
+            ...resumeData
+          }
+        });
 
     return res.status(200).json(resume);
   } catch (error) {

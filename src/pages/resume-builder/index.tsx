@@ -16,6 +16,7 @@ import { loadResume } from '@/services/resumeService';
 import { templates } from '@/templates/resumes';
 import LivePreview from '@/components/resume-builder/LivePreview';
 import { generatePDF, downloadPDF } from '@/services/latexService';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 interface PersonalInfo {
   firstName: string;
@@ -133,13 +134,33 @@ const proficiencyLevels: Record<LanguageProficiency, { color: string, descriptio
 type SectionType = 'skills' | 'experience' | 'education' | 'languages' | 'projects' | 'certifications';
 
 export default function ResumeBuilder() {
-  const { data: session, status } = useSession()
-  const router = useRouter()
-  const [activeStep, setActiveStep] = useState(0)
+  // Session and router
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // Basic states
+  const [activeStep, setActiveStep] = useState(0);
+  const [selectedTemplate, setSelectedTemplate] = useState('modern');
+  const [isSaving, setIsSaving] = useState(false);
+  const [loadingSection, setLoadingSection] = useState<number | null>(null);
+  const [isDirty, setIsDirty] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasNoExperience, setHasNoExperience] = useState(false);
+  const [completedSections, setCompletedSections] = useState<number[]>([]);
+  const [previewTab, setPreviewTab] = useState<'preview' | 'latex'>('preview');
+  const [currentSkill, setCurrentSkill] = useState<Skill>({
+    id: crypto.randomUUID(),
+    name: '',
+    level: 'Intermediate',
+    category: 'Technical'
+  });
+
+  // Initialize all form states properly
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
     firstName: '',
     lastName: '',
-    email: '',
+    email: session?.user?.email || '',
     phone: '',
     location: '',
     title: '',
@@ -150,61 +171,106 @@ export default function ResumeBuilder() {
     city: '',
     country: ''
   });
+
+  // Initialize arrays with empty arrays instead of undefined
   const [experiences, setExperiences] = useState<Experience[]>([]);
-  const [currentExperience, setCurrentExperience] = useState<Experience>({
-    id: crypto.randomUUID(),
-    title: '',
-    company: '',
-    location: '',
-    startDate: '',
-    endDate: '',
-    current: false,
-    description: '',
-    achievements: ['']
-  });
-  const [educations, setEducations] = useState<Education[]>([]);
-  const [currentEducation, setCurrentEducation] = useState<Education>({
-    id: crypto.randomUUID(),
-    school: '',
-    degree: '',
-    field: '',
-    location: '',
-    startDate: '',
-    endDate: '',
-    current: false,
-    gpa: '',
-    achievements: ['']
-  });
+  const [education, setEducation] = useState<Education[]>([]);
   const [skills, setSkills] = useState<Skill[]>([]);
-  const [currentSkill, setCurrentSkill] = useState<Skill>({
-    id: crypto.randomUUID(),
-    name: '',
-    level: 'Intermediate',
-    category: 'Technical'
-  });
   const [languages, setLanguages] = useState<Language[]>([]);
-  const [certifications, setCertifications] = useState<Certification[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
-  const [showPreview, setShowPreview] = useState(false);
-  const [isDirty, setIsDirty] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [notification, setNotification] = useState<{
-    type: 'success' | 'error' | 'info';
-    message: string;
-    isVisible: boolean;
-  }>({
-    type: 'info',
+  const [certifications, setCertifications] = useState<Certification[]>([]);
+
+  // Notification state
+  const [notification, setNotification] = useState({
+    type: 'info' as 'success' | 'error' | 'info',
     message: '',
     isVisible: false
   });
-  const [loadingSection, setLoadingSection] = useState<number | null>(null);
-  const [completedSections, setCompletedSections] = useState<number[]>([]);
-  const [hasNoExperience, setHasNoExperience] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<string>('modern');
-  const [isSaving, setIsSaving] = useState(false);
-  // Add this state for managing tabs
-  const [previewTab, setPreviewTab] = useState<'preview' | 'latex'>('preview');
+
+  // Load resume data on component mount
+  useEffect(() => {
+    if (session?.user?.id) {
+      loadResumeData();
+    }
+  }, [session]);
+
+  const loadResumeData = async () => {
+    try {
+      const data = await loadResume(session?.user?.id as string);
+      if (data) {
+        setPersonalInfo(data.content?.personalInfo || personalInfo);
+        setExperiences(data.content?.experiences || []);
+        setEducation(data.content?.education || []);
+        setSkills(data.content?.skills || []);
+        setLanguages(data.content?.languages || []);
+        setProjects(data.content?.projects || []);
+        setCertifications(data.content?.certifications || []);
+        setSelectedTemplate(data.template || 'modern');
+      }
+    } catch (error) {
+      console.error('Error loading resume:', error);
+      setNotification({
+        type: 'error',
+        message: 'Failed to load resume data',
+        isVisible: true
+      });
+    }
+  };
+
+  // Add effect to track changes and set isDirty
+  useEffect(() => {
+    setIsDirty(true);
+  }, [personalInfo, experiences, education, skills, languages, projects, certifications]);
+
+  // Update the form state setters to mark as dirty
+  const updatePersonalInfo = (updates: Partial<PersonalInfo>) => {
+    setPersonalInfo(prev => ({ ...prev, ...updates }));
+    setIsDirty(true);
+  };
+
+  const updateExperiences = (newExperiences: Experience[]) => {
+    setExperiences(newExperiences);
+    setIsDirty(true);
+  };
+
+  const updateEducation = (newEducation: Education[]) => {
+    setEducation(newEducation);
+    setIsDirty(true);
+  };
+
+  // Save handler
+  const handleSave = async () => {
+    try {
+      setIsSaving(true);
+      await saveResume({
+        title: `${personalInfo.firstName}'s Resume`,
+        template: selectedTemplate,
+        personalInfo,
+        experiences,
+        education,
+        skills,
+        languages,
+        projects,
+        certifications
+      });
+      
+      setNotification({
+        type: 'success',
+        message: 'Resume saved successfully!',
+        isVisible: true
+      });
+      setIsDirty(false);  // Reset isDirty after successful save
+    } catch (error) {
+      console.error('Save error:', error);
+      setNotification({
+        type: 'error',
+        message: error instanceof Error ? error.message : 'Failed to save resume',
+        isVisible: true
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const steps = [
     { title: 'Templates', icon: '🎨' },     // Add Templates step
@@ -350,9 +416,9 @@ export default function ResumeBuilder() {
       case 2:
         return experiences.length > 0;
       case 3:
-        return currentEducation.school || currentEducation.degree;
+        return education.length > 0;
       case 4:
-        return currentSkill.name;
+        return skills.length > 0;
       default:
         return true;
     }
@@ -394,7 +460,7 @@ export default function ResumeBuilder() {
       autoSave({
         personalInfo,
         experiences,
-        educations,
+        education,
         skills,
         languages,
         certifications,
@@ -414,7 +480,7 @@ export default function ResumeBuilder() {
       // Populate state with draft data
       setPersonalInfo(draft.personalInfo);
       setExperiences(draft.experiences);
-      setEducations(draft.educations);
+      setEducation(draft.education);
       setSkills(draft.skills);
       setLanguages(draft.languages);
       setCertifications(draft.certifications);
@@ -422,19 +488,25 @@ export default function ResumeBuilder() {
     }
   }, []);
 
+  // Update the autosave effect
   useEffect(() => {
     if (isDirty) {
-      autoSave({
-        personalInfo,
-        experiences,
-        educations,
-        skills,
-        languages,
-        certifications,
-        projects
-      });
+      const saveTimer = setTimeout(() => {
+        autoSave({
+          personalInfo,
+          experiences,
+          education,
+          skills,
+          languages,
+          certifications,
+          projects
+        });
+        setIsDirty(false);
+      }, 1000); // Debounce autosave for 1 second
+
+      return () => clearTimeout(saveTimer);
     }
-  }, [personalInfo, experiences, educations, skills, languages, certifications, projects, isDirty]);
+  }, [personalInfo, experiences, education, skills, languages, certifications, projects, isDirty]);
 
   useEffect(() => {
     const loadExistingResume = async () => {
@@ -445,7 +517,7 @@ export default function ResumeBuilder() {
             setSelectedTemplate(existingResume.template);
             setPersonalInfo(existingResume.personalInfo);
             setExperiences(existingResume.experiences);
-            setEducations(existingResume.education);
+            setEducation(existingResume.education);
             setSkills(existingResume.skills);
             setLanguages(existingResume.languages);
             setProjects(existingResume.projects);
@@ -460,16 +532,22 @@ export default function ResumeBuilder() {
     loadExistingResume();
   }, [session?.user?.id]);
 
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/auth/signin');
+    }
+  }, [status, router]);
+
   const handleFormSubmit = async () => {
     setIsSubmitting(true);
     try {
       // Validate all sections
       const personalInfoValidation = validatePersonalInfo(personalInfo);
       const experiencesValid = experiences.every(exp => validateExperience(exp).isValid);
-      const educationsValid = educations.every(edu => validateEducation(edu).isValid);
+      const educationValid = education.every(edu => validateEducation(edu).isValid);
       const skillsValid = skills.length > 0;
 
-      if (!personalInfoValidation.isValid || !experiencesValid || !educationsValid || !skillsValid) {
+      if (!personalInfoValidation.isValid || !experiencesValid || !educationValid || !skillsValid) {
         throw new Error('Please complete all required fields');
       }
 
@@ -479,7 +557,7 @@ export default function ResumeBuilder() {
         template: selectedTemplate,
         personalInfo,
         experiences,
-        education: educations,
+        education,
         skills,
         languages,
         projects,
@@ -614,57 +692,6 @@ export default function ResumeBuilder() {
     };
   };
 
-  const handleSave = async () => {
-    if (!session?.user?.email) {
-      setNotification({
-        type: 'error',
-        message: 'Please sign in to save your resume',
-        isVisible: true
-      });
-      return;
-    }
-
-    setIsSaving(true);
-    try {
-      const resumeData = {
-        title: `${personalInfo.firstName}'s Resume`,
-        template: selectedTemplate,
-        personalInfo,
-        experiences,
-        education: educations,
-        skills,
-        languages,
-        projects,
-        certifications
-      };
-
-      console.log('Saving resume:', resumeData); // Debug log
-
-      const savedResume = await saveResume(resumeData);
-
-      setNotification({
-        type: 'success',
-        message: 'Resume saved successfully!',
-        isVisible: true
-      });
-
-      // Auto-hide notification after 3 seconds
-      setTimeout(() => {
-        setNotification(prev => ({ ...prev, isVisible: false }));
-      }, 3000);
-
-    } catch (error) {
-      console.error('Save error:', error); // Debug log
-      setNotification({
-        type: 'error',
-        message: error instanceof Error ? error.message : 'Failed to save resume. Please try again.',
-        isVisible: true
-      });
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
   // Update the getTemplateContent function
   const getTemplateContent = (templateId: string) => {
     const template = templates.find(t => t.id === templateId);
@@ -737,8 +764,8 @@ export default function ResumeBuilder() {
     }
 
     // Replace education section
-    if (educations.length > 0) {
-      const educationsSection = educations.map((edu, index) => {
+    if (education.length > 0) {
+      const educationsSection = education.map((edu, index) => {
         let section = `\\begin{twocolentry}{\\textit{${edu.startDate}${edu.current ? ' – Present' : ` – ${edu.endDate}`}}}
           \\textbf{${edu.school}}
           \\textit{${edu.degree} in ${edu.field}}
@@ -752,7 +779,7 @@ export default function ResumeBuilder() {
           \\end{highlights}
         \\end{onecolentry}`;
 
-        if (index < educations.length - 1) {
+        if (index < education.length - 1) {
           section += '\\vspace{0.2 cm}';
         }
 
@@ -830,7 +857,11 @@ export default function ResumeBuilder() {
   };
 
   if (status === 'loading') {
-    return <div>Loading...</div>
+    return <LoadingSpinner />;
+  }
+
+  if (!session) {
+    return null;
   }
 
   return (
@@ -1488,7 +1519,7 @@ export default function ResumeBuilder() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => {
-                          setEducations([...educations, {
+                          setEducation([...education, {
                             id: crypto.randomUUID(),
                             school: '',
                             degree: '',
@@ -1508,7 +1539,7 @@ export default function ResumeBuilder() {
                     </div>
 
                     <div className="space-y-6">
-                      {educations.map((education, index) => (
+                      {education.map((education, index) => (
                         <motion.div
                           key={education.id}
                           initial={{ opacity: 0, y: 20 }}
@@ -1516,7 +1547,7 @@ export default function ResumeBuilder() {
                           className="bg-white rounded-xl p-6 border border-gray-200 relative group"
                         >
                           <button
-                            onClick={() => setEducations(educations.filter(e => e.id !== education.id))}
+                            onClick={() => setEducation(education.filter(e => e.id !== education.id))}
                             className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
                           >
                             <span className="text-gray-400 hover:text-red-500">✕</span>
@@ -1529,9 +1560,9 @@ export default function ResumeBuilder() {
                                 type="text"
                                 value={education.school}
                                 onChange={(e) => {
-                                  const newEducations = [...educations];
+                                  const newEducations = [...education];
                                   newEducations[index].school = e.target.value;
-                                  setEducations(newEducations);
+                                  setEducation(newEducations);
                                 }}
                                 className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
                                 placeholder="Harvard University"
@@ -1544,9 +1575,9 @@ export default function ResumeBuilder() {
                                 type="text"
                                 value={education.degree}
                                 onChange={(e) => {
-                                  const newEducations = [...educations];
+                                  const newEducations = [...education];
                                   newEducations[index].degree = e.target.value;
-                                  setEducations(newEducations);
+                                  setEducation(newEducations);
                                 }}
                                 className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
                                 placeholder="Bachelor of Science"
@@ -1559,9 +1590,9 @@ export default function ResumeBuilder() {
                                 type="text"
                                 value={education.field}
                                 onChange={(e) => {
-                                  const newEducations = [...educations];
+                                  const newEducations = [...education];
                                   newEducations[index].field = e.target.value;
-                                  setEducations(newEducations);
+                                  setEducation(newEducations);
                                 }}
                                 className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
                                 placeholder="Computer Science"
@@ -1574,9 +1605,9 @@ export default function ResumeBuilder() {
                                 type="text"
                                 value={education.location}
                                 onChange={(e) => {
-                                  const newEducations = [...educations];
+                                  const newEducations = [...education];
                                   newEducations[index].location = e.target.value;
-                                  setEducations(newEducations);
+                                  setEducation(newEducations);
                                 }}
                                 className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
                                 placeholder="Cambridge, MA"
@@ -1589,9 +1620,9 @@ export default function ResumeBuilder() {
                                 type="month"
                                 value={education.startDate}
                                 onChange={(e) => {
-                                  const newEducations = [...educations];
+                                  const newEducations = [...education];
                                   newEducations[index].startDate = e.target.value;
-                                  setEducations(newEducations);
+                                  setEducation(newEducations);
                                 }}
                                 className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
                               />
@@ -1604,9 +1635,9 @@ export default function ResumeBuilder() {
                                   type="month"
                                   value={education.endDate}
                                   onChange={(e) => {
-                                    const newEducations = [...educations];
+                                    const newEducations = [...education];
                                     newEducations[index].endDate = e.target.value;
-                                    setEducations(newEducations);
+                                    setEducation(newEducations);
                                   }}
                                   disabled={education.current}
                                   className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500"
@@ -1616,12 +1647,12 @@ export default function ResumeBuilder() {
                                     type="checkbox"
                                     checked={education.current}
                                     onChange={(e) => {
-                                      const newEducations = [...educations];
+                                      const newEducations = [...education];
                                       newEducations[index].current = e.target.checked;
                                       if (e.target.checked) {
                                         newEducations[index].endDate = '';
                                       }
-                                      setEducations(newEducations);
+                                      setEducation(newEducations);
                                     }}
                                     className="rounded text-indigo-600 focus:ring-indigo-500"
                                   />
@@ -1636,9 +1667,9 @@ export default function ResumeBuilder() {
                                 type="text"
                                 value={education.gpa}
                                 onChange={(e) => {
-                                  const newEducations = [...educations];
+                                  const newEducations = [...education];
                                   newEducations[index].gpa = e.target.value;
-                                  setEducations(newEducations);
+                                  setEducation(newEducations);
                                 }}
                                 className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
                                 placeholder="3.8/4.0"
@@ -1650,9 +1681,9 @@ export default function ResumeBuilder() {
                                 <label className="block text-sm font-medium text-gray-700">Academic Achievements</label>
                                 <button
                                   onClick={() => {
-                                    const newEducations = [...educations];
+                                    const newEducations = [...education];
                                     newEducations[index].achievements.push('');
-                                    setEducations(newEducations);
+                                    setEducation(newEducations);
                                   }}
                                   className="text-sm text-indigo-600 hover:text-indigo-700"
                                 >
@@ -1665,20 +1696,20 @@ export default function ResumeBuilder() {
                                     type="text"
                                     value={achievement}
                                     onChange={(e) => {
-                                      const newEducations = [...educations];
+                                      const newEducations = [...education];
                                       newEducations[index].achievements[achievementIndex] = e.target.value;
-                                      setEducations(newEducations);
+                                      setEducation(newEducations);
                                     }}
                                     className="flex-1 px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
                                     placeholder="Dean's List, Academic Awards, etc."
                                   />
                                   <button
                                     onClick={() => {
-                                      const newEducations = [...educations];
+                                      const newEducations = [...education];
                                       newEducations[index].achievements = education.achievements.filter(
                                         (_, i) => i !== achievementIndex
                                       );
-                                      setEducations(newEducations);
+                                      setEducation(newEducations);
                                     }}
                                     className="text-gray-400 hover:text-red-500 px-2"
                                   >

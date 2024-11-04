@@ -7,15 +7,26 @@ export async function saveResume(data: {
   experiences: any[];
   education: any[];
   skills: any[];
-  languages: any[];
-  projects: any[];
-  certifications: any[];
+  languages?: any[];
+  projects?: any[];
+  certifications?: any[];
 }) {
   try {
-    const response = await axios.post('/api/resumes/save', data);
+    const response = await axios.post('/api/resumes/save', data, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      withCredentials: true
+    });
     return response.data;
   } catch (error) {
     console.error('Resume save error:', error);
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 401) {
+        throw new Error('Please sign in to save your resume');
+      }
+      throw new Error(error.response?.data?.message || 'Failed to save resume');
+    }
     throw new Error('Failed to save resume');
   }
 }

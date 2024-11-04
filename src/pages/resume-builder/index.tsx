@@ -878,7 +878,7 @@ export default function ResumeBuilder() {
         </div>
 
         {/* Main Content Area */}
-        <div className="bg-white rounded-[24px] p-12">
+        <div className="bg-white rounded-[24px] p-4 sm:p-8 md:p-12">
           {/* Templates step */}
           {activeStep === 0 && (
             <motion.div
@@ -886,7 +886,7 @@ export default function ResumeBuilder() {
               animate={{ opacity: 1 }}
               className="space-y-6"
             >
-              <div className="flex items-center justify-between mb-8">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 space-y-4 sm:space-y-0">
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900">Choose Your Template</h2>
                   <p className="text-gray-600 mt-1">Select a template that best represents your professional style</p>
@@ -894,14 +894,14 @@ export default function ResumeBuilder() {
                 <button
                   onClick={() => handleNext()}
                   disabled={!selectedTemplate}
-                  className="bg-indigo-600 text-white px-6 py-2 rounded-xl text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full sm:w-auto bg-indigo-600 text-white px-6 py-2 rounded-xl text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Continue with Template
                 </button>
               </div>
 
               {/* Template grid */}
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 {templates.map((template) => (
                   <motion.div
                     key={template.id}
@@ -983,9 +983,9 @@ export default function ResumeBuilder() {
             </motion.div>
           )}
 
-          {/* All other steps get the two-column layout */}
+          {/* All other steps get the responsive layout */}
           {activeStep > 0 && (
-            <div className="grid grid-cols-2 gap-12">
+            <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-12">
               {/* Left Column - Forms */}
               <div className="space-y-8">
                 {activeStep === 1 && (
@@ -2293,8 +2293,8 @@ export default function ResumeBuilder() {
               </div>
 
               {/* Right Column - Preview */}
-              <div className="border-l border-gray-200 pl-12">
-                <div className="sticky top-8">
+              <div className="border-t lg:border-t-0 lg:border-l border-gray-200 pt-8 lg:pt-0 lg:pl-12 mt-8 lg:mt-0">
+                <div className="lg:sticky lg:top-8">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-semibold text-gray-900">Preview</h2>
                     
@@ -2324,7 +2324,7 @@ export default function ResumeBuilder() {
                   </div>
 
                   {/* Tab Content */}
-                  <div className="h-[800px] bg-gray-50 rounded-xl">
+                  <div className="h-[400px] lg:h-[800px] bg-gray-50 rounded-xl">
                     {previewTab === 'preview' ? (
                       <div className="h-full p-4 flex items-center justify-center">
                         <p className="text-gray-500 text-sm">
@@ -2351,22 +2351,22 @@ export default function ResumeBuilder() {
           )}
 
           {/* Navigation Buttons */}
-          <div className="flex justify-between mt-8">
-            <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row justify-between mt-8 space-y-4 sm:space-y-0">
+            <div className="flex flex-col sm:flex-row gap-4">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setActiveStep(Math.max(0, activeStep - 1))}
-                className="px-6 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+                className="w-full sm:w-auto px-6 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
               >
                 Previous
               </motion.button>
-              {activeStep < 6 && ( // Changed from 7 to 6 since we removed one step
+              {activeStep < 7 && (
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => setActiveStep(Math.min(6, activeStep + 1))} // Changed from 7 to 6
-                  className="px-6 py-2 rounded-xl text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700"
+                  onClick={() => setActiveStep(Math.min(7, activeStep + 1))}
+                  className="w-full sm:w-auto px-6 py-2 rounded-xl text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700"
                 >
                   Next
                 </motion.button>
@@ -2377,7 +2377,7 @@ export default function ResumeBuilder() {
               whileTap={{ scale: 0.98 }}
               onClick={handleSave}
               disabled={isSaving}
-              className={`px-6 py-2 rounded-xl text-sm font-medium bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2`}
+              className="w-full sm:w-auto px-6 py-2 rounded-xl text-sm font-medium bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isSaving ? (
                 <>

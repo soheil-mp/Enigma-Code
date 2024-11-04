@@ -853,8 +853,24 @@ export default function ResumeBuilder() {
         </motion.div>
 
         {/* Progress Steps */}
-        <div className="bg-white rounded-[24px] p-6 mb-6">
-          <div className="flex justify-between">
+        <div className="bg-white/70 backdrop-blur-md rounded-[24px] p-8 mb-6">
+          <div className="relative flex justify-between">
+            {/* Background line */}
+            <div className="absolute top-[2.15rem] left-0 w-full h-1 bg-gray-100 rounded-full" />
+            
+            {/* Animated gradient progress line */}
+            <div 
+              className="absolute top-[2.15rem] left-0 h-1 rounded-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-500"
+              style={{ 
+                width: `${(activeStep / (steps.length - 1)) * 100}%`,
+                transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
+              }}
+            >
+              {/* Animated glow effect */}
+              <div className="absolute top-0 right-0 w-4 h-full bg-gradient-to-r from-transparent to-white/50 animate-shimmer" />
+            </div>
+
+            {/* Steps */}
             {steps.map((step, index) => (
               <motion.div
                 key={step.title}
@@ -862,20 +878,94 @@ export default function ResumeBuilder() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 onClick={() => setActiveStep(index)}
-                className={`flex flex-col items-center cursor-pointer transition-all duration-200 ${
-                  index === activeStep ? 'text-indigo-600' : 'text-gray-400 hover:text-gray-600'
-                }`}
+                className="relative flex flex-col items-center cursor-pointer group z-10"
               >
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 transition-colors duration-200 ${
-                  index === activeStep ? 'bg-indigo-100' : 'bg-gray-100'
+                {/* Step Icon Container */}
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`relative w-16 h-16 rounded-2xl flex items-center justify-center mb-3 transition-all duration-300 ${
+                    index === activeStep 
+                      ? 'bg-gradient-to-tr from-violet-500 via-fuchsia-500 to-cyan-500 text-white shadow-lg shadow-fuchsia-500/25'
+                      : index < activeStep
+                      ? 'bg-gradient-to-tr from-violet-100 to-fuchsia-100 text-fuchsia-500'
+                      : 'bg-white text-gray-400 group-hover:bg-gray-50'
+                  }`}
+                >
+                  {/* Completion indicator */}
+                  {index < activeStep ? (
+                    <motion.div 
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="text-2xl"
+                    >
+                      ✓
+                    </motion.div>
+                  ) : (
+                    <span className="text-2xl">{step.icon}</span>
+                  )}
+
+                  {/* Active step indicator */}
+                  {index === activeStep && (
+                    <>
+                      {/* Pulse animation */}
+                      <motion.div
+                        initial={{ scale: 0.8, opacity: 0.5 }}
+                        animate={{ scale: 1.4, opacity: 0 }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                        className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-violet-500 via-fuchsia-500 to-cyan-500"
+                      />
+                      {/* Inner glow */}
+                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-violet-500/20 via-fuchsia-500/20 to-cyan-500/20 blur-sm" />
+                    </>
+                  )}
+                </motion.div>
+
+                {/* Step Title */}
+                <span className={`text-sm font-medium transition-colors duration-200 ${
+                  index === activeStep 
+                    ? 'text-fuchsia-600 font-semibold'
+                    : index < activeStep
+                    ? 'text-gray-600'
+                    : 'text-gray-400 group-hover:text-gray-600'
                 }`}>
-                  <span className="text-xl">{step.icon}</span>
-                </div>
-                <span className="text-sm font-medium">{step.title}</span>
+                  {step.title}
+                </span>
+
+                {/* Step Status */}
+                <motion.span 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className={`mt-1 text-xs ${
+                    index === activeStep 
+                      ? 'text-fuchsia-500'
+                      : index < activeStep
+                      ? 'text-green-500'
+                      : 'text-gray-400'
+                  }`}
+                >
+                  {index < activeStep ? 'Completed' : index === activeStep ? 'In Progress' : 'Pending'}
+                </motion.span>
               </motion.div>
             ))}
           </div>
         </div>
+
+        {/* Add these keyframes to your global styles */}
+        <style jsx global>{`
+          @keyframes shimmer {
+            0% {
+              transform: translateX(-100%);
+            }
+            100% {
+              transform: translateX(100%);
+            }
+          }
+          
+          .animate-shimmer {
+            animation: shimmer 2s infinite;
+          }
+        `}</style>
 
         {/* Main Content Area */}
         <div className="bg-white rounded-[24px] p-4 sm:p-8 md:p-12">
@@ -901,7 +991,7 @@ export default function ResumeBuilder() {
               </div>
 
               {/* Template grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {templates.map((template) => (
                   <motion.div
                     key={template.id}
@@ -913,8 +1003,8 @@ export default function ResumeBuilder() {
                         : 'border-gray-200 hover:border-indigo-300 bg-white'
                     }`}
                   >
-                    {/* Template Preview */}
-                    <div className="relative h-48 mb-4 rounded-lg overflow-hidden bg-gray-100">
+                    {/* Template Preview - Made taller */}
+                    <div className="relative h-72 mb-4 rounded-lg overflow-hidden bg-gray-100"> {/* Changed h-48 to h-72 */}
                       {template.preview ? (
                         <Image
                           src={template.preview}

@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1730730331.18398 "c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex" "template.pdf" "template" 1730730332.19037 2
+["pdflatex"] 1730731105.02048 "c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex" "template.pdf" "template" 1730731105.91665 2
   "C:/Users/Soheil/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1730726144 87775 9500c3617f096c0043d896fcbd7aee02 ""
   "C:/Users/Soheil/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1728.pk" 1730730017 49100 d0b65feadedcd57c8f36e26ce7a62846 ""
   "C:/Users/Soheil/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm1000.pk" 1730730015 23808 ccb3a1f1e95fdbe650efbbd89d3111a4 ""
@@ -62,10 +62,10 @@
   "C:/Users/Soheil/AppData/Local/Programs/MiKTeX/tex/latex/titlesec/titlesec.sty" 1699094857 48766 0b93839be28e9744a24c45075c75b2e2 ""
   "C:/Users/Soheil/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/Soheil/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1729265222 55384 b454dec21c2d9f45ec0b793f0995b992 ""
-  "c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex" 1730730328 1220 346443468e94ad83f77d006870ad9243 ""
-  "template.aux" 1730730331 162 55205a9e8a8eca30d36afb389b0617bf "pdflatex"
-  "template.out" 1730730331 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "template.tex" 1730730328 1220 346443468e94ad83f77d006870ad9243 ""
+  "c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex" 1730731102 1220 346443468e94ad83f77d006870ad9243 ""
+  "template.aux" 1730731105 162 55205a9e8a8eca30d36afb389b0617bf "pdflatex"
+  "template.out" 1730731105 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "template.tex" 1730731102 1220 346443468e94ad83f77d006870ad9243 ""
   (generated)
   "template.aux"
   "template.log"

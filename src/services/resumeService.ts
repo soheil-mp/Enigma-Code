@@ -25,7 +25,24 @@ export async function loadResume(userId: string) {
     const response = await axios.get(`/api/resumes/load`);
     return response.data;
   } catch (error) {
-    console.error('Resume load error:', error);
+    if (axios.isAxiosError(error)) {
+      // Handle specific HTTP error responses
+      if (error.response?.status === 404) {
+        // Return empty resume data if none found
+        return {
+          title: '',
+          template: 'modern',
+          personalInfo: {},
+          experiences: [],
+          education: [],
+          skills: [],
+          languages: [],
+          projects: [],
+          certifications: []
+        };
+      }
+      throw new Error(error.response?.data?.message || 'Failed to load resume');
+    }
     throw new Error('Failed to load resume');
   }
 } 

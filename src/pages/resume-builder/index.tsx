@@ -24,6 +24,9 @@ interface PersonalInfo {
   summary: string;
   linkedin?: string;
   website?: string;
+  address: string;
+  city: string;
+  country: string;
 }
 
 interface Experience {
@@ -139,7 +142,10 @@ export default function ResumeBuilder() {
     title: '',
     summary: '',
     linkedin: '',
-    website: ''
+    website: '',
+    address: '',
+    city: '',
+    country: ''
   });
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [currentExperience, setCurrentExperience] = useState<Experience>({
@@ -196,7 +202,6 @@ export default function ResumeBuilder() {
   const [isSaving, setIsSaving] = useState(false);
 
   const steps = [
-    { title: 'Choose Template', icon: '🎨' },
     { title: 'Personal Info', icon: '👤' },
     { title: 'Experience', icon: '💼' },
     { title: 'Education', icon: '🎓' },
@@ -205,37 +210,6 @@ export default function ResumeBuilder() {
     { title: 'Projects', icon: '🚀' },
     { title: 'Certifications', icon: '📜' },
   ]
-
-  const templates = [
-    { 
-      id: 'modern', 
-      name: 'Modern', 
-      description: 'Clean and contemporary design',
-      preview: '/templates/modern-preview.png', // Add template preview images
-      features: ['Clean layout', 'Professional fonts', 'Minimalist design']
-    },
-    { 
-      id: 'professional', 
-      name: 'Professional', 
-      description: 'Traditional and elegant layout',
-      preview: '/templates/professional-preview.png',
-      features: ['Classic style', 'ATS-friendly', 'Structured sections']
-    },
-    { 
-      id: 'creative', 
-      name: 'Creative', 
-      description: 'Unique and eye-catching design',
-      preview: '/templates/creative-preview.png',
-      features: ['Bold colors', 'Custom sections', 'Visual elements']
-    },
-    { 
-      id: 'minimal', 
-      name: 'Minimal', 
-      description: 'Simple and straightforward presentation',
-      preview: '/templates/minimal-preview.png',
-      features: ['Space-efficient', 'Easy to read', 'Focus on content']
-    },
-  ];
 
   const skillCategories = [
     'Technical',
@@ -246,28 +220,49 @@ export default function ResumeBuilder() {
     'Other'
   ];
 
-  const validatePersonalInfo = (info: PersonalInfo): SectionValidation => {
+  const validatePersonalInfo = (info: PersonalInfo): { errors: ValidationError[]; isValid: boolean } => {
     const errors: ValidationError[] = [];
     
-    if (!info.firstName.trim()) {
+    // Add null checks before trim()
+    if (!info?.firstName?.trim()) {
       errors.push({ field: 'firstName', message: 'First name is required' });
     }
-    if (!info.lastName.trim()) {
+    if (!info?.lastName?.trim()) {
       errors.push({ field: 'lastName', message: 'Last name is required' });
     }
-    if (!info.email.trim()) {
+    if (!info?.email?.trim()) {
       errors.push({ field: 'email', message: 'Email is required' });
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(info.email)) {
-      errors.push({ field: 'email', message: 'Please enter a valid email address' });
+    } else if (!/\S+@\S+\.\S+/.test(info.email)) {
+      errors.push({ field: 'email', message: 'Invalid email format' });
     }
-    if (!info.title.trim()) {
-      errors.push({ field: 'title', message: 'Professional title is required' });
+    
+    // Optional fields should only be validated if they exist
+    if (info?.phone && !isValidPhone(info.phone)) {
+      errors.push({ field: 'phone', message: 'Invalid phone number format' });
+    }
+    if (info?.website && !isValidUrl(info.website)) {
+      errors.push({ field: 'website', message: 'Invalid website URL' });
     }
 
     return {
       errors,
       isValid: errors.length === 0
     };
+  };
+
+  // Helper functions
+  const isValidPhone = (phone: string) => {
+    // Add your phone validation logic here
+    return phone.trim().length > 0;
+  };
+
+  const isValidUrl = (url: string) => {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   const validateExperience = (exp: Experience): SectionValidation => {
@@ -342,8 +337,10 @@ export default function ResumeBuilder() {
 
   const validateCurrentSection = () => {
     switch (activeStep) {
-      case 1:
-        return validatePersonalInfo(personalInfo).isValid;
+      case 1: {
+        const validation = validatePersonalInfo(personalInfo);
+        return validation.isValid;
+      }
       case 2:
         return experiences.length > 0;
       case 3:
@@ -461,12 +458,12 @@ export default function ResumeBuilder() {
     setIsSubmitting(true);
     try {
       // Validate all sections
-      const personalInfoValid = validatePersonalInfo(personalInfo);
+      const personalInfoValidation = validatePersonalInfo(personalInfo);
       const experiencesValid = experiences.every(exp => validateExperience(exp).isValid);
       const educationsValid = educations.every(edu => validateEducation(edu).isValid);
       const skillsValid = skills.length > 0;
 
-      if (!personalInfoValid.isValid || !experiencesValid || !educationsValid || !skillsValid) {
+      if (!personalInfoValidation.isValid || !experiencesValid || !educationsValid || !skillsValid) {
         throw new Error('Please complete all required fields');
       }
 
@@ -662,6 +659,41 @@ export default function ResumeBuilder() {
     }
   };
 
+  const templates = [
+    { 
+      id: 'modern', 
+      name: 'Modern', 
+      description: 'Clean and contemporary design',
+      preview: '/templates/modern-preview.png',
+      fallbackPreview: 'https://via.placeholder.com/300x400?text=Modern+Template',
+      features: ['Clean layout', 'Professional fonts', 'Minimalist design']
+    },
+    { 
+      id: 'professional', 
+      name: 'Professional', 
+      description: 'Traditional and elegant layout',
+      preview: '/templates/professional-preview.png',
+      fallbackPreview: 'https://via.placeholder.com/300x400?text=Professional+Template',
+      features: ['Classic style', 'ATS-friendly', 'Structured sections']
+    },
+    { 
+      id: 'creative', 
+      name: 'Creative', 
+      description: 'Unique and eye-catching design',
+      preview: '/templates/creative-preview.png',
+      fallbackPreview: 'https://via.placeholder.com/300x400?text=Creative+Template',
+      features: ['Bold colors', 'Custom sections', 'Visual elements']
+    },
+    { 
+      id: 'minimal', 
+      name: 'Minimal', 
+      description: 'Simple and straightforward presentation',
+      preview: '/templates/minimal-preview.png',
+      fallbackPreview: 'https://via.placeholder.com/300x400?text=Minimal+Template',
+      features: ['Space-efficient', 'Easy to read', 'Focus on content']
+    }
+  ];
+
   if (status === 'loading') {
     return <div>Loading...</div>
   }
@@ -733,7 +765,7 @@ export default function ResumeBuilder() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {templates.map((template) => (
                   <motion.div
                     key={template.id}
@@ -812,16 +844,6 @@ export default function ResumeBuilder() {
                   </motion.div>
                 ))}
               </div>
-
-              {/* Template Preview Modal */}
-              {selectedTemplate && (
-                <div className="mt-8 p-6 bg-gray-50 rounded-xl">
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">Template Preview</h3>
-                  <div className="aspect-[8.5/11] bg-white rounded-lg shadow-lg">
-                    {/* Add template preview component here */}
-                  </div>
-                </div>
-              )}
 
               {/* AI Suggestions */}
               <div className="mt-8 p-4 bg-indigo-50 rounded-xl">
@@ -921,7 +943,7 @@ export default function ResumeBuilder() {
                   <div className="flex items-center justify-between">
                     <label className="block text-sm font-medium text-gray-700">Professional Summary</label>
                     <span className="text-xs text-gray-500">
-                      {personalInfo.summary.length}/400 characters
+                      {(personalInfo.summary || '').length}/400 characters
                     </span>
                   </div>
                   <textarea
@@ -2160,11 +2182,11 @@ export default function ResumeBuilder() {
               >
                 Previous
               </motion.button>
-              {activeStep < 7 && (
+              {activeStep < 6 && ( // Changed from 7 to 6 since we removed one step
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => setActiveStep(Math.min(7, activeStep + 1))}
+                  onClick={() => setActiveStep(Math.min(6, activeStep + 1))} // Changed from 7 to 6
                   className="px-6 py-2 rounded-xl text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700"
                 >
                   Next

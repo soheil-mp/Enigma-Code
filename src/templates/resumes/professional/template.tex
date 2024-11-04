@@ -1,0 +1,51 @@
+% Professional Resume Template
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{fontawesome5}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+% Define colors
+\definecolor{primary}{RGB}{31, 41, 55} % Gray-800
+\definecolor{accent}{RGB}{59, 130, 246} % Blue-500
+
+% Page geometry
+\geometry{
+    top=1.5cm,
+    bottom=1.5cm,
+    left=2.5cm,
+    right=2.5cm
+}
+
+% Section formatting
+\titleformat{\section}
+    {\Large\bfseries\color{primary}}
+    {}{0em}
+    {}[\vspace{-0.5em}\rule{\textwidth}{0.4pt}]
+
+\begin{document}
+
+% Header
+\begin{center}
+    {\LARGE\bfseries {{firstName}} {{lastName}}}\\[0.3em]
+    {\large {{title}}}\\[0.3em]
+    \small{
+        {{email}} | {{phone}} | {{location}}
+        {{#if linkedin}}
+            | \href{ {{linkedin}} }{LinkedIn}
+        {{/if}}
+        {{#if website}}
+            | \href{ {{website}} }{Portfolio}
+        {{/if}}
+    }
+\end{center}
+
+% Rest of the template follows similar structure to modern but with more traditional formatting
+% ...
+
+\end{document} 

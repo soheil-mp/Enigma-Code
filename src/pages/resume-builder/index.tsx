@@ -700,7 +700,8 @@ export default function ResumeBuilder() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      {/* Change max-w-7xl to max-w-[1600px] for a wider container */}
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6">
         {/* Header Section */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -745,6 +746,7 @@ export default function ResumeBuilder() {
 
         {/* Main Content Area */}
         <div className="bg-white rounded-[24px] p-8">
+          {/* Template selection step remains full width */}
           {activeStep === 0 && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -863,492 +865,63 @@ export default function ResumeBuilder() {
             </motion.div>
           )}
 
-          {activeStep === 1 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="space-y-6 max-w-3xl mx-auto"
-            >
-              <h2 className="text-xl font-semibold text-gray-900">Personal Information</h2>
-              
-              <div className="grid grid-cols-2 gap-6">
-                {/* Basic Information */}
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">First Name</label>
-                  <input
-                    type="text"
-                    value={personalInfo.firstName}
-                    onChange={(e) => setPersonalInfo({ ...personalInfo, firstName: e.target.value })}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                    placeholder="First Name"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">Last Name</label>
-                  <input
-                    type="text"
-                    value={personalInfo.lastName}
-                    onChange={(e) => setPersonalInfo({ ...personalInfo, lastName: e.target.value })}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                    placeholder="Last Name"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">Email</label>
-                  <input
-                    type="email"
-                    value={personalInfo.email}
-                    onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                    placeholder="john@example.com"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">Phone</label>
-                  <input
-                    type="tel"
-                    value={personalInfo.phone}
-                    onChange={(e) => setPersonalInfo({ ...personalInfo, phone: e.target.value })}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                    placeholder="+1 (555) 000-0000"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">Location</label>
-                  <input
-                    type="text"
-                    value={personalInfo.location}
-                    onChange={(e) => setPersonalInfo({ ...personalInfo, location: e.target.value })}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                    placeholder="New York, NY"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">Professional Title</label>
-                  <input
-                    type="text"
-                    value={personalInfo.title}
-                    onChange={(e) => setPersonalInfo({ ...personalInfo, title: e.target.value })}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                    placeholder="Software Engineer"
-                  />
-                </div>
-
-                <div className="col-span-2 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <label className="block text-sm font-medium text-gray-700">Professional Summary</label>
-                    <span className="text-xs text-gray-500">
-                      {(personalInfo.summary || '').length}/400 characters
-                    </span>
-                  </div>
-                  <textarea
-                    value={personalInfo.summary}
-                    onChange={(e) => setPersonalInfo({ ...personalInfo, summary: e.target.value })}
-                    maxLength={400}
-                    rows={4}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200 resize-none"
-                    placeholder="Write a brief summary of your professional background and key strengths..."
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">LinkedIn Profile</label>
-                  <input
-                    type="url"
-                    value={personalInfo.linkedin}
-                    onChange={(e) => setPersonalInfo({ ...personalInfo, linkedin: e.target.value })}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                    placeholder="https://linkedin.com/in/johndoe"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">Personal Website</label>
-                  <input
-                    type="url"
-                    value={personalInfo.website}
-                    onChange={(e) => setPersonalInfo({ ...personalInfo, website: e.target.value })}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                    placeholder="https://johndoe.com"
-                  />
-                </div>
-              </div>
-
-              {/* AI Suggestions */}
-              <div className="mt-8 p-4 bg-indigo-50 rounded-xl">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-                    <span className="text-sm">💡</span>
-                  </div>
-                  <h3 className="text-sm font-medium text-indigo-900">AI Suggestions</h3>
-                </div>
-                <p className="text-sm text-indigo-700">
-                  Pro tip: Your professional summary should highlight your most relevant achievements and skills. 
-                  Need help? Click the AI Assistant button for personalized suggestions.
-                </p>
-                <button 
-                  onClick={() => {
-                    // TODO: Implement AI suggestions
-                  }}
-                  className="mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
-                >
-                  Get AI Suggestions →
-                </button>
-              </div>
-            </motion.div>
-          )}
-
-          {activeStep === 2 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="space-y-6 max-w-3xl mx-auto"
-            >
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-gray-900">Work Experience</h2>
-                <div className="flex items-center gap-4">
-                  <label className="flex items-center gap-2 text-sm text-gray-600">
-                    <input
-                      type="checkbox"
-                      checked={hasNoExperience}
-                      onChange={(e) => {
-                        setHasNoExperience(e.target.checked);
-                        if (e.target.checked) {
-                          setExperiences([]);
-                        }
-                      }}
-                      className="rounded text-indigo-600 focus:ring-indigo-500"
-                    />
-                    I have no work experience
-                  </label>
-                  {!hasNoExperience && (
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => {
-                        setExperiences([...experiences, {
-                          id: crypto.randomUUID(),
-                          title: '',
-                          company: '',
-                          location: '',
-                          startDate: '',
-                          endDate: '',
-                          current: false,
-                          description: '',
-                          achievements: ['']
-                        }]);
-                      }}
-                      className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-100"
-                    >
-                      + Add Experience
-                    </motion.button>
-                  )}
-                </div>
-              </div>
-
-              {hasNoExperience ? (
-                <div className="bg-gray-50 rounded-xl p-6 text-center">
-                  <p className="text-gray-600">
-                    Don't worry! You can still create a great resume focusing on your education, skills, and projects.
-                  </p>
-                  <button
-                    onClick={() => setHasNoExperience(false)}
-                    className="mt-4 text-indigo-600 hover:text-indigo-700 text-sm font-medium"
-                  >
-                    Add work experience later
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-8">
-                  {experiences.map((experience, index) => (
-                    <motion.div
-                      key={experience.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="bg-gray-50 rounded-xl p-6 space-y-6"
-                    >
-                      <div className="flex justify-between items-start">
-                        <h3 className="text-lg font-medium text-gray-900">Position {index + 1}</h3>
-                        <button
-                          onClick={() => {
-                            setExperiences(experiences.filter((_, i) => i !== index));
-                          }}
-                          className="text-gray-400 hover:text-red-500"
-                        >
-                          ✕
-                        </button>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-6">
-                        <FormField label="Job Title" required>
-                          <input
-                            type="text"
-                            value={experience.title}
-                            onChange={(e) => {
-                              const newExperiences = [...experiences];
-                              newExperiences[index].title = e.target.value;
-                              setExperiences(newExperiences);
-                            }}
-                            className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                            placeholder="Software Engineer"
-                          />
-                        </FormField>
-
-                        <FormField label="Company" required>
-                          <input
-                            type="text"
-                            value={experience.company}
-                            onChange={(e) => {
-                              const newExperiences = [...experiences];
-                              newExperiences[index].company = e.target.value;
-                              setExperiences(newExperiences);
-                            }}
-                            className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                            placeholder="Company Name"
-                          />
-                        </FormField>
-
-                        <FormField label="Location">
-                          <input
-                            type="text"
-                            value={experience.location}
-                            onChange={(e) => {
-                              const newExperiences = [...experiences];
-                              newExperiences[index].location = e.target.value;
-                              setExperiences(newExperiences);
-                            }}
-                            className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                            placeholder="City, Country"
-                          />
-                        </FormField>
-
-                        <div className="grid grid-cols-2 gap-4">
-                          <FormField label="Start Date" required>
-                            <input
-                              type="month"
-                              value={experience.startDate}
-                              max={new Date().toISOString().slice(0, 7)}
-                              onChange={(e) => {
-                                const newExperiences = [...experiences];
-                                newExperiences[index].startDate = e.target.value;
-                                setExperiences(newExperiences);
-                              }}
-                              className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                            />
-                          </FormField>
-
-                          <FormField label="End Date" required={!experience.current}>
-                            <div className="space-y-2">
-                              <input
-                                type="month"
-                                value={experience.endDate}
-                                max={new Date().toISOString().slice(0, 7)}
-                                disabled={experience.current}
-                                onChange={(e) => {
-                                  const newExperiences = [...experiences];
-                                  newExperiences[index].endDate = e.target.value;
-                                  setExperiences(newExperiences);
-                                }}
-                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200 disabled:bg-gray-100"
-                              />
-                              <label className="flex items-center gap-2 text-sm text-gray-600">
-                                <input
-                                  type="checkbox"
-                                  checked={experience.current}
-                                  onChange={(e) => {
-                                    const newExperiences = [...experiences];
-                                    newExperiences[index].current = e.target.checked;
-                                    if (e.target.checked) {
-                                      newExperiences[index].endDate = '';
-                                    }
-                                    setExperiences(newExperiences);
-                                  }}
-                                  className="rounded text-indigo-600 focus:ring-indigo-500"
-                                />
-                                Current
-                              </label>
-                            </div>
-                          </FormField>
-                        </div>
-                      </div>
-
-                      <FormField label="Description" required>
-                        <textarea
-                          value={experience.description}
-                          onChange={(e) => {
-                            const newExperiences = [...experiences];
-                            newExperiences[index].description = e.target.value;
-                            setExperiences(newExperiences);
-                          }}
-                          rows={4}
-                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200 resize-none"
-                          placeholder="Describe your role and responsibilities..."
-                        />
-                      </FormField>
-
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <label className="block text-sm font-medium text-gray-700">Key Achievements</label>
-                          <button
-                            onClick={() => {
-                              const newExperiences = [...experiences];
-                              newExperiences[index].achievements.push('');
-                              setExperiences(newExperiences);
-                            }}
-                            className="text-sm text-indigo-600 hover:text-indigo-700"
-                          >
-                            + Add Achievement
-                          </button>
-                        </div>
-                        {experience.achievements.map((achievement, achievementIndex) => (
-                          <div key={achievementIndex} className="flex gap-2">
-                            <input
-                              type="text"
-                              value={achievement}
-                              onChange={(e) => {
-                                const newExperiences = [...experiences];
-                                newExperiences[index].achievements[achievementIndex] = e.target.value;
-                                setExperiences(newExperiences);
-                              }}
-                              className="flex-1 px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                              placeholder="Describe a key achievement..."
-                            />
-                            <button
-                              onClick={() => {
-                                const newExperiences = [...experiences];
-                                newExperiences[index].achievements = newExperiences[index].achievements.filter(
-                                  (_, i) => i !== achievementIndex
-                                );
-                                setExperiences(newExperiences);
-                              }}
-                              className="text-gray-400 hover:text-red-500 px-2"
-                            >
-                              ✕
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              )}
-
-              {/* AI Suggestions */}
-              <div className="mt-8 p-4 bg-indigo-50 rounded-xl">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-                    <span className="text-sm">💡</span>
-                  </div>
-                  <h3 className="text-sm font-medium text-indigo-900">AI Suggestions</h3>
-                </div>
-                <p className="text-sm text-indigo-700">
-                  Need help describing your experience? Our AI can help you write compelling descriptions
-                  and achievements that highlight your impact.
-                </p>
-                <button 
-                  onClick={() => handleAISuggestion('experience')}
-                  className="mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
-                >
-                  Get AI Suggestions →
-                </button>
-              </div>
-            </motion.div>
-          )}
-
-          {activeStep === 3 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="space-y-6 max-w-3xl mx-auto"
-            >
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-gray-900">Education</h2>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => {
-                    setEducations([...educations, {
-                      id: crypto.randomUUID(),
-                      school: '',
-                      degree: '',
-                      field: '',
-                      location: '',
-                      startDate: '',
-                      endDate: '',
-                      current: false,
-                      gpa: '',
-                      achievements: ['']
-                    }]);
-                  }}
-                  className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-100"
-                >
-                  + Add Education
-                </motion.button>
-              </div>
-
+          {/* All other steps get the two-column layout */}
+          {activeStep > 0 && (
+            <div className="grid grid-cols-[2fr,1fr] gap-8">
+              {/* Left Column - Forms */}
               <div className="space-y-6">
-                {educations.map((education, index) => (
+                {/* Existing form content for each step goes here */}
+                {activeStep === 1 && (
                   <motion.div
-                    key={education.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-white rounded-xl p-6 border border-gray-200 relative group"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="space-y-6"
                   >
-                    <button
-                      onClick={() => setEducations(educations.filter(e => e.id !== education.id))}
-                      className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <span className="text-gray-400 hover:text-red-500">✕</span>
-                    </button>
-
+                    <h2 className="text-xl font-semibold text-gray-900">Personal Information</h2>
+                    {/* Rest of the personal info form */}
                     <div className="grid grid-cols-2 gap-6">
+                      {/* Basic Information */}
                       <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">School/University</label>
+                        <label className="block text-sm font-medium text-gray-700">First Name</label>
                         <input
                           type="text"
-                          value={education.school}
-                          onChange={(e) => {
-                            const newEducations = [...educations];
-                            newEducations[index].school = e.target.value;
-                            setEducations(newEducations);
-                          }}
+                          value={personalInfo.firstName}
+                          onChange={(e) => setPersonalInfo({ ...personalInfo, firstName: e.target.value })}
                           className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                          placeholder="Harvard University"
+                          placeholder="First Name"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Degree</label>
+                        <label className="block text-sm font-medium text-gray-700">Last Name</label>
                         <input
                           type="text"
-                          value={education.degree}
-                          onChange={(e) => {
-                            const newEducations = [...educations];
-                            newEducations[index].degree = e.target.value;
-                            setEducations(newEducations);
-                          }}
+                          value={personalInfo.lastName}
+                          onChange={(e) => setPersonalInfo({ ...personalInfo, lastName: e.target.value })}
                           className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                          placeholder="Bachelor of Science"
+                          placeholder="Last Name"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Field of Study</label>
+                        <label className="block text-sm font-medium text-gray-700">Email</label>
                         <input
-                          type="text"
-                          value={education.field}
-                          onChange={(e) => {
-                            const newEducations = [...educations];
-                            newEducations[index].field = e.target.value;
-                            setEducations(newEducations);
-                          }}
+                          type="email"
+                          value={personalInfo.email}
+                          onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })}
                           className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                          placeholder="Computer Science"
+                          placeholder="john@example.com"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700">Phone</label>
+                        <input
+                          type="tel"
+                          value={personalInfo.phone}
+                          onChange={(e) => setPersonalInfo({ ...personalInfo, phone: e.target.value })}
+                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                          placeholder="+1 (555) 000-0000"
                         />
                       </div>
 
@@ -1356,819 +929,1264 @@ export default function ResumeBuilder() {
                         <label className="block text-sm font-medium text-gray-700">Location</label>
                         <input
                           type="text"
-                          value={education.location}
-                          onChange={(e) => {
-                            const newEducations = [...educations];
-                            newEducations[index].location = e.target.value;
-                            setEducations(newEducations);
-                          }}
+                          value={personalInfo.location}
+                          onChange={(e) => setPersonalInfo({ ...personalInfo, location: e.target.value })}
                           className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                          placeholder="Cambridge, MA"
+                          placeholder="New York, NY"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Start Date</label>
-                        <input
-                          type="month"
-                          value={education.startDate}
-                          onChange={(e) => {
-                            const newEducations = [...educations];
-                            newEducations[index].startDate = e.target.value;
-                            setEducations(newEducations);
-                          }}
-                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">End Date</label>
-                        <div className="flex items-center gap-4">
-                          <input
-                            type="month"
-                            value={education.endDate}
-                            onChange={(e) => {
-                              const newEducations = [...educations];
-                              newEducations[index].endDate = e.target.value;
-                              setEducations(newEducations);
-                            }}
-                            disabled={education.current}
-                            className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500"
-                          />
-                          <label className="flex items-center gap-2 text-sm text-gray-600">
-                            <input
-                              type="checkbox"
-                              checked={education.current}
-                              onChange={(e) => {
-                                const newEducations = [...educations];
-                                newEducations[index].current = e.target.checked;
-                                if (e.target.checked) {
-                                  newEducations[index].endDate = '';
-                                }
-                                setEducations(newEducations);
-                              }}
-                              className="rounded text-indigo-600 focus:ring-indigo-500"
-                            />
-                            Current
-                          </label>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">GPA (Optional)</label>
+                        <label className="block text-sm font-medium text-gray-700">Professional Title</label>
                         <input
                           type="text"
-                          value={education.gpa}
-                          onChange={(e) => {
-                            const newEducations = [...educations];
-                            newEducations[index].gpa = e.target.value;
-                            setEducations(newEducations);
-                          }}
+                          value={personalInfo.title}
+                          onChange={(e) => setPersonalInfo({ ...personalInfo, title: e.target.value })}
                           className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                          placeholder="3.8/4.0"
+                          placeholder="Software Engineer"
                         />
                       </div>
 
-                      <div className="col-span-2 space-y-4">
+                      <div className="col-span-2 space-y-2">
                         <div className="flex items-center justify-between">
-                          <label className="block text-sm font-medium text-gray-700">Academic Achievements</label>
-                          <button
-                            onClick={() => {
-                              const newEducations = [...educations];
-                              newEducations[index].achievements.push('');
-                              setEducations(newEducations);
-                            }}
-                            className="text-sm text-indigo-600 hover:text-indigo-700"
-                          >
-                            + Add Achievement
-                          </button>
+                          <label className="block text-sm font-medium text-gray-700">Professional Summary</label>
+                          <span className="text-xs text-gray-500">
+                            {(personalInfo.summary || '').length}/400 characters
+                          </span>
                         </div>
-                        {education.achievements.map((achievement, achievementIndex) => (
-                          <div key={achievementIndex} className="flex gap-2">
-                            <input
-                              type="text"
-                              value={achievement}
-                              onChange={(e) => {
-                                const newEducations = [...educations];
-                                newEducations[index].achievements[achievementIndex] = e.target.value;
-                                setEducations(newEducations);
-                              }}
-                              className="flex-1 px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                              placeholder="Dean's List, Academic Awards, etc."
-                            />
-                            <button
-                              onClick={() => {
-                                const newEducations = [...educations];
-                                newEducations[index].achievements = education.achievements.filter(
-                                  (_, i) => i !== achievementIndex
-                                );
-                                setEducations(newEducations);
-                              }}
-                              className="text-gray-400 hover:text-red-500 px-2"
-                            >
-                              ✕
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-
-              <div className="mt-8 p-4 bg-indigo-50 rounded-xl">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-                    <span className="text-sm">💡</span>
-                  </div>
-                  <h3 className="text-sm font-medium text-indigo-900">AI Suggestions</h3>
-                </div>
-                <p className="text-sm text-indigo-700">
-                  Pro tip: Include relevant coursework, academic achievements, and extracurricular activities that showcase your skills.
-                  Need help highlighting your academic accomplishments? Click the AI Assistant button for suggestions.
-                </p>
-                <button 
-                  onClick={() => handleAISuggestion('education')}
-                  className="mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
-                >
-                  Get AI Suggestions →
-                </button>
-              </div>
-            </motion.div>
-          )}
-
-          {activeStep === 4 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="space-y-6 max-w-3xl mx-auto"
-            >
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-gray-900">Skills</h2>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => {
-                    if (currentSkill.name.trim()) {
-                      setSkills([...skills, currentSkill]);
-                      setCurrentSkill({
-                        id: crypto.randomUUID(),
-                        name: '',
-                        level: 'Intermediate',
-                        category: currentSkill.category
-                      });
-                    }
-                  }}
-                  className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-100"
-                >
-                  + Add Skill
-                </motion.button>
-              </div>
-
-              {/* Add New Skill Form */}
-              <div className="bg-white rounded-xl p-6 border border-gray-200">
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">Skill Name</label>
-                    <input
-                      type="text"
-                      value={currentSkill.name}
-                      onChange={(e) => setCurrentSkill({ ...currentSkill, name: e.target.value })}
-                      className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                      placeholder="e.g., ReactJS, Project Management"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">Category</label>
-                    <select
-                      value={currentSkill.category}
-                      onChange={(e) => setCurrentSkill({ ...currentSkill, category: e.target.value })}
-                      className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                    >
-                      <option value="Technical">Technical</option>
-                      <option value="Soft Skills">Soft Skills</option>
-                      <option value="Languages">Languages</option>
-                      <option value="Tools">Tools</option>
-                      <option value="Frameworks">Frameworks</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">Proficiency Level</label>
-                    <select
-                      value={currentSkill.level}
-                      onChange={(e) => setCurrentSkill({ 
-                        ...currentSkill, 
-                        level: e.target.value as Skill['level']
-                      })}
-                      className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                    >
-                      <option value="Beginner">Beginner</option>
-                      <option value="Intermediate">Intermediate</option>
-                      <option value="Advanced">Advanced</option>
-                      <option value="Expert">Expert</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              {/* Skills List */}
-              <div className="space-y-4">
-                {skills.map((skill, index) => (
-                  <motion.div
-                    key={skill.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="bg-white rounded-xl p-4 border border-gray-200 flex items-center justify-between group hover:border-indigo-200 transition-all duration-200"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className={`px-3 py-1 rounded-full text-sm ${
-                        {
-                          'Beginner': 'bg-blue-50 text-blue-600',
-                          'Intermediate': 'bg-green-50 text-green-600',
-                          'Advanced': 'bg-purple-50 text-purple-600',
-                          'Expert': 'bg-orange-50 text-orange-600'
-                        }[skill.level]
-                      }`}>
-                        {skill.level}
-                      </div>
-                      <span className="text-gray-900">{skill.name}</span>
-                      <span className="text-gray-500 text-sm">{skill.category}</span>
-                    </div>
-                    <button
-                      onClick={() => setSkills(skills.filter(s => s.id !== skill.id))}
-                      className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all duration-200"
-                    >
-                      ✕
-                    </button>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* AI Suggestions */}
-              <div className="mt-8 p-4 bg-indigo-50 rounded-xl">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-                    <span className="text-sm">💡</span>
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-indigo-900">AI Suggestions</h3>
-                    <p className="text-sm text-indigo-700">
-                      Pro tip: Include a mix of technical and soft skills relevant to your target role. The AI can analyze job descriptions and suggest skills you might want to add.
-                    </p>
-                  </div>
-                </div>
-                <button 
-                  onClick={() => handleAISuggestion('skills')}
-                  className="mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
-                >
-                  Get AI Suggestions →
-                </button>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Add these new sections after the Skills section */}
-
-          {/* Languages Section */}
-          {activeStep === 5 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="space-y-6 max-w-3xl mx-auto"
-            >
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-gray-900">Languages</h2>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => {
-                    setLanguages([...languages, {
-                      id: crypto.randomUUID(),
-                      name: '',
-                      proficiency: 'Professional'
-                    }]);
-                  }}
-                  className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-100"
-                >
-                  + Add Language
-                </motion.button>
-              </div>
-
-              {/* Language List */}
-              <div className="space-y-4">
-                {languages.map((language, index) => (
-                  <motion.div
-                    key={language.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-white rounded-xl p-6 border border-gray-200 relative group hover:border-indigo-200 transition-all duration-200"
-                  >
-                    <button
-                      onClick={() => setLanguages(languages.filter(l => l.id !== language.id))}
-                      className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <span className="text-gray-400 hover:text-red-500">✕</span>
-                    </button>
-
-                    <div className="grid grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Language</label>
-                        <input
-                          type="text"
-                          value={language.name}
-                          onChange={(e) => {
-                            const newLanguages = [...languages];
-                            newLanguages[index].name = e.target.value;
-                            setLanguages(newLanguages);
-                          }}
-                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                          placeholder="e.g., English, Spanish"
+                        <textarea
+                          value={personalInfo.summary}
+                          onChange={(e) => setPersonalInfo({ ...personalInfo, summary: e.target.value })}
+                          maxLength={400}
+                          rows={4}
+                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200 resize-none"
+                          placeholder="Write a brief summary of your professional background and key strengths..."
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Proficiency Level</label>
-                        <select
-                          value={language.proficiency}
-                          onChange={(e) => {
-                            const newLanguages = [...languages];
-                            newLanguages[index].proficiency = e.target.value as LanguageProficiency;
-                            setLanguages(newLanguages);
-                          }}
+                        <label className="block text-sm font-medium text-gray-700">LinkedIn Profile</label>
+                        <input
+                          type="url"
+                          value={personalInfo.linkedin}
+                          onChange={(e) => setPersonalInfo({ ...personalInfo, linkedin: e.target.value })}
                           className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                        >
-                          {Object.keys(proficiencyLevels).map((level) => (
-                            <option key={level} value={level}>{level}</option>
-                          ))}
-                        </select>
+                          placeholder="https://linkedin.com/in/johndoe"
+                        />
                       </div>
 
-                      {/* Proficiency Visualization */}
-                      <div className="col-span-2">
-                        <div className="flex items-center gap-4">
-                          <div className={`px-3 py-1 rounded-full text-sm ${proficiencyLevels[language.proficiency].color}`}>
-                            {language.proficiency}
-                          </div>
-                          <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-                            <motion.div
-                              initial={{ width: 0 }}
-                              animate={{ width: `${proficiencyLevels[language.proficiency].percentage}%` }}
-                              transition={{ duration: 0.5 }}
-                              className={`h-full ${proficiencyLevels[language.proficiency].color.replace('text', 'bg')}`}
-                            />
-                          </div>
-                        </div>
-                        <p className="mt-2 text-sm text-gray-500">
-                          {proficiencyLevels[language.proficiency].description}
-                        </p>
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700">Personal Website</label>
+                        <input
+                          type="url"
+                          value={personalInfo.website}
+                          onChange={(e) => setPersonalInfo({ ...personalInfo, website: e.target.value })}
+                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                          placeholder="https://johndoe.com"
+                        />
                       </div>
                     </div>
-                  </motion.div>
-                ))}
 
-                {languages.length === 0 && (
+                    {/* AI Suggestions */}
+                    <div className="mt-8 p-4 bg-indigo-50 rounded-xl">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                          <span className="text-sm">💡</span>
+                        </div>
+                        <h3 className="text-sm font-medium text-indigo-900">AI Suggestions</h3>
+                      </div>
+                      <p className="text-sm text-indigo-700">
+                        Pro tip: Your professional summary should highlight your most relevant achievements and skills. 
+                        Need help? Click the AI Assistant button for personalized suggestions.
+                      </p>
+                      <button 
+                        onClick={() => {
+                          // TODO: Implement AI suggestions
+                        }}
+                        className="mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                      >
+                        Get AI Suggestions →
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+                
+                {activeStep === 2 && (
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="text-center py-12 bg-gray-50 rounded-xl"
+                    className="space-y-6"
                   >
-                    <p className="text-gray-500">No languages added yet. Click the button above to add one.</p>
-                  </motion.div>
-                )}
-              </div>
-
-              {/* Common Languages Suggestions */}
-              <div className="mt-4 p-4 bg-gray-50 rounded-xl">
-                <h3 className="text-sm font-medium text-gray-700 mb-3">Quick Add Common Languages</h3>
-                <div className="flex flex-wrap gap-2">
-                  {[
-                    { name: 'English', proficiency: 'Professional' },
-                    { name: 'Spanish', proficiency: 'Conversational' },
-                    { name: 'French', proficiency: 'Basic' },
-                    { name: 'German', proficiency: 'Basic' },
-                    { name: 'Mandarin', proficiency: 'Basic' }
-                  ].map((suggestion) => (
-                    <button
-                      key={suggestion.name}
-                      onClick={() => {
-                        if (!languages.some(lang => lang.name === suggestion.name)) {
-                          setLanguages([...languages, {
-                            id: crypto.randomUUID(),
-                            name: suggestion.name,
-                            proficiency: suggestion.proficiency as LanguageProficiency
-                          }]);
-                        }
-                      }}
-                      className="px-3 py-1 text-sm bg-white border border-gray-200 rounded-full hover:border-indigo-500 hover:text-indigo-600 transition-colors duration-200"
-                    >
-                      {suggestion.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* AI Suggestions */}
-              <div className="mt-8 p-4 bg-indigo-50 rounded-xl">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-                    <span className="text-sm">💡</span>
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-indigo-900">AI Suggestions</h3>
-                    <p className="text-sm text-indigo-700">
-                      Pro tip: Including language proficiencies can make your resume stand out, especially for international roles.
-                    </p>
-                  </div>
-                </div>
-                <button 
-                  onClick={() => handleAISuggestion('languages')}
-                  className="mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
-                >
-                  Get AI Suggestions →
-                </button>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Projects Section */}
-          {activeStep === 6 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="space-y-6 max-w-3xl mx-auto"
-            >
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-gray-900">Projects</h2>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => {
-                    setProjects([...projects, createNewProject()]);
-                  }}
-                  className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-100"
-                >
-                  + Add Project
-                </motion.button>
-              </div>
-
-              {/* Projects List */}
-              <div className="space-y-6">
-                {projects.map((project, index) => (
-                  <motion.div
-                    key={project.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-white rounded-xl p-6 border border-gray-200 relative group"
-                  >
-                    <button
-                      onClick={() => setProjects(projects.filter(p => p.id !== project.id))}
-                      className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <span className="text-gray-400 hover:text-red-500">✕</span>
-                    </button>
-
-                    <div className="grid grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Project Title</label>
-                        <input
-                          type="text"
-                          value={project.title}
-                          onChange={(e) => {
-                            const newProjects = [...projects];
-                            newProjects[index].title = e.target.value;
-                            setProjects(newProjects);
-                          }}
-                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                          placeholder="e.g., E-commerce Platform"
-                        />
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-xl font-semibold text-gray-900">Work Experience</h2>
+                      <div className="flex items-center gap-4">
+                        <label className="flex items-center gap-2 text-sm text-gray-600">
+                          <input
+                            type="checkbox"
+                            checked={hasNoExperience}
+                            onChange={(e) => {
+                              setHasNoExperience(e.target.checked);
+                              if (e.target.checked) {
+                                setExperiences([]);
+                              }
+                            }}
+                            className="rounded text-indigo-600 focus:ring-indigo-500"
+                          />
+                          I have no work experience
+                        </label>
+                        {!hasNoExperience && (
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => {
+                              setExperiences([...experiences, {
+                                id: crypto.randomUUID(),
+                                title: '',
+                                company: '',
+                                location: '',
+                                startDate: '',
+                                endDate: '',
+                                current: false,
+                                description: '',
+                                achievements: ['']
+                              }]);
+                            }}
+                            className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-100"
+                          >
+                            + Add Experience
+                          </motion.button>
+                        )}
                       </div>
+                    </div>
 
-                      <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Project URL</label>
-                        <input
-                          type="url"
-                          value={project.url}
-                          onChange={(e) => {
-                            const newProjects = [...projects];
-                            newProjects[index].url = e.target.value;
-                            setProjects(newProjects);
-                          }}
-                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                          placeholder="https://..."
-                        />
+                    {hasNoExperience ? (
+                      <div className="bg-gray-50 rounded-xl p-6 text-center">
+                        <p className="text-gray-600">
+                          Don't worry! You can still create a great resume focusing on your education, skills, and projects.
+                        </p>
+                        <button
+                          onClick={() => setHasNoExperience(false)}
+                          className="mt-4 text-indigo-600 hover:text-indigo-700 text-sm font-medium"
+                        >
+                          Add work experience later
+                        </button>
                       </div>
-
-                      <div className="col-span-2 space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Description</label>
-                        <textarea
-                          value={project.description}
-                          onChange={(e) => {
-                            const newProjects = [...projects];
-                            newProjects[index].description = e.target.value;
-                            setProjects(newProjects);
-                          }}
-                          rows={3}
-                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200 resize-none"
-                          placeholder="Describe your project, its objectives, and your contributions..."
-                        />
-                      </div>
-
-                      <div className="col-span-2 space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Technologies Used</label>
-                        <div className="flex flex-wrap gap-2">
-                          {project.technologies.map((tech, techIndex) => (
-                            <div
-                              key={techIndex}
-                              className="bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full text-sm flex items-center gap-2"
-                            >
-                              {tech}
+                    ) : (
+                      <div className="space-y-8">
+                        {experiences.map((experience, index) => (
+                          <motion.div
+                            key={experience.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-gray-50 rounded-xl p-6 space-y-6"
+                          >
+                            <div className="flex justify-between items-start">
+                              <h3 className="text-lg font-medium text-gray-900">Position {index + 1}</h3>
                               <button
                                 onClick={() => {
-                                  const newProjects = [...projects];
-                                  newProjects[index].technologies = project.technologies.filter((_, i) => i !== techIndex);
-                                  setProjects(newProjects);
+                                  setExperiences(experiences.filter((_, i) => i !== index));
                                 }}
+                                className="text-gray-400 hover:text-red-500"
                               >
                                 ✕
                               </button>
                             </div>
-                          ))}
-                          <input
-                            type="text"
-                            placeholder="Add technology..."
-                            className="px-3 py-1 border border-gray-200 rounded-full text-sm focus:outline-none focus:border-indigo-500"
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter' && e.currentTarget.value) {
-                                const newProjects = [...projects];
-                                newProjects[index].technologies.push(e.currentTarget.value);
-                                setProjects(newProjects);
-                                e.currentTarget.value = '';
-                              }
-                            }}
-                          />
-                        </div>
-                      </div>
 
-                      <div className="col-span-2 space-y-4">
-                        <div className="flex items-center justify-between">
-                          <label className="block text-sm font-medium text-gray-700">Key Highlights</label>
-                          <button
-                            onClick={() => {
-                              const newProjects = [...projects];
-                              newProjects[index].highlights.push('');
-                              setProjects(newProjects);
-                            }}
-                            className="text-sm text-indigo-600 hover:text-indigo-700"
-                          >
-                            + Add Highlight
-                          </button>
-                        </div>
-                        {project.highlights.map((highlight, highlightIndex) => (
-                          <div key={highlightIndex} className="flex gap-2">
-                            <input
-                              type="text"
-                              value={highlight}
-                              onChange={(e) => {
-                                const newProjects = [...projects];
-                                newProjects[index].highlights[highlightIndex] = e.target.value;
-                                setProjects(newProjects);
-                              }}
-                              className="flex-1 px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                              placeholder="e.g., Implemented feature X that improved Y by Z%"
-                            />
-                            <button
-                              onClick={() => {
-                                const newProjects = [...projects];
-                                newProjects[index].highlights = project.highlights.filter(
-                                  (_, i) => i !== highlightIndex
-                                );
-                                setProjects(newProjects);
-                              }}
-                              className="text-gray-400 hover:text-red-500"
-                            >
-                              ✕
-                            </button>
-                          </div>
+                            <div className="grid grid-cols-2 gap-6">
+                              <FormField label="Job Title" required>
+                                <input
+                                  type="text"
+                                  value={experience.title}
+                                  onChange={(e) => {
+                                    const newExperiences = [...experiences];
+                                    newExperiences[index].title = e.target.value;
+                                    setExperiences(newExperiences);
+                                  }}
+                                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                  placeholder="Software Engineer"
+                                />
+                              </FormField>
+
+                              <FormField label="Company" required>
+                                <input
+                                  type="text"
+                                  value={experience.company}
+                                  onChange={(e) => {
+                                    const newExperiences = [...experiences];
+                                    newExperiences[index].company = e.target.value;
+                                    setExperiences(newExperiences);
+                                  }}
+                                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                  placeholder="Company Name"
+                                />
+                              </FormField>
+
+                              <FormField label="Location">
+                                <input
+                                  type="text"
+                                  value={experience.location}
+                                  onChange={(e) => {
+                                    const newExperiences = [...experiences];
+                                    newExperiences[index].location = e.target.value;
+                                    setExperiences(newExperiences);
+                                  }}
+                                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                  placeholder="City, Country"
+                                />
+                              </FormField>
+
+                              <div className="grid grid-cols-2 gap-4">
+                                <FormField label="Start Date" required>
+                                  <input
+                                    type="month"
+                                    value={experience.startDate}
+                                    max={new Date().toISOString().slice(0, 7)}
+                                    onChange={(e) => {
+                                      const newExperiences = [...experiences];
+                                      newExperiences[index].startDate = e.target.value;
+                                      setExperiences(newExperiences);
+                                    }}
+                                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                  />
+                                </FormField>
+
+                                <FormField label="End Date" required={!experience.current}>
+                                  <div className="space-y-2">
+                                    <input
+                                      type="month"
+                                      value={experience.endDate}
+                                      max={new Date().toISOString().slice(0, 7)}
+                                      disabled={experience.current}
+                                      onChange={(e) => {
+                                        const newExperiences = [...experiences];
+                                        newExperiences[index].endDate = e.target.value;
+                                        setExperiences(newExperiences);
+                                      }}
+                                      className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200 disabled:bg-gray-100"
+                                    />
+                                    <label className="flex items-center gap-2 text-sm text-gray-600">
+                                      <input
+                                        type="checkbox"
+                                        checked={experience.current}
+                                        onChange={(e) => {
+                                          const newExperiences = [...experiences];
+                                          newExperiences[index].current = e.target.checked;
+                                          if (e.target.checked) {
+                                            newExperiences[index].endDate = '';
+                                          }
+                                          setExperiences(newExperiences);
+                                        }}
+                                        className="rounded text-indigo-600 focus:ring-indigo-500"
+                                      />
+                                      Current
+                                    </label>
+                                  </div>
+                                </FormField>
+                              </div>
+                            </div>
+
+                            <FormField label="Description" required>
+                              <textarea
+                                value={experience.description}
+                                onChange={(e) => {
+                                  const newExperiences = [...experiences];
+                                  newExperiences[index].description = e.target.value;
+                                  setExperiences(newExperiences);
+                                }}
+                                rows={4}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200 resize-none"
+                                placeholder="Describe your role and responsibilities..."
+                              />
+                            </FormField>
+
+                            <div className="space-y-4">
+                              <div className="flex items-center justify-between">
+                                <label className="block text-sm font-medium text-gray-700">Key Achievements</label>
+                                <button
+                                  onClick={() => {
+                                    const newExperiences = [...experiences];
+                                    newExperiences[index].achievements.push('');
+                                    setExperiences(newExperiences);
+                                  }}
+                                  className="text-sm text-indigo-600 hover:text-indigo-700"
+                                >
+                                  + Add Achievement
+                                </button>
+                              </div>
+                              {experience.achievements.map((achievement, achievementIndex) => (
+                                <div key={achievementIndex} className="flex gap-2">
+                                  <input
+                                    type="text"
+                                    value={achievement}
+                                    onChange={(e) => {
+                                      const newExperiences = [...experiences];
+                                      newExperiences[index].achievements[achievementIndex] = e.target.value;
+                                      setExperiences(newExperiences);
+                                    }}
+                                    className="flex-1 px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                    placeholder="Describe a key achievement..."
+                                  />
+                                  <button
+                                    onClick={() => {
+                                      const newExperiences = [...experiences];
+                                      newExperiences[index].achievements = newExperiences[index].achievements.filter(
+                                        (_, i) => i !== achievementIndex
+                                      );
+                                      setExperiences(newExperiences);
+                                    }}
+                                    className="text-gray-400 hover:text-red-500 px-2"
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          </motion.div>
                         ))}
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+                    )}
 
-              {/* AI Suggestions */}
-              <div className="mt-8 p-4 bg-indigo-50 rounded-xl">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-                    <span className="text-sm">💡</span>
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-indigo-900">AI Suggestions</h3>
-                    <p className="text-sm text-indigo-700">
-                      Pro tip: Focus on quantifiable achievements and the impact of your projects. 
-                      Let AI help you highlight your contributions effectively.
-                    </p>
-                  </div>
-                </div>
-                <button 
-                  onClick={() => handleAISuggestion('projects')}
-                  className="mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
-                >
-                  Get AI Suggestions →
-                </button>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Certifications Section */}
-          {activeStep === 7 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="space-y-6 max-w-3xl mx-auto"
-            >
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-gray-900">Certifications</h2>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => {
-                    setCertifications([...certifications, {
-                      id: crypto.randomUUID(),
-                      name: '',
-                      issuer: '',
-                      issueDate: '',
-                      credentialId: '',
-                      url: ''
-                    }]);
-                  }}
-                  className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-100"
-                >
-                  + Add Certification
-                </motion.button>
-              </div>
-
-              {/* Certifications List */}
-              <div className="space-y-6">
-                {certifications.map((cert, index) => (
-                  <motion.div
-                    key={cert.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-white rounded-xl p-6 border border-gray-200 relative group"
-                  >
-                    <button
-                      onClick={() => setCertifications(certifications.filter(c => c.id !== cert.id))}
-                      className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <span className="text-gray-400 hover:text-red-500">✕</span>
-                    </button>
-
-                    <div className="grid grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Certification Name</label>
-                        <input
-                          type="text"
-                          value={cert.name}
-                          onChange={(e) => {
-                            const newCertifications = [...certifications];
-                            newCertifications[index].name = e.target.value;
-                            setCertifications(newCertifications);
-                          }}
-                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                          placeholder="e.g., AWS Solutions Architect"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Issuing Organization</label>
-                        <input
-                          type="text"
-                          value={cert.issuer}
-                          onChange={(e) => {
-                            const newCertifications = [...certifications];
-                            newCertifications[index].issuer = e.target.value;
-                            setCertifications(newCertifications);
-                          }}
-                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                          placeholder="e.g., AWS, Microsoft, Google"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Issue Date</label>
-                        <input
-                          type="month"
-                          value={cert.issueDate}
-                          onChange={(e) => {
-                            const newCertifications = [...certifications];
-                            newCertifications[index].issueDate = e.target.value;
-                            setCertifications(newCertifications);
-                          }}
-                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Expiry Date (Optional)</label>
-                        <input
-                          type="month"
-                          value={cert.expiryDate}
-                          onChange={(e) => {
-                            const newCertifications = [...certifications];
-                            newCertifications[index].expiryDate = e.target.value;
-                            setCertifications(newCertifications);
-                          }}
-                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Credential ID</label>
-                        <input
-                          type="text"
-                          value={cert.credentialId}
-                          onChange={(e) => {
-                            const newCertifications = [...certifications];
-                            newCertifications[index].credentialId = e.target.value;
-                            setCertifications(newCertifications);
-                          }}
-                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                          placeholder="Enter credential ID"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Credential URL</label>
-                        <input
-                          type="url"
-                          value={cert.url}
-                          onChange={(e) => {
-                            const newCertifications = [...certifications];
-                            newCertifications[index].url = e.target.value;
-                            setCertifications(newCertifications);
-                          }}
-                          className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                          placeholder="https://..."
-                        />
-                      </div>
-
-                      {/* Certification Status Indicator */}
-                      <div className="col-span-2">
-                        <div className="flex items-center gap-2 text-sm">
-                          <span className={`w-2 h-2 rounded-full ${
-                            cert.expiryDate && new Date(cert.expiryDate) < new Date()
-                              ? 'bg-red-500'
-                              : 'bg-green-500'
-                          }`}></span>
-                          <span className="text-gray-600">
-                            {cert.expiryDate && new Date(cert.expiryDate) < new Date()
-                              ? 'Expired'
-                              : 'Active'}
-                          </span>
+                    {/* AI Suggestions */}
+                    <div className="mt-8 p-4 bg-indigo-50 rounded-xl">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                          <span className="text-sm">💡</span>
                         </div>
+                        <h3 className="text-sm font-medium text-indigo-900">AI Suggestions</h3>
                       </div>
+                      <p className="text-sm text-indigo-700">
+                        Need help describing your experience? Our AI can help you write compelling descriptions
+                        and achievements that highlight your impact.
+                      </p>
+                      <button 
+                        onClick={() => handleAISuggestion('experience')}
+                        className="mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                      >
+                        Get AI Suggestions →
+                      </button>
                     </div>
                   </motion.div>
-                ))}
-
-                {certifications.length === 0 && (
+                )}
+                
+                {activeStep === 3 && (
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="text-center py-12 bg-gray-50 rounded-xl"
+                    className="space-y-6"
                   >
-                    <p className="text-gray-500">No certifications added yet. Click the Add Certification button to get started.</p>
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-xl font-semibold text-gray-900">Education</h2>
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => {
+                          setEducations([...educations, {
+                            id: crypto.randomUUID(),
+                            school: '',
+                            degree: '',
+                            field: '',
+                            location: '',
+                            startDate: '',
+                            endDate: '',
+                            current: false,
+                            gpa: '',
+                            achievements: ['']
+                          }]);
+                        }}
+                        className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-100"
+                      >
+                        + Add Education
+                      </motion.button>
+                    </div>
+
+                    <div className="space-y-6">
+                      {educations.map((education, index) => (
+                        <motion.div
+                          key={education.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="bg-white rounded-xl p-6 border border-gray-200 relative group"
+                        >
+                          <button
+                            onClick={() => setEducations(educations.filter(e => e.id !== education.id))}
+                            className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <span className="text-gray-400 hover:text-red-500">✕</span>
+                          </button>
+
+                          <div className="grid grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">School/University</label>
+                              <input
+                                type="text"
+                                value={education.school}
+                                onChange={(e) => {
+                                  const newEducations = [...educations];
+                                  newEducations[index].school = e.target.value;
+                                  setEducations(newEducations);
+                                }}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                placeholder="Harvard University"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">Degree</label>
+                              <input
+                                type="text"
+                                value={education.degree}
+                                onChange={(e) => {
+                                  const newEducations = [...educations];
+                                  newEducations[index].degree = e.target.value;
+                                  setEducations(newEducations);
+                                }}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                placeholder="Bachelor of Science"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">Field of Study</label>
+                              <input
+                                type="text"
+                                value={education.field}
+                                onChange={(e) => {
+                                  const newEducations = [...educations];
+                                  newEducations[index].field = e.target.value;
+                                  setEducations(newEducations);
+                                }}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                placeholder="Computer Science"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">Location</label>
+                              <input
+                                type="text"
+                                value={education.location}
+                                onChange={(e) => {
+                                  const newEducations = [...educations];
+                                  newEducations[index].location = e.target.value;
+                                  setEducations(newEducations);
+                                }}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                placeholder="Cambridge, MA"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">Start Date</label>
+                              <input
+                                type="month"
+                                value={education.startDate}
+                                onChange={(e) => {
+                                  const newEducations = [...educations];
+                                  newEducations[index].startDate = e.target.value;
+                                  setEducations(newEducations);
+                                }}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">End Date</label>
+                              <div className="flex items-center gap-4">
+                                <input
+                                  type="month"
+                                  value={education.endDate}
+                                  onChange={(e) => {
+                                    const newEducations = [...educations];
+                                    newEducations[index].endDate = e.target.value;
+                                    setEducations(newEducations);
+                                  }}
+                                  disabled={education.current}
+                                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500"
+                                />
+                                <label className="flex items-center gap-2 text-sm text-gray-600">
+                                  <input
+                                    type="checkbox"
+                                    checked={education.current}
+                                    onChange={(e) => {
+                                      const newEducations = [...educations];
+                                      newEducations[index].current = e.target.checked;
+                                      if (e.target.checked) {
+                                        newEducations[index].endDate = '';
+                                      }
+                                      setEducations(newEducations);
+                                    }}
+                                    className="rounded text-indigo-600 focus:ring-indigo-500"
+                                  />
+                                  Current
+                                </label>
+                              </div>
+                            </div>
+
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">GPA (Optional)</label>
+                              <input
+                                type="text"
+                                value={education.gpa}
+                                onChange={(e) => {
+                                  const newEducations = [...educations];
+                                  newEducations[index].gpa = e.target.value;
+                                  setEducations(newEducations);
+                                }}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                placeholder="3.8/4.0"
+                              />
+                            </div>
+
+                            <div className="col-span-2 space-y-4">
+                              <div className="flex items-center justify-between">
+                                <label className="block text-sm font-medium text-gray-700">Academic Achievements</label>
+                                <button
+                                  onClick={() => {
+                                    const newEducations = [...educations];
+                                    newEducations[index].achievements.push('');
+                                    setEducations(newEducations);
+                                  }}
+                                  className="text-sm text-indigo-600 hover:text-indigo-700"
+                                >
+                                  + Add Achievement
+                                </button>
+                              </div>
+                              {education.achievements.map((achievement, achievementIndex) => (
+                                <div key={achievementIndex} className="flex gap-2">
+                                  <input
+                                    type="text"
+                                    value={achievement}
+                                    onChange={(e) => {
+                                      const newEducations = [...educations];
+                                      newEducations[index].achievements[achievementIndex] = e.target.value;
+                                      setEducations(newEducations);
+                                    }}
+                                    className="flex-1 px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                    placeholder="Dean's List, Academic Awards, etc."
+                                  />
+                                  <button
+                                    onClick={() => {
+                                      const newEducations = [...educations];
+                                      newEducations[index].achievements = education.achievements.filter(
+                                        (_, i) => i !== achievementIndex
+                                      );
+                                      setEducations(newEducations);
+                                    }}
+                                    className="text-gray-400 hover:text-red-500 px-2"
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    <div className="mt-8 p-4 bg-indigo-50 rounded-xl">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                          <span className="text-sm">💡</span>
+                        </div>
+                        <h3 className="text-sm font-medium text-indigo-900">AI Suggestions</h3>
+                      </div>
+                      <p className="text-sm text-indigo-700">
+                        Pro tip: Include relevant coursework, academic achievements, and extracurricular activities that showcase your skills.
+                        Need help highlighting your academic accomplishments? Click the AI Assistant button for suggestions.
+                      </p>
+                      <button 
+                        onClick={() => handleAISuggestion('education')}
+                        className="mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                      >
+                        Get AI Suggestions →
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+                
+                {activeStep === 4 && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="space-y-6"
+                  >
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-xl font-semibold text-gray-900">Skills</h2>
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => {
+                          if (currentSkill.name.trim()) {
+                            setSkills([...skills, currentSkill]);
+                            setCurrentSkill({
+                              id: crypto.randomUUID(),
+                              name: '',
+                              level: 'Intermediate',
+                              category: currentSkill.category
+                            });
+                          }
+                        }}
+                        className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-100"
+                      >
+                        + Add Skill
+                      </motion.button>
+                    </div>
+
+                    {/* Add New Skill Form */}
+                    <div className="bg-white rounded-xl p-6 border border-gray-200">
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <label className="block text-sm font-medium text-gray-700">Skill Name</label>
+                          <input
+                            type="text"
+                            value={currentSkill.name}
+                            onChange={(e) => setCurrentSkill({ ...currentSkill, name: e.target.value })}
+                            className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                            placeholder="e.g., ReactJS, Project Management"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="block text-sm font-medium text-gray-700">Category</label>
+                          <select
+                            value={currentSkill.category}
+                            onChange={(e) => setCurrentSkill({ ...currentSkill, category: e.target.value })}
+                            className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                          >
+                            <option value="Technical">Technical</option>
+                            <option value="Soft Skills">Soft Skills</option>
+                            <option value="Languages">Languages</option>
+                            <option value="Tools">Tools</option>
+                            <option value="Frameworks">Frameworks</option>
+                            <option value="Other">Other</option>
+                          </select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="block text-sm font-medium text-gray-700">Proficiency Level</label>
+                          <select
+                            value={currentSkill.level}
+                            onChange={(e) => setCurrentSkill({ 
+                              ...currentSkill, 
+                              level: e.target.value as Skill['level']
+                            })}
+                            className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                          >
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                            <option value="Expert">Expert</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Skills List */}
+                    <div className="space-y-4">
+                      {skills.map((skill, index) => (
+                        <motion.div
+                          key={skill.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          className="bg-white rounded-xl p-4 border border-gray-200 flex items-center justify-between group hover:border-indigo-200 transition-all duration-200"
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className={`px-3 py-1 rounded-full text-sm ${
+                              {
+                                'Beginner': 'bg-blue-50 text-blue-600',
+                                'Intermediate': 'bg-green-50 text-green-600',
+                                'Advanced': 'bg-purple-50 text-purple-600',
+                                'Expert': 'bg-orange-50 text-orange-600'
+                              }[skill.level]
+                            }`}>
+                              {skill.level}
+                            </div>
+                            <span className="text-gray-900">{skill.name}</span>
+                            <span className="text-gray-500 text-sm">{skill.category}</span>
+                          </div>
+                          <button
+                            onClick={() => setSkills(skills.filter(s => s.id !== skill.id))}
+                            className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all duration-200"
+                          >
+                            ✕
+                          </button>
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    {/* AI Suggestions */}
+                    <div className="mt-8 p-4 bg-indigo-50 rounded-xl">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                          <span className="text-sm">💡</span>
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-medium text-indigo-900">AI Suggestions</h3>
+                          <p className="text-sm text-indigo-700">
+                            Pro tip: Include a mix of technical and soft skills relevant to your target role. The AI can analyze job descriptions and suggest skills you might want to add.
+                          </p>
+                        </div>
+                      </div>
+                      <button 
+                        onClick={() => handleAISuggestion('skills')}
+                        className="mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                      >
+                        Get AI Suggestions →
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+                
+                {activeStep === 5 && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="space-y-6"
+                  >
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-xl font-semibold text-gray-900">Languages</h2>
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => {
+                          setLanguages([...languages, {
+                            id: crypto.randomUUID(),
+                            name: '',
+                            proficiency: 'Professional'
+                          }]);
+                        }}
+                        className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-100"
+                      >
+                        + Add Language
+                      </motion.button>
+                    </div>
+
+                    {/* Language List */}
+                    <div className="space-y-4">
+                      {languages.map((language, index) => (
+                        <motion.div
+                          key={language.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="bg-white rounded-xl p-6 border border-gray-200 relative group hover:border-indigo-200 transition-all duration-200"
+                        >
+                          <button
+                            onClick={() => setLanguages(languages.filter(l => l.id !== language.id))}
+                            className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <span className="text-gray-400 hover:text-red-500">✕</span>
+                          </button>
+
+                          <div className="grid grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">Language</label>
+                              <input
+                                type="text"
+                                value={language.name}
+                                onChange={(e) => {
+                                  const newLanguages = [...languages];
+                                  newLanguages[index].name = e.target.value;
+                                  setLanguages(newLanguages);
+                                }}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                placeholder="e.g., English, Spanish"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">Proficiency Level</label>
+                              <select
+                                value={language.proficiency}
+                                onChange={(e) => {
+                                  const newLanguages = [...languages];
+                                  newLanguages[index].proficiency = e.target.value as LanguageProficiency;
+                                  setLanguages(newLanguages);
+                                }}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                              >
+                                {Object.keys(proficiencyLevels).map((level) => (
+                                  <option key={level} value={level}>{level}</option>
+                                ))}
+                              </select>
+                            </div>
+
+                            {/* Proficiency Visualization */}
+                            <div className="col-span-2">
+                              <div className="flex items-center gap-4">
+                                <div className={`px-3 py-1 rounded-full text-sm ${proficiencyLevels[language.proficiency].color}`}>
+                                  {language.proficiency}
+                                </div>
+                                <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                                  <motion.div
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${proficiencyLevels[language.proficiency].percentage}%` }}
+                                    transition={{ duration: 0.5 }}
+                                    className={`h-full ${proficiencyLevels[language.proficiency].color.replace('text', 'bg')}`}
+                                  />
+                                </div>
+                              </div>
+                              <p className="mt-2 text-sm text-gray-500">
+                                {proficiencyLevels[language.proficiency].description}
+                              </p>
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+
+                      {languages.length === 0 && (
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          className="text-center py-12 bg-gray-50 rounded-xl"
+                        >
+                          <p className="text-gray-500">No languages added yet. Click the button above to add one.</p>
+                        </motion.div>
+                      )}
+                    </div>
+
+                    {/* Common Languages Suggestions */}
+                    <div className="mt-4 p-4 bg-gray-50 rounded-xl">
+                      <h3 className="text-sm font-medium text-gray-700 mb-3">Quick Add Common Languages</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {[
+                          { name: 'English', proficiency: 'Professional' },
+                          { name: 'Spanish', proficiency: 'Conversational' },
+                          { name: 'French', proficiency: 'Basic' },
+                          { name: 'German', proficiency: 'Basic' },
+                          { name: 'Mandarin', proficiency: 'Basic' }
+                        ].map((suggestion) => (
+                          <button
+                            key={suggestion.name}
+                            onClick={() => {
+                              if (!languages.some(lang => lang.name === suggestion.name)) {
+                                setLanguages([...languages, {
+                                  id: crypto.randomUUID(),
+                                  name: suggestion.name,
+                                  proficiency: suggestion.proficiency as LanguageProficiency
+                                }]);
+                              }
+                            }}
+                            className="px-3 py-1 text-sm bg-white border border-gray-200 rounded-full hover:border-indigo-500 hover:text-indigo-600 transition-colors duration-200"
+                          >
+                            {suggestion.name}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* AI Suggestions */}
+                    <div className="mt-8 p-4 bg-indigo-50 rounded-xl">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                          <span className="text-sm">💡</span>
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-medium text-indigo-900">AI Suggestions</h3>
+                          <p className="text-sm text-indigo-700">
+                            Pro tip: Including language proficiencies can make your resume stand out, especially for international roles.
+                          </p>
+                        </div>
+                      </div>
+                      <button 
+                        onClick={() => handleAISuggestion('languages')}
+                        className="mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                      >
+                        Get AI Suggestions →
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+                
+                {activeStep === 6 && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="space-y-6"
+                  >
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-xl font-semibold text-gray-900">Projects</h2>
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => {
+                          setProjects([...projects, createNewProject()]);
+                        }}
+                        className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-100"
+                      >
+                        + Add Project
+                      </motion.button>
+                    </div>
+
+                    {/* Projects List */}
+                    <div className="space-y-6">
+                      {projects.map((project, index) => (
+                        <motion.div
+                          key={project.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="bg-white rounded-xl p-6 border border-gray-200 relative group"
+                        >
+                          <button
+                            onClick={() => setProjects(projects.filter(p => p.id !== project.id))}
+                            className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <span className="text-gray-400 hover:text-red-500">✕</span>
+                          </button>
+
+                          <div className="grid grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">Project Title</label>
+                              <input
+                                type="text"
+                                value={project.title}
+                                onChange={(e) => {
+                                  const newProjects = [...projects];
+                                  newProjects[index].title = e.target.value;
+                                  setProjects(newProjects);
+                                }}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                placeholder="e.g., E-commerce Platform"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">Project URL</label>
+                              <input
+                                type="url"
+                                value={project.url}
+                                onChange={(e) => {
+                                  const newProjects = [...projects];
+                                  newProjects[index].url = e.target.value;
+                                  setProjects(newProjects);
+                                }}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                placeholder="https://..."
+                              />
+                            </div>
+
+                            <div className="col-span-2 space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">Description</label>
+                              <textarea
+                                value={project.description}
+                                onChange={(e) => {
+                                  const newProjects = [...projects];
+                                  newProjects[index].description = e.target.value;
+                                  setProjects(newProjects);
+                                }}
+                                rows={3}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200 resize-none"
+                                placeholder="Describe your project, its objectives, and your contributions..."
+                              />
+                            </div>
+
+                            <div className="col-span-2 space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">Technologies Used</label>
+                              <div className="flex flex-wrap gap-2">
+                                {project.technologies.map((tech, techIndex) => (
+                                  <div
+                                    key={techIndex}
+                                    className="bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full text-sm flex items-center gap-2"
+                                  >
+                                    {tech}
+                                    <button
+                                      onClick={() => {
+                                        const newProjects = [...projects];
+                                        newProjects[index].technologies = project.technologies.filter((_, i) => i !== techIndex);
+                                        setProjects(newProjects);
+                                      }}
+                                    >
+                                      ✕
+                                    </button>
+                                  </div>
+                                ))}
+                                <input
+                                  type="text"
+                                  placeholder="Add technology..."
+                                  className="px-3 py-1 border border-gray-200 rounded-full text-sm focus:outline-none focus:border-indigo-500"
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && e.currentTarget.value) {
+                                      const newProjects = [...projects];
+                                      newProjects[index].technologies.push(e.currentTarget.value);
+                                      setProjects(newProjects);
+                                      e.currentTarget.value = '';
+                                    }
+                                  }}
+                                />
+                              </div>
+                            </div>
+
+                            <div className="col-span-2 space-y-4">
+                              <div className="flex items-center justify-between">
+                                <label className="block text-sm font-medium text-gray-700">Key Highlights</label>
+                                <button
+                                  onClick={() => {
+                                    const newProjects = [...projects];
+                                    newProjects[index].highlights.push('');
+                                    setProjects(newProjects);
+                                  }}
+                                  className="text-sm text-indigo-600 hover:text-indigo-700"
+                                >
+                                  + Add Highlight
+                                </button>
+                              </div>
+                              {project.highlights.map((highlight, highlightIndex) => (
+                                <div key={highlightIndex} className="flex gap-2">
+                                  <input
+                                    type="text"
+                                    value={highlight}
+                                    onChange={(e) => {
+                                      const newProjects = [...projects];
+                                      newProjects[index].highlights[highlightIndex] = e.target.value;
+                                      setProjects(newProjects);
+                                    }}
+                                    className="flex-1 px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                    placeholder="e.g., Implemented feature X that improved Y by Z%"
+                                  />
+                                  <button
+                                    onClick={() => {
+                                      const newProjects = [...projects];
+                                      newProjects[index].highlights = project.highlights.filter(
+                                        (_, i) => i !== highlightIndex
+                                      );
+                                      setProjects(newProjects);
+                                    }}
+                                    className="text-gray-400 hover:text-red-500"
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    {/* AI Suggestions */}
+                    <div className="mt-8 p-4 bg-indigo-50 rounded-xl">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                          <span className="text-sm">💡</span>
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-medium text-indigo-900">AI Suggestions</h3>
+                          <p className="text-sm text-indigo-700">
+                            Pro tip: Focus on quantifiable achievements and the impact of your projects. 
+                            Let AI help you highlight your contributions effectively.
+                          </p>
+                        </div>
+                      </div>
+                      <button 
+                        onClick={() => handleAISuggestion('projects')}
+                        className="mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                      >
+                        Get AI Suggestions →
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+                
+                {activeStep === 7 && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="space-y-6"
+                  >
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-xl font-semibold text-gray-900">Certifications</h2>
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => {
+                          setCertifications([...certifications, {
+                            id: crypto.randomUUID(),
+                            name: '',
+                            issuer: '',
+                            issueDate: '',
+                            credentialId: '',
+                            url: ''
+                          }]);
+                        }}
+                        className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-100"
+                      >
+                        + Add Certification
+                      </motion.button>
+                    </div>
+
+                    {/* Certifications List */}
+                    <div className="space-y-6">
+                      {certifications.map((cert, index) => (
+                        <motion.div
+                          key={cert.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="bg-white rounded-xl p-6 border border-gray-200 relative group"
+                        >
+                          <button
+                            onClick={() => setCertifications(certifications.filter(c => c.id !== cert.id))}
+                            className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <span className="text-gray-400 hover:text-red-500">✕</span>
+                          </button>
+
+                          <div className="grid grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">Certification Name</label>
+                              <input
+                                type="text"
+                                value={cert.name}
+                                onChange={(e) => {
+                                  const newCertifications = [...certifications];
+                                  newCertifications[index].name = e.target.value;
+                                  setCertifications(newCertifications);
+                                }}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                placeholder="e.g., AWS Solutions Architect"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">Issuing Organization</label>
+                              <input
+                                type="text"
+                                value={cert.issuer}
+                                onChange={(e) => {
+                                  const newCertifications = [...certifications];
+                                  newCertifications[index].issuer = e.target.value;
+                                  setCertifications(newCertifications);
+                                }}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                placeholder="e.g., AWS, Microsoft, Google"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">Issue Date</label>
+                              <input
+                                type="month"
+                                value={cert.issueDate}
+                                onChange={(e) => {
+                                  const newCertifications = [...certifications];
+                                  newCertifications[index].issueDate = e.target.value;
+                                  setCertifications(newCertifications);
+                                }}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">Expiry Date (Optional)</label>
+                              <input
+                                type="month"
+                                value={cert.expiryDate}
+                                onChange={(e) => {
+                                  const newCertifications = [...certifications];
+                                  newCertifications[index].expiryDate = e.target.value;
+                                  setCertifications(newCertifications);
+                                }}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">Credential ID</label>
+                              <input
+                                type="text"
+                                value={cert.credentialId}
+                                onChange={(e) => {
+                                  const newCertifications = [...certifications];
+                                  newCertifications[index].credentialId = e.target.value;
+                                  setCertifications(newCertifications);
+                                }}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                placeholder="Enter credential ID"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">Credential URL</label>
+                              <input
+                                type="url"
+                                value={cert.url}
+                                onChange={(e) => {
+                                  const newCertifications = [...certifications];
+                                  newCertifications[index].url = e.target.value;
+                                  setCertifications(newCertifications);
+                                }}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                placeholder="https://..."
+                              />
+                            </div>
+
+                            {/* Certification Status Indicator */}
+                            <div className="col-span-2">
+                              <div className="flex items-center gap-2 text-sm">
+                                <span className={`w-2 h-2 rounded-full ${
+                                  cert.expiryDate && new Date(cert.expiryDate) < new Date()
+                                    ? 'bg-red-500'
+                                    : 'bg-green-500'
+                                }`}></span>
+                                <span className="text-gray-600">
+                                  {cert.expiryDate && new Date(cert.expiryDate) < new Date()
+                                    ? 'Expired'
+                                    : 'Active'}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+
+                      {certifications.length === 0 && (
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          className="text-center py-12 bg-gray-50 rounded-xl"
+                        >
+                          <p className="text-gray-500">No certifications added yet. Click the Add Certification button to get started.</p>
+                        </motion.div>
+                      )}
+                    </div>
+
+                    {/* AI Suggestions */}
+                    <div className="mt-8 p-4 bg-indigo-50 rounded-xl">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                          <span className="text-sm">💡</span>
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-medium text-indigo-900">AI Suggestions</h3>
+                          <p className="text-sm text-indigo-700">
+                            Pro tip: Include certifications that are relevant to your target role. 
+                            Keep them up-to-date and make sure to include verification links when available.
+                          </p>
+                        </div>
+                      </div>
+                      <button 
+                        onClick={() => handleAISuggestion('certifications')}
+                        className="mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                      >
+                        Get AI Suggestions →
+                      </button>
+                    </div>
                   </motion.div>
                 )}
               </div>
 
-              {/* AI Suggestions */}
-              <div className="mt-8 p-4 bg-indigo-50 rounded-xl">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-                    <span className="text-sm">💡</span>
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-indigo-900">AI Suggestions</h3>
-                    <p className="text-sm text-indigo-700">
-                      Pro tip: Include certifications that are relevant to your target role. 
-                      Keep them up-to-date and make sure to include verification links when available.
+              {/* Right Column - Preview */}
+              <div className="border-l border-gray-200 pl-8">
+                <div className="sticky top-8">
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Preview</h2>
+                  <div className="bg-gray-50 rounded-xl p-4 aspect-[1/1.4] flex items-center justify-center">
+                    <p className="text-gray-500 text-sm">
+                      Live preview of your resume will appear here
                     </p>
                   </div>
                 </div>
-                <button 
-                  onClick={() => handleAISuggestion('certifications')}
-                  className="mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
-                >
-                  Get AI Suggestions →
-                </button>
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* Navigation Buttons */}

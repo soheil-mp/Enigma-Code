@@ -1,0 +1,131 @@
+% Modern Resume Template
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{fontawesome5}
+\usepackage{titlesec}
+\usepackage{hyperref}
+
+% Define colors
+\definecolor{primary}{RGB}{79, 70, 229} % Indigo-600
+\definecolor{text}{RGB}{17, 24, 39} % Gray-900
+
+% Page geometry
+\geometry{
+    top=1.5cm,
+    bottom=1.5cm,
+    left=2cm,
+    right=2cm
+}
+
+% Section formatting
+\titleformat{\section}
+    {\Large\bfseries\color{primary}}
+    {}{0em}
+    {}[\titlerule]
+
+\begin{document}
+
+% Header
+\begin{center}
+    {\Huge\bfseries\color{text} {{firstName}} {{lastName}}}\\[0.5em]
+    {\large\color{primary} {{title}}}\\[0.5em]
+    \faEnvelope\ {{email}} \quad
+    \faPhone\ {{phone}} \quad
+    \faMapMarker\ {{location}}
+    {{#if linkedin}}
+        \quad \faLinkedin\ \href{ {{linkedin}} }{LinkedIn}
+    {{/if}}
+    {{#if website}}
+        \quad \faGlobe\ \href{ {{website}} }{Website}
+    {{/if}}
+\end{center}
+
+% Summary
+\section*{Professional Summary}
+{{summary}}
+
+% Experience Section
+\section*{Experience}
+{{#each experiences}}
+    \textbf{ {{title}} } | \textit{ {{company}} }\\
+    {{location}} | {{startDate}} - {{#if current}}Present{{else}}{{endDate}}{{/if}}
+    \begin{itemize}
+        \item {{description}}
+        {{#each achievements}}
+            \item {{this}}
+        {{/each}}
+    \end{itemize}
+{{/each}}
+
+% Education Section
+\section*{Education}
+{{#each educations}}
+    \textbf{ {{degree}} in {{field}} } | \textit{ {{school}} }\\
+    {{location}} | {{startDate}} - {{#if current}}Present{{else}}{{endDate}}{{/if}}
+    {{#if gpa}}
+        \quad GPA: {{gpa}}
+    {{/if}}
+    {{#if achievements.length}}
+        \begin{itemize}
+            {{#each achievements}}
+                \item {{this}}
+            {{/each}}
+        \end{itemize}
+    {{/if}}
+{{/each}}
+
+% Skills Section
+\section*{Skills}
+{{#each skillsByCategory}}
+    \textbf{ {{category}} }:
+    {{#each skills}}
+        {{name}}{{#unless @last}}, {{/unless}}
+    {{/each}}\\
+{{/each}}
+
+% Languages Section
+{{#if languages.length}}
+    \section*{Languages}
+    {{#each languages}}
+        \textbf{ {{name}} }: {{proficiency}}{{#unless @last}}, {{/unless}}
+    {{/each}}
+{{/if}}
+
+% Projects Section
+{{#if projects.length}}
+    \section*{Projects}
+    {{#each projects}}
+        \textbf{ {{title}} }
+        {{#if url}}
+            | \href{ {{url}} }{Project Link}
+        {{/if}}
+        \begin{itemize}
+            \item {{description}}
+            {{#each highlights}}
+                \item {{this}}
+            {{/each}}
+        \end{itemize}
+        \textit{Technologies}: {{technologies}}\\
+    {{/each}}
+{{/if}}
+
+% Certifications Section
+{{#if certifications.length}}
+    \section*{Certifications}
+    {{#each certifications}}
+        \textbf{ {{name}} } | {{issuer}}\\
+        {{issueDate}}{{#if expiryDate}} - {{expiryDate}}{{/if}}
+        {{#if credentialId}}
+            | ID: {{credentialId}}
+        {{/if}}
+        {{#if url}}
+            | \href{ {{url}} }{Verify}
+        {{/if}}\\
+    {{/each}}
+{{/if}}
+
+\end{document} 

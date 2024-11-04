@@ -833,8 +833,8 @@ export default function ResumeBuilder() {
 
   return (
     <DashboardLayout>
-      {/* Change max-w-7xl to max-w-[1600px] for a wider container */}
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6">
+      {/* Change max-w-[1600px] to w-[90%] to use 90% of the page width */}
+      <div className="w-[90%] mx-auto">
         {/* Header Section */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -878,7 +878,7 @@ export default function ResumeBuilder() {
         </div>
 
         {/* Main Content Area */}
-        <div className="bg-white rounded-[24px] p-8">
+        <div className="bg-white rounded-[24px] p-12">
           {/* Templates step */}
           {activeStep === 0 && (
             <motion.div
@@ -985,9 +985,9 @@ export default function ResumeBuilder() {
 
           {/* All other steps get the two-column layout */}
           {activeStep > 0 && (
-            <div className="grid grid-cols-[2fr,1fr] gap-8">
+            <div className="grid grid-cols-2 gap-12">
               {/* Left Column - Forms */}
-              <div className="space-y-6">
+              <div className="space-y-8">
                 {activeStep === 1 && (
                   <motion.div
                     initial={{ opacity: 0 }}
@@ -2293,7 +2293,7 @@ export default function ResumeBuilder() {
               </div>
 
               {/* Right Column - Preview */}
-              <div className="border-l border-gray-200 pl-8">
+              <div className="border-l border-gray-200 pl-12">
                 <div className="sticky top-8">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-semibold text-gray-900">Preview</h2>

@@ -6,24 +6,59 @@ interface LivePreviewProps {
 }
 
 export default function LivePreview({ latexContent, onDownloadPDF }: LivePreviewProps) {
-  const [htmlContent, setHtmlContent] = useState<string>('');
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Convert LaTeX content to HTML preview
-    const convertToHtml = (latex: string) => {
-      // Basic conversion of LaTeX to HTML
-      let html = latex
-        .replace(/\\section\{(.*?)\}/g, '<h2 class="text-xl font-bold mb-4">$1</h2>')
-        .replace(/\\textbf\{(.*?)\}/g, '<strong>$1</strong>')
-        .replace(/\\textit\{(.*?)\}/g, '<em>$1</em>')
-        .replace(/\\item\s(.*?)(?=\\item|\\end\{itemize\}|$)/g, '<li>$1</li>')
-        .replace(/\\begin\{itemize\}(.*?)\\end\{itemize\}/gs, '<ul class="list-disc pl-5 space-y-2">$1</ul>')
-        .replace(/\\href\{(.*?)\}\{(.*?)\}/g, '<a href="$1" class="text-blue-600 hover:underline">$2</a>');
+    const generatePreview = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetch('/api/latex/compile', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ latex: latexContent }),
+        });
 
-      setHtmlContent(html);
+        if (!response.ok) {
+          let errorMessage: string;
+          try {
+            const errorData = await response.json();
+            errorMessage = errorData.message || 'Failed to generate PDF';
+          } catch {
+            errorMessage = response.statusText || 'Failed to generate PDF';
+          }
+          throw new Error(errorMessage);
+        }
+
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/pdf')) {
+          throw new Error('Invalid response format');
+        }
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        setPdfUrl(url);
+      } catch (error) {
+        console.error('Error generating PDF preview:', error);
+        setError(error instanceof Error ? error.message : 'Failed to generate preview');
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    convertToHtml(latexContent);
+    if (latexContent) {
+      generatePreview();
+    }
+
+    return () => {
+      if (pdfUrl) {
+        URL.revokeObjectURL(pdfUrl);
+      }
+    };
   }, [latexContent]);
 
   return (
@@ -38,10 +73,35 @@ export default function LivePreview({ latexContent, onDownloadPDF }: LivePreview
 
       {/* Preview container */}
       <div className="h-full overflow-auto p-8 bg-white shadow-inner">
-        <div 
-          className="max-w-[800px] mx-auto prose prose-sm"
-          dangerouslySetInnerHTML={{ __html: htmlContent }}
-        />
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center h-full gap-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+            <p className="text-sm text-gray-600">Generating preview...</p>
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center h-full gap-4 text-red-500">
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <p className="text-sm">{error}</p>
+            <button 
+              onClick={() => setError(null)}
+              className="mt-2 text-sm text-indigo-600 hover:text-indigo-700"
+            >
+              Try again
+            </button>
+          </div>
+        ) : pdfUrl ? (
+          <iframe
+            src={pdfUrl}
+            className="w-full h-full border-0"
+            title="Resume Preview"
+          />
+        ) : (
+          <div className="flex items-center justify-center h-full text-gray-500">
+            No preview available
+          </div>
+        )}
       </div>
     </div>
   );

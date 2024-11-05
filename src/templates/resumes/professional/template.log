@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.10.23)  4 NOV 2024 15:51
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.10.23)  5 NOV 2024 10:49
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -391,42 +391,30 @@ LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 (Font)                  OT1/cmtt/m/n --> OT1/lmtt/m/n on input line 38.
 )
-
-c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:69: LaTeX Error: Missing \begin{document}.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.69     {}[\vspace{1pt}\titlerule[2pt]]
-                                        
-You're in trouble here.  Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 114.
-(C:\Users\Soheil\AppData\Local\Programs\MiKTeX\tex/latex/lm\ot1lmr.fd
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 98.
+ (C:\Users\Soheil\AppData\Local\Programs\MiKTeX\tex/latex/lm\ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) (template.aux)
 \openout1 = `template.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 114.
-LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 98.
+LaTeX Font Info:    ... okay on input line 98.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 98.
+LaTeX Font Info:    ... okay on input line 98.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 98.
+LaTeX Font Info:    ... okay on input line 98.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 98.
+LaTeX Font Info:    ... okay on input line 98.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 98.
+LaTeX Font Info:    ... okay on input line 98.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 98.
+LaTeX Font Info:    ... okay on input line 98.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 98.
+LaTeX Font Info:    ... okay on input line 98.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 98.
+LaTeX Font Info:    ... okay on input line 98.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 98.
+LaTeX Font Info:    ... okay on input line 98.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -436,14 +424,14 @@ LaTeX Font Info:    ... okay on input line 114.
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
 * modes: 
-* h-part:(L,W,R)=(34.14322pt, 546.00856pt, 34.14322pt)
+* h-part:(L,W,R)=(56.9055pt, 500.484pt, 56.9055pt)
 * v-part:(T,H,B)=(56.9055pt, 681.15898pt, 56.9055pt)
 * \paperwidth=614.295pt
 * \paperheight=794.96999pt
-* \textwidth=546.00856pt
+* \textwidth=500.484pt
 * \textheight=681.15898pt
-* \oddsidemargin=-38.12677pt
-* \evensidemargin=-38.12677pt
+* \oddsidemargin=-15.36449pt
+* \evensidemargin=-15.36449pt
 * \topmargin=-52.36449pt
 * \headheight=12.0pt
 * \headsep=25.0pt
@@ -476,175 +464,167 @@ LaTeX Font Info:    ... okay on input line 114.
 \makeMPintoPDFobject=\count321
 \everyMPtoPDFconversion=\toks32
 )
-Package hyperref Info: Link coloring ON on input line 114.
-LaTeX Font Info:    Trying to load font information for U+fontawesomefree2 on input line 120.
- (C:\Users\Soheil\AppData\Local\Programs\MiKTeX\tex/latex/fontawesome5\ufontawesomefree2.fd)
-LaTeX Font Info:    Trying to load font information for U+fontawesomefree1 on input line 124.
- (C:\Users\Soheil\AppData\Local\Programs\MiKTeX\tex/latex/fontawesome5\ufontawesomefree1.fd)
-c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:129: You can't use `macro parameter character #' in horizontal mode.
-l.129         {{#
-                 if website}}
-Sorry, but I'm not programmed to handle this case;
-I'll just pretend that you didn't ask for it.
-If you're in the wrong mode, you might be able to
-return to the right one by typing `I}' or `I$' or `I\par'.
+Package hyperref Info: Link coloring ON on input line 98.
 
-c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:135: You can't use `macro parameter character #' in horizontal mode.
-l.135         {{#
-                 if linkedin}}
-Sorry, but I'm not programmed to handle this case;
-I'll just pretend that you didn't ask for it.
-If you're in the wrong mode, you might be able to
-return to the right one by typing `I}' or `I$' or `I\par'.
-
-LaTeX Font Info:    Trying to load font information for U+fontawesomebrands0 on input line 139.
-(C:\Users\Soheil\AppData\Local\Programs\MiKTeX\tex/latex/fontawesome5\ufontawesomebrands0.fd)
-LaTeX Font Info:    Font shape `U/fontawesomebrands0/solid/n' in size <10> not available
-(Font)              Font shape `U/fontawesomebrands0/regular/n' tried instead on input line 139.
-
-c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:145: You can't use `macro parameter character #' in vertical mode.
-l.145     {{#
-             if summary}}
-Sorry, but I'm not programmed to handle this case;
-I'll just pretend that you didn't ask for it.
-If you're in the wrong mode, you might be able to
-return to the right one by typing `I}' or `I$' or `I\par'.
-
-c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:146: Argument of \ttl@rule@i has an extra }.
+c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:102: Missing $ inserted.
 <inserted text> 
-                \par 
-l.146     \section{Summary}
-                           
-I've run across a `}' that doesn't seem to match anything.
-For example, `\def\a#1{...}' and `\a}' would produce
-this error. If you simply proceed now, the `\par' that
-I've just inserted will cause me to report a runaway
-argument that might be the root of the problem. But if
-your `}' was spurious, just type `2' and it will go away.
-
-Runaway argument?
-2pt\@@par 
-c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:146: Paragraph ended before \ttl@rule@i was complete.
-<to be read again> 
-                   \par 
-l.146     \section{Summary}
-                           
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
-c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:152: You can't use `macro parameter character #' in vertical mode.
-l.152     {{#
-             if experiences.length}}
-Sorry, but I'm not programmed to handle this case;
-I'll just pretend that you didn't ask for it.
-If you're in the wrong mode, you might be able to
-return to the right one by typing `I}' or `I$' or `I\par'.
-
-c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:153: Argument of \ttl@rule@i has an extra }.
-<inserted text> 
-                \par 
-l.153     \section{Experience}
-                              
-I've run across a `}' that doesn't seem to match anything.
-For example, `\def\a#1{...}' and `\a}' would produce
-this error. If you simply proceed now, the `\par' that
-I've just inserted will cause me to report a runaway
-argument that might be the root of the problem. But if
-your `}' was spurious, just type `2' and it will go away.
-
-Runaway argument?
-2pt\@@par 
-c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:153: Paragraph ended before \ttl@rule@i was complete.
-<to be read again> 
-                   \par 
-l.153     \section{Experience}
-                              
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
-c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:154: You can't use `macro parameter character #' in vertical mode.
-l.154     {{#
-             each experiences}}
-Sorry, but I'm not programmed to handle this case;
-I'll just pretend that you didn't ask for it.
-If you're in the wrong mode, you might be able to
-return to the right one by typing `I}' or `I$' or `I\par'.
-
-c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:157: Illegal parameter number in definition of \secondColumn.
-<to be read again> 
-                   i
-l.157 ... Present{{else}}– {{endDate}}{{/if}} }}
+                $
+l.102 ...ACEHOLDER_FIRSTNAME PLACEHOLDER_LASTNAME}
                                                   
-You meant to type ## instead of #, right?
-Or maybe a } was forgotten somewhere earlier, and things
-are all screwed up? I'm going to assume that you meant ##.
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
 
-c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:158: Extra }, or forgotten \endgroup.
-<recently read> }
-                 
-l.158     }
-           
+LaTeX Font Info:    Calculating math sizes for size <24> on input line 102.
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 102.
+(C:\Users\Soheil\AppData\Local\Programs\MiKTeX\tex/latex/lm\omllmm.fd
+File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 102.
+ (C:\Users\Soheil\AppData\Local\Programs\MiKTeX\tex/latex/lm\omslmsy.fd
+File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 102.
+ (C:\Users\Soheil\AppData\Local\Programs\MiKTeX\tex/latex/lm\omxlmex.fd
+File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <24> on input line 102.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <16.79993> on input line 102.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <12> on input line 102.
+
+c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:102: Extra }, or forgotten $.
+<recently read> \egroup 
+                        
+l.102 ...ACEHOLDER_FIRSTNAME PLACEHOLDER_LASTNAME}
+                                                  
 I've deleted a group-closing symbol because it seems to be
 spurious, as in `$x}$'. But perhaps the } is legitimate and
 you forgot something else, as in `\hbox{$x}'. In such cases
 the way to recover is to insert both the forgotten and the
 deleted material, e.g., by typing `I$}'.
 
-c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:161: You can't use `macro parameter character #' in horizontal mode.
-<argument>  {{startDate}} {{##
-                              if current}}– Present{{else}}– {{endDate}}...
-l.161     \end{twocolentry}
-                           
-Sorry, but I'm not programmed to handle this case;
-I'll just pretend that you didn't ask for it.
-If you're in the wrong mode, you might be able to
-return to the right one by typing `I}' or `I$' or `I\par'.
+c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:103: Missing $ inserted.
+<inserted text> 
+                $
+l.103 
+      
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
 
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 166.
-(C:\Users\Soheil\AppData\Local\Programs\MiKTeX\tex/latex/lm\omllmm.fd
-File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 166.
- (C:\Users\Soheil\AppData\Local\Programs\MiKTeX\tex/latex/lm\omslmsy.fd
-File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 166.
- (C:\Users\Soheil\AppData\Local\Programs\MiKTeX\tex/latex/lm\omxlmex.fd
-File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
+
+Overfull \hbox (214.16603pt too wide) in paragraph at lines 102--103
+ []\OT1/lmr/bx/n/24 PLACEHOLDER$[]\OML/lmm/m/it/24 IRSTNAMEPLACEHOLDER[]ASTNAME$ 
+ []
+
+LaTeX Font Info:    Trying to load font information for U+fontawesomefree2 on input line 107.
+(C:\Users\Soheil\AppData\Local\Programs\MiKTeX\tex/latex/fontawesome5\ufontawesomefree2.fd)
+c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:107: Missing $ inserted.
+<inserted text> 
+                $
+l.107 ...er*}\hspace*{0.13cm}PLACEHOLDER_LOCATION}
+                                                  %
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 166.
+(Font)              <10> on input line 107.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 166.
+(Font)              <7> on input line 107.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 166.
+(Font)              <5> on input line 107.
+c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:107: Extra }, or forgotten $.
+\mbox  #1->\leavevmode \hbox {#1}
+                                 
+l.107 ...er*}\hspace*{0.13cm}PLACEHOLDER_LOCATION}
+                                                  %
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
 
-c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:167: You can't use `macro parameter character #' in horizontal mode.
-l.167             {{#
-                     each achievements}}
-Sorry, but I'm not programmed to handle this case;
-I'll just pretend that you didn't ask for it.
-If you're in the wrong mode, you might be able to
-return to the right one by typing `I}' or `I$' or `I\par'.
+LaTeX Font Info:    Trying to load font information for U+fontawesomefree1 on input line 111.
+(C:\Users\Soheil\AppData\Local\Programs\MiKTeX\tex/latex/fontawesome5\ufontawesomefree1.fd)
+c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:111: Missing $ inserted.
+<inserted text> 
+                $
+l.111 ...ular]}\hspace*{0.13cm}PLACEHOLDER_EMAIL}}
+                                                  %
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
 
-c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:172: You can't use `macro parameter character #' in vertical mode.
-l.172     {{#
-             unless @last}}\vspace{0.3cm}{{/unless}}
-Sorry, but I'm not programmed to handle this case;
-I'll just pretend that you didn't ask for it.
-If you're in the wrong mode, you might be able to
-return to the right one by typing `I}' or `I$' or `I\par'.
+c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:111: Missing $ inserted.
+<inserted text> 
+                $
+l.111 ...ular]}\hspace*{0.13cm}PLACEHOLDER_EMAIL}}
+                                                  %
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:115: Missing $ inserted.
+<inserted text> 
+                $
+l.115 ...hone*}\hspace*{0.13cm}PLACEHOLDER_PHONE}}
+                                                  %
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:115: Missing $ inserted.
+<inserted text> 
+                $
+l.115 ...hone*}\hspace*{0.13cm}PLACEHOLDER_PHONE}}
+                                                  %
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:117: Missing $ inserted.
+<inserted text> 
+                $
+l.117     \end{header}
+                      
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:117: Missing } inserted.
+<inserted text> 
+                }
+l.117     \end{header}
+                      
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+c:/Users/Soheil/Desktop/Enigma-Code/src/templates/resumes/professional/template.tex:117: Missing } inserted.
+<inserted text> 
+                }
+l.117     \end{header}
+                      
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
 
 
+Overfull \hbox (9.28685pt too wide) in paragraph at lines 107--118
+[][] 
+ []
 
 
-LaTeX Warning: Reference `LastPage' on page 1 undefined on input line 178.
 
 [1
 
-{C:/Users/Soheil/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-rm.enc}{C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/fontawesome5/fa5free2.enc}{C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/fontawesome5/fa5free1.enc}{C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/fontawesome5/fa5brands0.enc}{C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathsy.enc}] 
+{C:/Users/Soheil/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-rm.enc}{C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathit.enc}{C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/fontawesome5/fa5free2.enc}{C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathsy.enc}{C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/fontawesome5/fa5free1.enc}] 
 enddocument/afterlastpage: lastpage setting LastPage.
 (template.aux)
  ***********
@@ -653,27 +633,24 @@ L3 programming layer <2024-09-10>
  ***********
 
 
-LaTeX Warning: There were undefined references.
-
-
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
 
-Package lastpage Warning: Rerun to get the references right on input line 178.
+Package lastpage Warning: Rerun to get the references right on input line 131.
 
  ) 
 Here is how much of TeX's memory you used:
- 15278 strings out of 473899
- 263531 string characters out of 5726027
- 657837 words of memory out of 5000000
- 37945 multiletter control sequences out of 15000+600000
- 605564 words of font info for 62 fonts, out of 8000000 for 9000
+ 15102 strings out of 473899
+ 259850 string characters out of 5726027
+ 651850 words of memory out of 5000000
+ 37779 multiletter control sequences out of 15000+600000
+ 589359 words of font info for 60 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,5n,80p,371b,449s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/type1/public/fontawesome5/FontAwesome5Brands-Regular.pfb><C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/type1/public/fontawesome5/FontAwesome5Free-Regular.pfb><C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/type1/public/fontawesome5/FontAwesome5Free-Solid.pfb><C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx9.pfb><C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmri10.pfb><C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmri9.pfb><C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy10.pfb>
-Output written on template.pdf (1 page, 223999 bytes).
+ 75i,5n,80p,371b,447s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/type1/public/fontawesome5/FontAwesome5Free-Regular.pfb><C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/type1/public/fontawesome5/FontAwesome5Free-Solid.pfb><C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi10.pfb><C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi12.pfb><C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi7.pfb><C:/Users/Soheil/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy10.pfb>
+Output written on template.pdf (1 page, 107474 bytes).
 PDF statistics:
- 92 PDF objects out of 1000 (max. 8388607)
- 4 named destinations out of 1000 (max. 500000)
- 17 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 58 PDF objects out of 1000 (max. 8388607)
+ 2 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

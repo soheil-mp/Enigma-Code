@@ -1,29 +1,25 @@
 % Professional Resume Template
 \documentclass[10pt, letterpaper]{article}
 
-% Packages:
+% Packages
 \usepackage[
     ignoreheadfoot,
     top=2 cm,
     bottom=2 cm,
-    left=1.2cm,
-    right=1.2cm,
-    footskip=1.0 cm,
+    left=2 cm,
+    right=2 cm,
+    footskip=1.0 cm
 ]{geometry}
 \usepackage{titlesec}
 \usepackage{tabularx}
 \usepackage{array}
 \usepackage[dvipsnames]{xcolor}
-\definecolor{primaryColor}{RGB}{79, 70, 229} % Indigo-600
-\definecolor{accentColor}{RGB}{139, 92, 246} % Purple-500
-\definecolor{textColor}{RGB}{17, 24, 39} % Gray-900
+\definecolor{primaryColor}{RGB}{0, 79, 144}
 \usepackage{enumitem}
 \usepackage{fontawesome5}
 \usepackage{amsmath}
 \usepackage[
-    pdftitle={ {{firstName}}'s Resume},
-    pdfauthor={ {{firstName}} {{lastName}} },
-    pdfcreator={LaTeX with RenderCV},
+    pdftitle={Resume},
     colorlinks=true,
     urlcolor=primaryColor
 ]{hyperref}
@@ -53,23 +49,11 @@
 \setlength{\topskip}{0pt}
 \setlength{\columnsep}{0cm}
 
-% Custom footer
-\makeatletter
-\let\ps@customFooterStyle\ps@plain
-\patchcmd{\ps@customFooterStyle}{\thepage}{
-    \color{gray}\textit{\small {{firstName}} {{lastName}} - Page \thepage{} of \pageref*{LastPage}}
-}{}{} 
-\makeatother
-\pagestyle{customFooterStyle}
+% Section formatting
+\titleformat{\section}{\needspace{4\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
+\titlespacing{\section}{-1pt}{0.3cm}{0.2cm}
 
-% Section formatting with gradient effect
-\titleformat{\section}
-    {\needspace{4\baselineskip}\Large\bfseries\color{primaryColor}}
-    {}{0em}
-    {}[\vspace{1pt}\titlerule[2pt]]
-\titlespacing{\section}{-1pt}{0.5cm}{0.3cm}
-
-% Custom environments
+% Custom bullet points and environments
 \renewcommand\labelitemi{$\circ$}
 
 \newenvironment{highlights}{
@@ -90,9 +74,9 @@
     \end{adjustwidth}
 }
 
-\newenvironment{twocolentry}[2][]{
+\newenvironment{twocolentry}[1]{
     \onecolentry
-    \def\secondColumn{#2}
+    \def\secondColumn{#1}
     \setcolumnwidth{\fill, 4.5cm}
     \begin{paracol}{2}
 }{
@@ -109,70 +93,39 @@
 
 % Commands
 \let\hrefWithoutArrow\href
-\renewcommand{\href}[2]{\hrefWithoutArrow{#1}{\ifthenelse{\equal{#2}{}}{ }{#2 }\raisebox{.15ex}{\footnotesize \faExternalLink*}}}
+\renewcommand{\href}[2]{\hrefWithoutArrow{#1}{#2\,\raisebox{.15ex}{\footnotesize \faExternalLink*}}}
 
 \begin{document}
+    \newcommand{\AND}{\unskip\cleaders\hbox{$\cdot$}\hskip2em plus1em\ignorespaces}
+
     \begin{header}
-        {\fontsize{28pt}{28pt}\selectfont\color{primaryColor}\textbf{ {{firstName}} }\color{accentColor}\textbf{ {{lastName}} }}\\[0.5em]
-        {\large\color{textColor} {{title}} }\\[0.5em]
-        
+        \textbf{\fontsize{24pt}{24pt}\selectfont PLACEHOLDER_FIRSTNAME PLACEHOLDER_LASTNAME}
+
+        \vspace{0.3cm}
+
         \normalsize
-        \mbox{\faMapMarker*\hspace{0.13cm}\color{textColor} {{location}} }%
-        \kern 0.5cm%
-        \textcolor{gray}{|}%
-        \kern 0.5cm%
-        \mbox{\href{mailto:{{email}}}{\faEnvelope[regular]\hspace{0.13cm} {{email}} }}%
-        \kern 0.5cm%
-        \textcolor{gray}{|}%
-        \kern 0.5cm%
-        \mbox{\href{tel:{{phone}}}{\faPhone*\hspace{0.13cm} {{phone}} }}%
-        {{#if website}}
-            \kern 0.5cm%
-            \textcolor{gray}{|}%
-            \kern 0.5cm%
-            \mbox{\href{ {{website}} }{\faGlobe\hspace{0.13cm} {{website}} }}%
-        {{/if}}
-        {{#if linkedin}}
-            \kern 0.5cm%
-            \textcolor{gray}{|}%
-            \kern 0.5cm%
-            \mbox{\href{ {{linkedin}} }{\faLinkedinIn\hspace{0.13cm}LinkedIn}}%
-        {{/if}}
+        \mbox{{\color{black}\footnotesize\faMapMarker*}\hspace*{0.13cm}PLACEHOLDER_LOCATION}%
+        \kern 0.25cm%
+        \AND%
+        \kern 0.25cm%
+        \mbox{\hrefWithoutArrow{mailto:PLACEHOLDER_EMAIL}{\color{black}{\footnotesize\faEnvelope[regular]}\hspace*{0.13cm}PLACEHOLDER_EMAIL}}%
+        \kern 0.25cm%
+        \AND%
+        \kern 0.25cm%
+        \mbox{\hrefWithoutArrow{tel:PLACEHOLDER_PHONE}{\color{black}{\footnotesize\faPhone*}\hspace*{0.13cm}PLACEHOLDER_PHONE}}%
+        % Website and LinkedIn will be added by the template processor
     \end{header}
 
     \vspace{0.3cm}
 
-    {{#if summary}}
-    \section{Summary}
-    \begin{onecolentry}
-        {{summary}}
-    \end{onecolentry}
-    {{/if}}
+    % Summary section will be added by the template processor
+    
+    % Experience section will be added by the template processor
+    
+    % Education section will be added by the template processor
+    
+    % Skills section will be added by the template processor
+    
+    % Projects section will be added by the template processor
 
-    {{#if experiences.length}}
-    \section{Experience}
-    {{#each experiences}}
-    \begin{twocolentry}{
-    \textit{ {{location}} }\\
-    \textit{ {{startDate}} {{#if current}}– Present{{else}}– {{endDate}}{{/if}} }}
-    }
-        \textbf{ {{title}} }\\
-        \textit{ {{company}} }
-    \end{twocolentry}
-
-    \vspace{0.10cm}
-    \begin{onecolentry}
-        \begin{highlights}
-            \item {{description}}
-            {{#each achievements}}
-            \item {{this}}
-            {{/each}}
-        \end{highlights}
-    \end{onecolentry}
-    {{#unless @last}}\vspace{0.3cm}{{/unless}}
-    {{/each}}
-    {{/if}}
-
-    % ... Rest of the sections (Education, Skills, etc.) follow the same pattern
-    % with enhanced styling and spacing
 \end{document} 

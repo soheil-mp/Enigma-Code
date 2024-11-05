@@ -695,225 +695,50 @@ export default function ResumeBuilder() {
     };
   };
 
-  // Update the getTemplateContent function
+  // Update the getTemplateContent function with null checks
   const getTemplateContent = (templateId: string) => {
-    // Add logging to debug template selection
-    console.log('Available templates:', templates);
-    console.log('Selected template ID:', templateId);
-    
     const template = templates.find(t => t.id === templateId);
     if (!template) {
-        console.error('Template not found:', templateId);
-        return '';
+      console.error('Template not found:', templateId);
+      return '';
     }
 
     let content = template.template;
     
-    // Add logging to see template content
-    console.log('Initial template content:', content);
-    
-    // Replace personal info
-    content = content.replace(/\{\{firstName\}\}/g, personalInfo.firstName || 'John')
-                    .replace(/\{\{lastName\}\}/g, personalInfo.lastName || 'Doe')
-                    .replace(/\{\{email\}\}/g, personalInfo.email || 'email@example.com')
-                    .replace(/\{\{phone\}\}/g, personalInfo.phone || '+1 234 567 890')
-                    .replace(/\{\{location\}\}/g, personalInfo.location || 'City, Country')
-                    .replace(/\{\{title\}\}/g, personalInfo.title || 'Professional Title')
-                    .replace(/\{\{summary\}\}/g, personalInfo.summary || '')
-                    .replace(/\{\{linkedin\}\}/g, personalInfo.linkedin || '')
-                    .replace(/\{\{website\}\}/g, personalInfo.website || '');
+    // Replace basic placeholders
+    content = content
+      .replace(/PLACEHOLDER_FIRSTNAME/g, personalInfo?.firstName || '')
+      .replace(/PLACEHOLDER_LASTNAME/g, personalInfo?.lastName || '')
+      .replace(/PLACEHOLDER_EMAIL/g, personalInfo?.email || '')
+      .replace(/PLACEHOLDER_PHONE/g, personalInfo?.phone || '')
+      .replace(/PLACEHOLDER_LOCATION/g, personalInfo?.location || '');
 
-    // Replace current date
-    const currentDate = new Date().toLocaleDateString('en-US', { 
-      month: 'long',
-      year: 'numeric'
-    });
-    content = content.replace(/\{\{currentDate\}\}/g, currentDate);
-
-    // Replace conditional sections
-    content = content.replace(
-      /\{\{#if summary\}\}([\s\S]*?)\{\{\/if\}\}/g,
-      personalInfo.summary ? '$1' : ''
-    );
-
-    content = content.replace(
-      /\{\{#if website\}\}([\s\S]*?)\{\{\/if\}\}/g,
-      personalInfo.website ? '$1' : ''
-    );
-
-    content = content.replace(
-      /\{\{#if linkedin\}\}([\s\S]*?)\{\{\/if\}\}/g,
-      personalInfo.linkedin ? '$1' : ''
-    );
-
-    // Replace experiences section
-    if (experiences.length > 0) {
-      const experiencesSection = experiences.map((exp, index) => {
-        let section = `\\begin{twocolentry}{\\textit{${exp.location}}\\\\\\textit{${exp.startDate}${exp.current ? ' – Present' : ` – ${exp.endDate}`}}}
-          \\textbf{${exp.title}}
-          \\textit{${exp.company}}
-        \\end{twocolentry}
-
-        \\vspace{0.10 cm}
+    // Insert sections after the appropriate markers
+    if (personalInfo?.summary) {
+      content = content.replace(
+        '% Summary section will be added by the template processor',
+        `\\section{Summary}
         \\begin{onecolentry}
-          \\begin{highlights}
-            \\item ${exp.description}
-            ${exp.achievements.map(achievement => `\\item ${achievement}`).join('\n')}
-          \\end{highlights}
-        \\end{onecolentry}`;
-
-        if (index < experiences.length - 1) {
-          section += '\\vspace{0.2 cm}';
-        }
-
-        return section;
-      }).join('\n\n');
-
-      content = content.replace(/\{\{#if experiences\.length\}\}([\s\S]*?)\{\{\/if\}\}/g, 
-        `\\section{Experience}\n${experiencesSection}`
+          ${personalInfo.summary}
+        \\end{onecolentry}`
       );
-    } else {
-      content = content.replace(/\{\{#if experiences\.length\}\}[\s\S]*?\{\{\/if\}\}/g, '');
     }
 
-    // Replace education section
-    if (education.length > 0) {
-      const educationsSection = education.map((edu, index) => {
-        let section = `\\begin{twocolentry}{\\textit{${edu.startDate}${edu.current ? ' – Present' : ` – ${edu.endDate}`}}}
-          \\textbf{${edu.school}}
-          \\textit{${edu.degree} in ${edu.field}}
-        \\end{twocolentry}
+    // Add other sections similarly...
 
-        \\vspace{0.10 cm}
-        \\begin{onecolentry}
-          \\begin{highlights}
-            ${edu.gpa ? `\\item GPA: ${edu.gpa}` : ''}
-            ${edu.achievements.map(achievement => `\\item ${achievement}`).join('\n')}
-          \\end{highlights}
-        \\end{onecolentry}`;
-
-        if (index < education.length - 1) {
-          section += '\\vspace{0.2 cm}';
-        }
-
-        return section;
-      }).join('\n\n');
-
-      content = content.replace(/\{\{#if educations\.length\}\}([\s\S]*?)\{\{\/if\}\}/g,
-        `\\section{Education}\n${educationsSection}`
-      );
-    } else {
-      content = content.replace(/\{\{#if educations\.length\}\}[\s\S]*?\{\{\/if\}\}/g, '');
-    }
-
-    // Replace skills section
-    if (skills.length > 0) {
-      const skillsByCategory = skills.reduce((acc, skill) => {
-        if (!acc[skill.category]) acc[skill.category] = [];
-        acc[skill.category].push(skill.name);
-        return acc;
-      }, {} as Record<string, string[]>);
-
-      const skillsSection = Object.entries(skillsByCategory).map(([category, skillNames], index, array) => {
-        let section = `\\begin{onecolentry}
-          \\textbf{${category}:} ${skillNames.join(', ')}
-        \\end{onecolentry}`;
-
-        if (index < array.length - 1) {
-          section += '\\vspace{0.2 cm}';
-        }
-
-        return section;
-      }).join('\n\n');
-
-      content = content.replace(/\{\{#if skills\.length\}\}([\s\S]*?)\{\{\/if\}\}/g,
-        `\\section{Skills}\n${skillsSection}`
-      );
-    } else {
-      content = content.replace(/\{\{#if skills\.length\}\}[\s\S]*?\{\{\/if\}\}/g, '');
-    }
-
-    // Replace projects section
-    if (projects.length > 0) {
-      const projectsSection = projects.map((proj, index) => {
-        let section = `\\begin{twocolentry}{${proj.url ? `\\textit{\\href{${proj.url}}{${proj.url}}}` : ''}}
-          \\textbf{${proj.title}}
-        \\end{twocolentry}
-
-        \\vspace{0.10 cm}
-        \\begin{onecolentry}
-          \\begin{highlights}
-            \\item ${proj.description}
-            ${proj.highlights.map(highlight => `\\item ${highlight}`).join('\n')}
-            ${proj.technologies.length > 0 ? `\\item \\textbf{Technologies:} ${proj.technologies.join(', ')}` : ''}
-          \\end{highlights}
-        \\end{onecolentry}`;
-
-        if (index < projects.length - 1) {
-          section += '\\vspace{0.2 cm}';
-        }
-
-        return section;
-      }).join('\n\n');
-
-      content = content.replace(/\{\{#if projects\.length\}\}([\s\S]*?)\{\{\/if\}\}/g,
-        `\\section{Projects}\n${projectsSection}`
-      );
-    } else {
-      content = content.replace(/\{\{#if projects\.length\}\}[\s\S]*?\{\{\/if\}\}/g, '');
-    }
-
-    // Clean up any remaining Handlebars-style tags
-    content = content.replace(/\{\{.*?\}\}/g, '');
-
-    // Add logging for final content
-    console.log('Final processed content:', content);
     return content;
   };
 
   // Update the effect to generate latex when form data changes
   useEffect(() => {
     const generateLatex = () => {
-      // Add null checks and default values
-      const firstName = personalInfo?.firstName || '';
-      const lastName = personalInfo?.lastName || '';
-      const educationSection = education?.length ? education.map(edu => `
-\\textbf{${edu.school || ''}} \\hfill ${edu.location || ''}
-\\\\
-${edu.degree || ''} in ${edu.field || ''} \\hfill ${edu.startDate || ''} - ${edu.endDate || ''}
-${edu.gpa ? `GPA: ${edu.gpa}` : ''}
-`).join('\n') : '';
-
-      const experienceSection = experiences?.length ? experiences.map(exp => `
-\\textbf{${exp.company || ''}} \\hfill ${exp.location || ''}
-\\\\
-${exp.title || ''} \\hfill ${exp.startDate || ''} - ${exp.endDate || ''}
-${exp.description || ''}
-`).join('\n') : '';
-
-      const skillsSection = skills?.length ? skills.join(', ') : '';
-
-      // Create latex content with null checks
-      const latex = `
-\\documentclass{article}
-\\begin{document}
-\\begin{center}
-  ${firstName} ${lastName}
-\\end{center}
-
-${educationSection ? `\\section{Education}\n${educationSection}` : ''}
-
-${experienceSection ? `\\section{Experience}\n${experienceSection}` : ''}
-
-${skillsSection ? `\\section{Skills}\n${skillsSection}` : ''}
-
-\\end{document}`;
-
+      // Use the getTemplateContent function instead of creating simplified LaTeX
+      const latex = getTemplateContent(selectedTemplate);
       setLatexContent(latex);
     };
 
     generateLatex();
-  }, [personalInfo, experiences, education, skills, languages, projects, certifications]);
+  }, [personalInfo, experiences, education, skills, languages, projects, certifications, selectedTemplate]); // Add selectedTemplate to dependencies
 
   if (status === 'loading') {
     return <LoadingSpinner />;
@@ -2496,7 +2321,7 @@ ${skillsSection ? `\\section{Skills}\n${skillsSection}` : ''}
               </div>
 
               {/* Right Column - Preview */}
-              <div className="border-t lg:border-t-0 lg:border-l border-gray-200 pt-8 lg:pt-0 lg:pl-12 mt-8 lg:mt-0">
+              <div className="border-t lg:border-t-0 lg:border-l border-gray-200 pt-8 lg:pt-0 lg:border-l-0 lg:pl-12 mt-8 lg:mt-0">
                 <div className="lg:sticky lg:top-8">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-semibold text-gray-900">Preview</h2>

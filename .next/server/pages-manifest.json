@@ -2,9 +2,9 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/api/auth/[...nextauth]": "pages/api/auth/[...nextauth].js",
   "/api/resumes/load": "pages/api/resumes/load.js",
-  "/api/resumes/save": "pages/api/resumes/save.js",
   "/api/latex/compile": "pages/api/latex/compile.js",
-  "/resume-builder": "pages/resume-builder.js"
+  "/api/auth/[...nextauth]": "pages/api/auth/[...nextauth].js",
+  "/resume-builder": "pages/resume-builder.js",
+  "/api/resumes/save": "pages/api/resumes/save.js"
 }

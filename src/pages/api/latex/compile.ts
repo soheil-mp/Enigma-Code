@@ -1,67 +1,60 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { PDFDocument, rgb } from 'pdf-lib';
+import { exec } from 'child_process';
+import fs from 'fs/promises';
+import { existsSync } from 'fs';
+import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
+import os from 'os';
+import { CompilationError } from '@/utils/errors';
+import { errorHandler } from '@/middleware/errorHandler';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
-  }
-
   try {
-    const { latex: latexContent } = req.body;
-
-    // Create a new PDF document
-    const pdfDoc = await PDFDocument.create();
-    
-    // Add a page
-    const page = pdfDoc.addPage([595.276, 841.890]); // A4 size
-    
-    // Draw content
-    const { width, height } = page.getSize();
-    page.drawText('Resume Preview', {
-      x: 50,
-      y: height - 50,
-      size: 24,
-      color: rgb(0, 0, 0),
-    });
-
-    // Add the LaTeX content as text (temporary solution)
-    const lines = latexContent.split('\n');
-    let yPosition = height - 100;
-    const lineHeight = 14;
-
-    for (const line of lines) {
-      if (yPosition < 50) { // Add new page if needed
-        const newPage = pdfDoc.addPage([595.276, 841.890]);
-        yPosition = height - 50;
-      }
-
-      // Skip LaTeX commands for now
-      if (!line.trim().startsWith('\\')) {
-        page.drawText(line.trim(), {
-          x: 50,
-          y: yPosition,
-          size: 12,
-          color: rgb(0, 0, 0),
-        });
-        yPosition -= lineHeight;
-      }
+    if (req.method !== 'POST') {
+      throw new Error('Method not allowed');
     }
 
-    // Save the PDF
-    const pdfBytes = await pdfDoc.save();
+    const { latex: latexContent } = req.body;
+    if (!latexContent) {
+      throw new CompilationError('No LaTeX content provided');
+    }
 
-    // Set response headers
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'attachment; filename=resume.pdf');
+    const tempDir = path.join(os.tmpdir(), 'enigma-latex', uuidv4());
+    
+    // Create temp directory
+    await fs.mkdir(tempDir, { recursive: true });
+    const texFile = path.join(tempDir, 'resume.tex');
+    
+    // Write LaTeX content to file
+    await fs.writeFile(texFile, latexContent);
+
+    // Run pdflatex
+    const { stdout, stderr } = await new Promise<{ stdout: string; stderr: string }>((resolve, reject) => {
+      exec(
+        `pdflatex -interaction=nonstopmode -output-directory="${tempDir}" "${texFile}"`,
+        (error, stdout, stderr) => {
+          if (error && !existsSync(path.join(tempDir, 'resume.pdf'))) {
+            reject(new CompilationError('LaTeX compilation failed', stderr));
+            return;
+          }
+          resolve({ stdout, stderr });
+        }
+      );
+    });
+
+    // Read the generated PDF
+    const pdfPath = path.join(tempDir, 'resume.pdf');
+    const pdfContent = await fs.readFile(pdfPath);
+
+    // Clean up temp directory
+    await fs.rm(tempDir, { recursive: true, force: true });
 
     // Send the PDF
-    res.send(Buffer.from(pdfBytes));
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename=resume.pdf');
+    res.send(pdfContent);
 
   } catch (error) {
-    console.error('PDF generation error:', error);
-    res.status(500).json({ 
-      message: 'PDF generation failed',
-      error: error instanceof Error ? error.message : 'Unknown error'
-    });
+    errorHandler(error, req, res);
   }
 } 

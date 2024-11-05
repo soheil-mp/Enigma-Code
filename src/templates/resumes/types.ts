@@ -2,9 +2,9 @@ export interface ResumeTemplate {
   id: string;
   name: string;
   description: string;
-  template: string; // LaTeX template content
-  preview: string; // Path to preview image
+  preview: string;
   features: string[];
+  template: string;
 }
 
 export interface ResumeTemplateData {
@@ -12,14 +12,15 @@ export interface ResumeTemplateData {
     firstName: string;
     lastName: string;
     email: string;
-    phone: string;
-    location: string;
-    title: string;
-    summary: string;
+    phone?: string;
+    location?: string;
+    title?: string;
+    summary?: string;
     linkedin?: string;
     website?: string;
+    github?: string;
   };
-  experiences: Array<{
+  experiences?: Array<{
     title: string;
     company: string;
     location: string;
@@ -29,5 +30,38 @@ export interface ResumeTemplateData {
     description: string;
     achievements: string[];
   }>;
-  // ... rest of the data structure
+  educations?: Array<{
+    school: string;
+    degree: string;
+    field: string;
+    location: string;
+    startDate: string;
+    endDate?: string;
+    current: boolean;
+    gpa?: string;
+    achievements: string[];
+  }>;
+  skills?: Array<{
+    name: string;
+    level: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert';
+    category: string;
+  }>;
+  projects?: Array<{
+    title: string;
+    description: string;
+    technologies: string[];
+    url?: string;
+    startDate: string;
+    endDate?: string;
+    current: boolean;
+    highlights: string[];
+  }>;
+  publications?: Array<{
+    title: string;
+    authors: string;
+    journal: string;
+    date: string;
+    doi?: string;
+  }>;
+  skillsByCategory?: Record<string, string[]>;
 } 

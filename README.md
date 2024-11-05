@@ -49,7 +49,6 @@ To start using Enigma Code, follow these steps:
 
 
 ## Project Structure
-
 ```
 src/                          # Source directory
 ├── components/               # React components
@@ -567,4 +566,5 @@ CREATE TABLE Subscription_Plans (
 - **Interview_Sessions → Live_Interview_Assistance**: Each session can have multiple assistance entries for different questions.
 - **Users → Job_Market_Insights**: Each user can generate multiple insights based on job market data and preferences.
   
+
 

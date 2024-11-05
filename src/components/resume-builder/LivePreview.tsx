@@ -15,6 +15,8 @@ export default function LivePreview({ latexContent, onDownloadPDF }: LivePreview
       setIsLoading(true);
       setError(null);
       try {
+        console.log('Sending LaTeX content to compile:', latexContent);
+        
         const response = await fetch('/api/latex/compile', {
           method: 'POST',
           headers: {
@@ -22,6 +24,8 @@ export default function LivePreview({ latexContent, onDownloadPDF }: LivePreview
           },
           body: JSON.stringify({ latex: latexContent }),
         });
+
+        console.log('Compile response status:', response.status);
 
         if (!response.ok) {
           let errorMessage: string;
@@ -43,7 +47,7 @@ export default function LivePreview({ latexContent, onDownloadPDF }: LivePreview
         const url = URL.createObjectURL(blob);
         setPdfUrl(url);
       } catch (error) {
-        console.error('Error generating PDF preview:', error);
+        console.error('Error details:', error);
         setError(error instanceof Error ? error.message : 'Failed to generate preview');
       } finally {
         setIsLoading(false);

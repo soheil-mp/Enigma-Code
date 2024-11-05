@@ -187,6 +187,9 @@ export default function ResumeBuilder() {
     isVisible: false
   });
 
+  // Add state for latex content
+  const [latexContent, setLatexContent] = useState<string>('');
+
   // Load resume data on component mount
   useEffect(() => {
     if (session?.user?.id) {
@@ -694,10 +697,20 @@ export default function ResumeBuilder() {
 
   // Update the getTemplateContent function
   const getTemplateContent = (templateId: string) => {
+    // Add logging to debug template selection
+    console.log('Available templates:', templates);
+    console.log('Selected template ID:', templateId);
+    
     const template = templates.find(t => t.id === templateId);
-    if (!template) return '';
+    if (!template) {
+        console.error('Template not found:', templateId);
+        return '';
+    }
 
     let content = template.template;
+    
+    // Add logging to see template content
+    console.log('Initial template content:', content);
     
     // Replace personal info
     content = content.replace(/\{\{firstName\}\}/g, personalInfo.firstName || 'John')
@@ -853,8 +866,54 @@ export default function ResumeBuilder() {
     // Clean up any remaining Handlebars-style tags
     content = content.replace(/\{\{.*?\}\}/g, '');
 
+    // Add logging for final content
+    console.log('Final processed content:', content);
     return content;
   };
+
+  // Update the effect to generate latex when form data changes
+  useEffect(() => {
+    const generateLatex = () => {
+      // Add null checks and default values
+      const firstName = personalInfo?.firstName || '';
+      const lastName = personalInfo?.lastName || '';
+      const educationSection = education?.length ? education.map(edu => `
+\\textbf{${edu.school || ''}} \\hfill ${edu.location || ''}
+\\\\
+${edu.degree || ''} in ${edu.field || ''} \\hfill ${edu.startDate || ''} - ${edu.endDate || ''}
+${edu.gpa ? `GPA: ${edu.gpa}` : ''}
+`).join('\n') : '';
+
+      const experienceSection = experiences?.length ? experiences.map(exp => `
+\\textbf{${exp.company || ''}} \\hfill ${exp.location || ''}
+\\\\
+${exp.title || ''} \\hfill ${exp.startDate || ''} - ${exp.endDate || ''}
+${exp.description || ''}
+`).join('\n') : '';
+
+      const skillsSection = skills?.length ? skills.join(', ') : '';
+
+      // Create latex content with null checks
+      const latex = `
+\\documentclass{article}
+\\begin{document}
+\\begin{center}
+  ${firstName} ${lastName}
+\\end{center}
+
+${educationSection ? `\\section{Education}\n${educationSection}` : ''}
+
+${experienceSection ? `\\section{Experience}\n${experienceSection}` : ''}
+
+${skillsSection ? `\\section{Skills}\n${skillsSection}` : ''}
+
+\\end{document}`;
+
+      setLatexContent(latex);
+    };
+
+    generateLatex();
+  }, [personalInfo, experiences, education, skills, languages, projects, certifications]);
 
   if (status === 'loading') {
     return <LoadingSpinner />;
@@ -1539,15 +1598,15 @@ export default function ResumeBuilder() {
                     </div>
 
                     <div className="space-y-6">
-                      {education.map((education, index) => (
+                      {education.map((edu, index) => (
                         <motion.div
-                          key={education.id}
+                          key={edu.id}
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           className="bg-white rounded-xl p-6 border border-gray-200 relative group"
                         >
                           <button
-                            onClick={() => setEducation(education.filter(e => e.id !== education.id))}
+                            onClick={() => setEducation(prevEducation => prevEducation.filter(e => e.id !== edu.id))}
                             className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
                           >
                             <span className="text-gray-400 hover:text-red-500">✕</span>
@@ -1558,11 +1617,13 @@ export default function ResumeBuilder() {
                               <label className="block text-sm font-medium text-gray-700">School/University</label>
                               <input
                                 type="text"
-                                value={education.school}
+                                value={edu.school}
                                 onChange={(e) => {
-                                  const newEducations = [...education];
-                                  newEducations[index].school = e.target.value;
-                                  setEducation(newEducations);
+                                  setEducation(prevEducation => {
+                                    const newEducations = [...prevEducation];
+                                    newEducations[index].school = e.target.value;
+                                    return newEducations;
+                                  });
                                 }}
                                 className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
                                 placeholder="Harvard University"
@@ -1573,11 +1634,13 @@ export default function ResumeBuilder() {
                               <label className="block text-sm font-medium text-gray-700">Degree</label>
                               <input
                                 type="text"
-                                value={education.degree}
+                                value={edu.degree}
                                 onChange={(e) => {
-                                  const newEducations = [...education];
-                                  newEducations[index].degree = e.target.value;
-                                  setEducation(newEducations);
+                                  setEducation(prevEducation => {
+                                    const newEducations = [...prevEducation];
+                                    newEducations[index].degree = e.target.value;
+                                    return newEducations;
+                                  });
                                 }}
                                 className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
                                 placeholder="Bachelor of Science"
@@ -1588,11 +1651,13 @@ export default function ResumeBuilder() {
                               <label className="block text-sm font-medium text-gray-700">Field of Study</label>
                               <input
                                 type="text"
-                                value={education.field}
+                                value={edu.field}
                                 onChange={(e) => {
-                                  const newEducations = [...education];
-                                  newEducations[index].field = e.target.value;
-                                  setEducation(newEducations);
+                                  setEducation(prevEducation => {
+                                    const newEducations = [...prevEducation];
+                                    newEducations[index].field = e.target.value;
+                                    return newEducations;
+                                  });
                                 }}
                                 className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
                                 placeholder="Computer Science"
@@ -1603,11 +1668,13 @@ export default function ResumeBuilder() {
                               <label className="block text-sm font-medium text-gray-700">Location</label>
                               <input
                                 type="text"
-                                value={education.location}
+                                value={edu.location}
                                 onChange={(e) => {
-                                  const newEducations = [...education];
-                                  newEducations[index].location = e.target.value;
-                                  setEducation(newEducations);
+                                  setEducation(prevEducation => {
+                                    const newEducations = [...prevEducation];
+                                    newEducations[index].location = e.target.value;
+                                    return newEducations;
+                                  });
                                 }}
                                 className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
                                 placeholder="Cambridge, MA"
@@ -1618,11 +1685,13 @@ export default function ResumeBuilder() {
                               <label className="block text-sm font-medium text-gray-700">Start Date</label>
                               <input
                                 type="month"
-                                value={education.startDate}
+                                value={edu.startDate}
                                 onChange={(e) => {
-                                  const newEducations = [...education];
-                                  newEducations[index].startDate = e.target.value;
-                                  setEducation(newEducations);
+                                  setEducation(prevEducation => {
+                                    const newEducations = [...prevEducation];
+                                    newEducations[index].startDate = e.target.value;
+                                    return newEducations;
+                                  });
                                 }}
                                 className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
                               />
@@ -1633,26 +1702,30 @@ export default function ResumeBuilder() {
                               <div className="flex items-center gap-4">
                                 <input
                                   type="month"
-                                  value={education.endDate}
+                                  value={edu.endDate}
                                   onChange={(e) => {
-                                    const newEducations = [...education];
-                                    newEducations[index].endDate = e.target.value;
-                                    setEducation(newEducations);
+                                    setEducation(prevEducation => {
+                                      const newEducations = [...prevEducation];
+                                      newEducations[index].endDate = e.target.value;
+                                      return newEducations;
+                                    });
                                   }}
-                                  disabled={education.current}
+                                  disabled={edu.current}
                                   className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500"
                                 />
                                 <label className="flex items-center gap-2 text-sm text-gray-600">
                                   <input
                                     type="checkbox"
-                                    checked={education.current}
+                                    checked={edu.current}
                                     onChange={(e) => {
-                                      const newEducations = [...education];
-                                      newEducations[index].current = e.target.checked;
-                                      if (e.target.checked) {
-                                        newEducations[index].endDate = '';
-                                      }
-                                      setEducation(newEducations);
+                                      setEducation(prevEducation => {
+                                        const newEducations = [...prevEducation];
+                                        newEducations[index].current = e.target.checked;
+                                        if (e.target.checked) {
+                                          newEducations[index].endDate = '';
+                                        }
+                                        return newEducations;
+                                      });
                                     }}
                                     className="rounded text-indigo-600 focus:ring-indigo-500"
                                   />
@@ -1665,11 +1738,13 @@ export default function ResumeBuilder() {
                               <label className="block text-sm font-medium text-gray-700">GPA (Optional)</label>
                               <input
                                 type="text"
-                                value={education.gpa}
+                                value={edu.gpa}
                                 onChange={(e) => {
-                                  const newEducations = [...education];
-                                  newEducations[index].gpa = e.target.value;
-                                  setEducation(newEducations);
+                                  setEducation(prevEducation => {
+                                    const newEducations = [...prevEducation];
+                                    newEducations[index].gpa = e.target.value;
+                                    return newEducations;
+                                  });
                                 }}
                                 className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
                                 placeholder="3.8/4.0"
@@ -1681,35 +1756,41 @@ export default function ResumeBuilder() {
                                 <label className="block text-sm font-medium text-gray-700">Academic Achievements</label>
                                 <button
                                   onClick={() => {
-                                    const newEducations = [...education];
-                                    newEducations[index].achievements.push('');
-                                    setEducation(newEducations);
+                                    setEducation(prevEducation => {
+                                      const newEducations = [...prevEducation];
+                                      newEducations[index].achievements.push('');
+                                      return newEducations;
+                                    });
                                   }}
                                   className="text-sm text-indigo-600 hover:text-indigo-700"
                                 >
                                   + Add Achievement
                                 </button>
                               </div>
-                              {education.achievements.map((achievement, achievementIndex) => (
+                              {edu.achievements.map((achievement, achievementIndex) => (
                                 <div key={achievementIndex} className="flex gap-2">
                                   <input
                                     type="text"
                                     value={achievement}
                                     onChange={(e) => {
-                                      const newEducations = [...education];
-                                      newEducations[index].achievements[achievementIndex] = e.target.value;
-                                      setEducation(newEducations);
+                                      setEducation(prevEducation => {
+                                        const newEducations = [...prevEducation];
+                                        newEducations[index].achievements[achievementIndex] = e.target.value;
+                                        return newEducations;
+                                      });
                                     }}
                                     className="flex-1 px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
                                     placeholder="Dean's List, Academic Awards, etc."
                                   />
                                   <button
                                     onClick={() => {
-                                      const newEducations = [...education];
-                                      newEducations[index].achievements = education.achievements.filter(
-                                        (_, i) => i !== achievementIndex
-                                      );
-                                      setEducation(newEducations);
+                                      setEducation(prevEducation => {
+                                        const newEducations = [...prevEducation];
+                                        newEducations[index].achievements = edu.achievements.filter(
+                                          (_, i) => i !== achievementIndex
+                                        );
+                                        return newEducations;
+                                      });
                                     }}
                                     className="text-gray-400 hover:text-red-500 px-2"
                                   >
@@ -2449,10 +2530,10 @@ export default function ResumeBuilder() {
                   <div className="h-[400px] lg:h-[800px] bg-gray-50 rounded-xl">
                     {previewTab === 'preview' ? (
                       <LivePreview
-                        latexContent={getTemplateContent(selectedTemplate)}
+                        latexContent={latexContent}
                         onDownloadPDF={async () => {
                           try {
-                            const pdfBlob = await generatePDF(getTemplateContent(selectedTemplate));
+                            const pdfBlob = await generatePDF(latexContent);
                             downloadPDF(pdfBlob, `${personalInfo.firstName}-${personalInfo.lastName}-Resume.pdf`);
                             
                             setNotification({
@@ -2475,7 +2556,7 @@ export default function ResumeBuilder() {
                           <div className="h-full overflow-y-auto rounded-lg bg-gray-50">
                             <pre className="p-4 text-xs text-gray-700 whitespace-pre-wrap break-all">
                               <code className="block max-w-[400px]">
-                                {getTemplateContent(selectedTemplate)}
+                                {latexContent}
                               </code>
                             </pre>
                           </div>

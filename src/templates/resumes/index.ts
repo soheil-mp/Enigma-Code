@@ -1,771 +1,409 @@
-// Import templates as raw text
-const modernTemplate = String.raw`\documentclass[10pt, letterpaper]{article}
+import { ResumeTemplate, ResumeTemplateData } from './types';
+import { TemplateError } from '@/utils/errors';
+import { processTemplate } from '@/utils/latex';
 
-% Packages:
-\usepackage[
-    ignoreheadfoot,
-    top=2 cm,
-    bottom=2 cm,
-    left=2 cm,
-    right=2 cm,
-    footskip=1.0 cm,
-]{geometry}
-\usepackage{titlesec}
-\usepackage{tabularx}
-\usepackage{array}
-\usepackage[dvipsnames]{xcolor}
-\definecolor{primaryColor}{RGB}{0, 79, 144}
-\usepackage{enumitem}
-\usepackage{fontawesome5}
-\usepackage{amsmath}
-\usepackage[
-    pdftitle={Resume},
-    pdfauthor={},
-    pdfcreator={LaTeX with RenderCV},
-    colorlinks=true,
-    urlcolor=primaryColor
-]{hyperref}
-\usepackage[pscoord]{eso-pic}
-\usepackage{calc}
-\usepackage{bookmark}
-\usepackage{lastpage}
-\usepackage{changepage}
-\usepackage{paracol}
-\usepackage{ifthen}
-\usepackage{needspace}
-\usepackage{iftex}
-
-% ATS Readability
-\ifPDFTeX
-    \input{glyphtounicode}
-    \pdfgentounicode=1
-    \usepackage[utf8]{inputenc}
-    \usepackage{lmodern}
-\fi
-
-% Settings
-\AtBeginEnvironment{adjustwidth}{\\partopsep0pt}
-\pagestyle{empty}
-\setcounter{secnumdepth}{0}
-\setlength{\\parindent}{0pt}
-\setlength{\\topskip}{0pt}
-\setlength{\\columnsep}{0cm}
-
-% Custom footer
-\makeatletter
-\let\\ps@customFooterStyle\\ps@plain
-\patchcmd{\\\ps@customFooterStyle}{\\\thepage}{
-    \\\color{gray}\\\textit{\\\small {{firstName}} {{lastName}} - Page \\\thepage{} of \\\pageref*{LastPage}}
-}{}{} 
-\makeatother
-\pagestyle{customFooterStyle}
-
-% Section formatting
-\titleformat{\\\section}{\\\needspace{4\\baselineskip}\\\bfseries\\\large}{}{0pt}{}[\\\vspace{1pt}\\\titlerule]
-\titlespacing{\\\section}{-1pt}{0.3 cm}{0.2 cm}
-
-% Custom environments
-\renewcommand\\\labelitemi{$\\\circ$}
-
-\newenvironment{highlights}{
-    \begin{itemize}[
-        topsep=0.10 cm,
-        parsep=0.10 cm,
-        partopsep=0pt,
-        itemsep=0pt,
-        leftmargin=0.4 cm + 10pt
-    ]
-}{
-    \end{itemize}
-}
-
-\newenvironment{highlightsforbulletentries}{
-    \begin{itemize}[
-        topsep=0.10 cm,
-        parsep=0.10 cm,
-        partopsep=0pt,
-        itemsep=0pt,
-        leftmargin=10pt
-    ]
-}{
-    \end{itemize}
-}
-
-\newenvironment{onecolentry}{
-    \begin{adjustwidth}{0.2 cm + 0.00001 cm}{0.2 cm + 0.00001 cm}
-}{
-    \end{adjustwidth}
-}
-
-\newenvironment{twocolentry}[2][]{
-    \onecolentry
-    \def\\secondColumn{#2}
-    \setcolumnwidth{\\\fill, 4.5 cm}
-    \begin{paracol}{2}
-}{
-    \switchcolumn \\\\raggedleft \\\\secondColumn
-    \end{paracol}
-    \endonecolentry
-}
-
-\newenvironment{header}{
-    \setlength{\\\topsep}{0pt}\\\par\\\kern\\\topsep\\\centering\\\linespread{1.5}
-}{
-    \\\par\\\kern\\\topsep
-}
-
-% Commands
-\let\\hrefWithoutArrow\\href
-\renewcommand{\\\href}[2]{\\\hrefWithoutArrow{#1}{\\\ifthenelse{\\\equal{#2}{}}{}{#2}\\\raisebox{.15ex}{\\\footnotesize \\faExternalLink*}}}
-
-\begin{document}
-    \newcommand{\\\AND}{\\\unskip
-        \\\cleaders\\\copy\\\ANDbox\\\hskip\\\wd\\\ANDbox
-        \\\ignorespaces
-    }
-    \newsavebox\\\ANDbox
-    \sbox\\\ANDbox{}
-
-    \begin{header}
-        \\\textbf{\\\fontsize{24 pt}{24 pt}\\\selectfont {{firstName}} {{lastName}}}
-
-        \\\vspace{0.3 cm}
-
-        \\\normalsize
-        \\\mbox{{\\\color{black}\\\footnotesize\\\faMapMarker*}\\\hspace*{0.13cm}{{location}}}%
-        \\\kern 0.25 cm%
-        \\\AND%
-        \\\kern 0.25 cm%
-        \\\mbox{\\\hrefWithoutArrow{mailto:{{email}}}{\\\color{black}{\\\footnotesize\\\faEnvelope[regular]}\\hspace*{0.13cm}{{email}}}}%
-        \\\kern 0.25 cm%
-        \\\AND%
-        \\\kern 0.25 cm%
-        \\\mbox{\\\hrefWithoutArrow{tel:{{phone}}}{\\\color{black}\\\footnotesize\\\faPhone*}\\hspace*{0.13cm}{{phone}}}}%
-        {{#if website}}
-        \\\kern 0.25 cm%
-        \\\AND%
-        \\\kern 0.25 cm%
-        \\\mbox{\\\hrefWithoutArrow{{{website}}}{\\\color{black}\\\footnotesize\\\faLink\\hspace*{0.13cm}{{website}}}}%
-        {{/if}}
-        {{#if linkedin}}
-        \\\kern 0.25 cm%
-        \\\AND%
-        \\\kern 0.25 cm%
-        \\\mbox{\\\hrefWithoutArrow{{{linkedin}}}{\\\color{black}\\\footnotesize\\\faLinkedinIn\\hspace*{0.13cm}LinkedIn}}%
-        {{/if}}
-    \end{header}
-
-    \\\vspace{0.3 cm}
-
-    {{#if summary}}
-    \\\section{Summary}
-    \\\begin{onecolentry}
-        {{summary}}
-    \\\end{onecolentry}
-    {{/if}}
-
-    {{#if experiences.length}}
-    \\\section{Experience}
-    {{#each experiences}}
-    \\\begin{twocolentry}{
-    \\\textit{ {{location}} }    
-    \\\textit{ {{startDate}} {{#if current}}– Present{{else}}– {{endDate}}{{/if}} }}
-        \\\textbf{ {{title}} }
-        \\\textit{ {{company}} }
-    \\\end{twocolentry}
-
-    \\\vspace{0.10 cm}
-    \\\begin{onecolentry}
-        \\\begin{highlights}
-            \\\item {{description}}
-            {{#each achievements}}
-            \\\item {{this}}
-            {{/each}}
-        \\\end{highlights}
-    \\\end{onecolentry}
-    {{#unless @last}}\\\vspace{0.2 cm}{{/unless}}
-    {{/each}}
-    {{/if}}
-
-    {{#if educations.length}}
-    \\\section{Education}
-    {{#each educations}}
-    \\\begin{twocolentry}{
-    \\\textit{ {{startDate}} {{#if current}}– Present{{else}}– {{endDate}}{{/if}} }}
-        \\\textbf{ {{school}} }
-        \\\textit{ {{degree}} in {{field}} }
-    \\\end{twocolentry}
-
-    \\\vspace{0.10 cm}
-    \\\begin{onecolentry}
-        \\\begin{highlights}
-            {{#if gpa}}\\\item GPA: {{gpa}}{{/if}}
-            {{#each achievements}}
-            \\\item {{this}}
-            {{/each}}
-        \\\end{highlights}
-    \\\end{onecolentry}
-    {{#unless @last}}\\\vspace{0.2 cm}{{/unless}}
-    {{/each}}
-    {{/if}}
-
-    {{#if skills.length}}
-    \\\section{Skills}
-    {{#each skillsByCategory}}
-    \\\begin{onecolentry}
-        \\\textbf{ {{category}} :} {{#each skills}}{{name}}{{#unless @last}}, {{/unless}}{{/each}}
-    \\\end{onecolentry}
-    {{#unless @last}}\\\vspace{0.2 cm}{{/unless}}
-    {{/each}}
-    {{/if}}
-
-    {{#if projects.length}}
-    \\\section{Projects}
-    {{#each projects}}
-    \\\begin{twocolentry}{
-    {{#if url}}\\\textit{\\\href{ {{url}} }{ {{url}} }}{{/if}}
-    }
-        \\\textbf{ {{title}} }
-    \\\end{twocolentry}
-
-    \\\vspace{0.10 cm}
-    \\\begin{onecolentry}
-        \\\begin{highlights}
-            \\\item {{description}}
-            {{#each highlights}}
-            \\\item {{this}}
-            {{/each}}
-            {{#if technologies.length}}
-            \\\item \\\textbf{Technologies:} {{technologies}}
+export const templates: ResumeTemplate[] = [
+    {
+        id: 'modern',
+        name: 'Modern',
+        description: 'A clean and professional template with a modern design',
+        preview: '/images/templates/modern-preview.png',
+        features: ['ATS-Friendly', 'Clean Layout', 'Professional', 'Easy to Read'],
+        template: String.raw`\documentclass[10pt, letterpaper]{article}
+            \usepackage[margin=1in]{geometry}
+            \usepackage{hyperref}
+            \usepackage{fontawesome5}
+            \usepackage{titlesec}
+            \usepackage{enumitem}
+            
+            % Modern styling
+            \pagestyle{empty}
+            \titleformat{\section}{\Large\bfseries}{\thesection}{1em}{}[\titlerule]
+            \titlespacing{\section}{0pt}{12pt}{6pt}
+            
+            \begin{document}
+            % Header
+            {\Large\bfseries {{personalInfo.firstName}} {{personalInfo.lastName}}}\\[0.5em]
+            
+            % Contact info
+            \begin{center}\small
+            {{#if personalInfo.location}}{{personalInfo.location}}{{/if}}
+            {{#if personalInfo.email}} • \href{mailto:{{personalInfo.email}}}{{{personalInfo.email}}}{{/if}}
+            {{#if personalInfo.phone}} • {{personalInfo.phone}}{{/if}}
+            {{#if personalInfo.website}} • \href{{{personalInfo.website}}}{{{personalInfo.website}}}{{/if}}
+            \end{center}
+            
+            % Summary
+            {{#if personalInfo.summary}}
+            \section*{Summary}
+            {{personalInfo.summary}}
             {{/if}}
-        \\\end{highlights}
-    \\\end{onecolentry}
-    {{#unless @last}}\\\vspace{0.2 cm}{{/unless}}
-    {{/each}}
-    {{/if}}
-
-\end{document}`;
-
-const professionalTemplate = String.raw`\documentclass[10pt, letterpaper]{article}
-
-% Packages:
-\usepackage[
-    ignoreheadfoot,
-    top=2 cm,
-    bottom=2 cm,
-    left=2 cm,
-    right=2 cm,
-    footskip=1.0 cm,
-]{geometry}
-\usepackage{titlesec}
-\usepackage{tabularx}
-\usepackage{array}
-\usepackage[dvipsnames]{xcolor}
-\definecolor{primaryColor}{RGB}{0, 79, 144}
-\usepackage{enumitem}
-\usepackage{fontawesome5}
-\usepackage{amsmath}
-\usepackage[
-    pdftitle={ {{firstName}}'s CV},
-    pdfauthor={ {{firstName}} {{lastName}} },
-    pdfcreator={LaTeX with RenderCV},
-    colorlinks=true,
-    urlcolor=primaryColor
-]{hyperref}
-\usepackage[pscoord]{eso-pic}
-\usepackage{calc}
-\usepackage{bookmark}
-\usepackage{lastpage}
-\usepackage{changepage}
-\usepackage{paracol}
-\usepackage{ifthen}
-\usepackage{needspace}
-\usepackage{iftex}
-
-% Ensure that generate pdf is machine readable/ATS parsable:
-\ifPDFTeX
-    \input{glyphtounicode}
-    \pdfgentounicode=1
-    \usepackage[utf8]{inputenc}
-    \usepackage{lmodern}
-\fi
-
-% Some settings:
-\AtBeginEnvironment{adjustwidth}{\partopsep0pt}
-\pagestyle{empty}
-\setcounter{secnumdepth}{0}
-\setlength{\parindent}{0pt}
-\setlength{\topskip}{0pt}
-\setlength{\columnsep}{0cm}
-\makeatletter
-\let\ps@customFooterStyle\ps@plain
-\patchcmd{\ps@customFooterStyle}{\thepage}{
-    \color{gray}\textit{\small {{firstName}} {{lastName}} - Page \thepage{} of \pageref*{LastPage}}
-}{}{}
-\makeatother
-\pagestyle{customFooterStyle}
-
-\titleformat{\section}{\needspace{4\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
-
-\titlespacing{\section}{
-    -1pt
-}{
-    0.3 cm
-}{
-    0.2 cm
-}
-
-\renewcommand\labelitemi{$\circ$}
-\newenvironment{highlights}{
-    \begin{itemize}[
-        topsep=0.10 cm,
-        parsep=0.10 cm,
-        partopsep=0pt,
-        itemsep=0pt,
-        leftmargin=0.4 cm + 10pt
-    ]
-}{
-    \end{itemize}
-}
-
-\newenvironment{highlightsforbulletentries}{
-    \begin{itemize}[
-        topsep=0.10 cm,
-        parsep=0.10 cm,
-        partopsep=0pt,
-        itemsep=0pt,
-        leftmargin=10pt
-    ]
-}{
-    \end{itemize}
-}
-
-\newenvironment{onecolentry}{
-    \begin{adjustwidth}{
-        0.2 cm + 0.00001 cm
-    }{
-        0.2 cm + 0.00001 cm
-    }
-}{
-    \end{adjustwidth}
-}
-
-\newenvironment{twocolentry}[2][]{
-    \onecolentry
-    \def\secondColumn{#2}
-    \setcolumnwidth{\fill, 4.5 cm}
-    \begin{paracol}{2}
-}{
-    \switchcolumn \raggedleft \secondColumn
-    \end{paracol}
-    \endonecolentry
-}
-
-\newenvironment{header}{
-    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.5}
-}{
-    \par\kern\topsep
-}
-
-\newcommand{\placelastupdatedtext}{%
-  \AddToShipoutPictureFG*{%
-    \put(
-        \LenToUnit{\paperwidth-2 cm-0.2 cm+0.05cm},
-        \LenToUnit{\paperheight-1.0 cm}
-    ){\vtop{{\null}\makebox[0pt][c]{
-        \small\color{gray}\textit{Last updated in {{currentDate}} }\hspace{\widthof{Last updated in {{currentDate}} }}
-    }}}%
-  }%
-}%
-
-\let\hrefWithoutArrow\href
-\renewcommand{\href}[2]{\hrefWithoutArrow{#1}{\ifthenelse{\equal{#2}{}}{ }{#2 }\raisebox{.15ex}{\footnotesize \faExternalLink*}}}
-
-\begin{document}
-    \newcommand{\AND}{\unskip
-        \cleaders\copy\ANDbox\hskip\wd\ANDbox
-        \ignorespaces
-    }
-    \newsavebox\ANDbox
-    \sbox\ANDbox{}
-
-    \placelastupdatedtext
-    \begin{header}
-        \textbf{\fontsize{24 pt}{24 pt}\selectfont {{firstName}} {{lastName}}}
-
-        \vspace{0.3 cm}
-
-        \normalsize
-        \mbox{{\color{black}\footnotesize\faMapMarker*}\hspace*{0.13cm}{{location}}}%
-        \kern 0.25 cm%
-        \AND%
-        \kern 0.25 cm%
-        \mbox{\hrefWithoutArrow{mailto:{{email}}}{\color{black}{\footnotesize\faEnvelope[regular]}\hspace*{0.13cm}{{email}}}}%
-        \kern 0.25 cm%
-        \AND%
-        \kern 0.25 cm%
-        \mbox{\hrefWithoutArrow{tel:{{phone}}}{\color{black}{\footnotesize\faPhone*}\hspace*{0.13cm}{{phone}}}}%
-        {{#if website}}
-        \kern 0.25 cm%
-        \AND%
-        \kern 0.25 cm%
-        \mbox{\hrefWithoutArrow{ {{website}} }{\color{black}{\footnotesize\faLink}\hspace*{0.13cm}{{website}}}}%
-        {{/if}}
-        {{#if linkedin}}
-        \kern 0.25 cm%
-        \AND%
-        \kern 0.25 cm%
-        \mbox{\hrefWithoutArrow{ {{linkedin}} }{\color{black}{\footnotesize\faLinkedinIn}\hspace*{0.13cm}LinkedIn}}%
-        {{/if}}
-    \end{header}
-
-    \vspace{0.3 cm}
-
-    {{#if summary}}
-    \section{Summary}
-    \begin{onecolentry}
-        {{summary}}
-    \end{onecolentry}
-    {{/if}}
-
-    {{#if experiences.length}}
-    \section{Experience}
-    {{#each experiences}}
-    \begin{twocolentry}{
-    \textit{ {{location}} }    
-    \textit{ {{startDate}} {{#if current}}– Present{{else}}– {{endDate}}{{/if}} }}
-        \textbf{ {{title}} }
-        \textit{ {{company}} }
-    \end{twocolentry}
-
-    \vspace{0.10 cm}
-    \begin{onecolentry}
-        \begin{highlights}
+            
+            % Experience
+            {{#if experiences.length}}
+            \section*{Experience}
+            {{#each experiences}}
+            \textbf{{{title}}} \hfill {{startDate}}{{#if current}} -- Present{{else}} -- {{endDate}}{{/if}}\\
+            \textit{{{company}}} \hfill {{location}}
+            {{#if description}}
+            \begin{itemize}[leftmargin=*, nosep]
             \item {{description}}
             {{#each achievements}}
             \item {{this}}
             {{/each}}
-        \end{highlights}
-    \end{onecolentry}
-    {{#unless @last}}\vspace{0.2 cm}{{/unless}}
-    {{/each}}
-    {{/if}}
-
-    {{#if educations.length}}
-    \section{Education}
-    {{#each educations}}
-    \begin{twocolentry}{
-    \textit{ {{startDate}} {{#if current}}– Present{{else}}– {{endDate}}{{/if}} }}
-        \textbf{ {{school}} }
-        \textit{ {{degree}} in {{field}} }
-    \end{twocolentry}
-
-    \vspace{0.10 cm}
-    \begin{onecolentry}
-        \begin{highlights}
-            {{#if gpa}}\item GPA: {{gpa}}{{/if}}
+            \end{itemize}
+            {{/if}}
+            \vspace{0.5em}
+            {{/each}}
+            {{/if}}
+            
+            % Education
+            {{#if educations.length}}
+            \section*{Education}
+            {{#each educations}}
+            \textbf{{{school}}} \hfill {{startDate}}{{#if current}} -- Present{{else}} -- {{endDate}}{{/if}}\\
+            {{degree}} in {{field}} \hfill {{location}}
+            {{#if gpa}} • GPA: {{gpa}}{{/if}}
+            {{#if achievements.length}}
+            \begin{itemize}[leftmargin=*, nosep]
             {{#each achievements}}
             \item {{this}}
             {{/each}}
-        \end{highlights}
-    \end{onecolentry}
-    {{#unless @last}}\vspace{0.2 cm}{{/unless}}
-    {{/each}}
-    {{/if}}
-
-    {{#if skills.length}}
-    \section{Skills}
-    {{#each skillsByCategory}}
-    \begin{onecolentry}
-        \textbf{ {{category}} :} {{#each skills}}{{name}}{{#unless @last}}, {{/unless}}{{/each}}
-    \end{onecolentry}
-    {{#unless @last}}\vspace{0.2 cm}{{/unless}}
-    {{/each}}
-    {{/if}}
-
-    {{#if projects.length}}
-    \section{Projects}
-    {{#each projects}}
-    \begin{twocolentry}{
-    {{#if url}}\textit{\href{ {{url}} }{ {{url}} }}{{/if}}
-    }
-        \textbf{ {{title}} }
-    \end{twocolentry}
-
-    \vspace{0.10 cm}
-    \begin{onecolentry}
-        \begin{highlights}
-            \item {{description}}
-            {{#each highlights}}
-            \item {{this}}
+            \end{itemize}
+            {{/if}}
+            \vspace{0.5em}
             {{/each}}
-            {{#if technologies.length}}
-            \item \textbf{Technologies:} {{technologies}}
             {{/if}}
-        \end{highlights}
-    \end{onecolentry}
-    {{#unless @last}}\vspace{0.2 cm}{{/unless}}
-    {{/each}}
-    {{/if}}
-
-\end{document}`;
-
-const creativeTemplate = String.raw`\documentclass[10pt, letterpaper]{article}
-
-\usepackage[
-    ignoreheadfoot,
-    top=2cm,
-    bottom=2cm,
-    left=2cm,
-    right=2cm,
-    footskip=1.0cm
-]{geometry}
-\usepackage{titlesec}
-\usepackage{xcolor}
-\usepackage{fontawesome5}
-\usepackage{hyperref}
-\usepackage{enumitem}
-
-% Define colors
-\definecolor{primary}{RGB}{139, 92, 246}
-\definecolor{secondary}{RGB}{236, 72, 153}
-
-% Section formatting
-\titleformat{\section}
-    {\Large\bfseries\color{primary}}
-    {}{0em}
-    {}[\vspace{0.5em}]
-
-\begin{document}
-    % Header with gradient-like effect
-    \begin{center}
-        {\color{primary}\Huge\bfseries {{firstName}} }{\color{secondary}\Huge\bfseries {{lastName}}}\\[0.5em]
-        {\Large\color{primary} {{title}}}\\[0.5em]
-        \small{
-            \faEnvelope\ {{email}} |
-            \faPhone\ {{phone}} |
-            \faMapMarker*\ {{location}}
-            {{#if linkedin}}
-                | \faLinkedinIn\ \href{ {{linkedin}} }{LinkedIn}
+            
+            % Skills
+            {{#if skills.length}}
+            \section*{Skills}
+            {{#each skillsByCategory}}
+            \textbf{{{@key}}}: {{#each this}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}\\
+            {{/each}}
             {{/if}}
-            {{#if website}}
-                | \faGlobe\ \href{ {{website}} }{Portfolio}
-            {{/if}}
-        }
-    \end{center}
-
-    {{#if summary}}
-    % Summary
-    \section*{\faUser\ About Me}
-    {{summary}}
-    {{/if}}
-
-    {{#if experiences.length}}
-    % Experience
-    \section*{\faBriefcase\ Experience}
-    {{#each experiences}}
-        {\large\color{primary}\textbf{ {{title}} }}\\
-        {\large\color{secondary}\textit{ {{company}} }}
-        \hfill {{startDate}} - {{#if current}}Present{{else}}{{endDate}}{{/if}}\\
-        \textit{ {{location}} }\\[0.5em]
+            
+            \end{document}`
+    },
+    {
+        id: 'creative',
+        name: 'Creative',
+        description: 'A unique template that helps you stand out',
+        preview: '/images/templates/creative-preview.png',
+        features: ['Eye-catching', 'Unique Design', 'Color Accents', 'Modern Layout'],
+        template: String.raw`\documentclass[10pt, letterpaper]{article}
+            % Creative template content...
+            \begin{document}
+            % Document content...
+            \end{document}
+        `
+    },
+    {
+        id: 'professional',
+        name: 'Professional',
+        description: 'A traditional template perfect for corporate roles',
+        preview: '/images/templates/professional-preview.png',
+        features: ['Traditional', 'Corporate', 'Structured', 'Detailed'],
+        template: String.raw`\documentclass[10pt, letterpaper]{article}
+        % Required packages
+        \usepackage[margin=1in]{geometry}
+        \usepackage{hyperref}
+        \usepackage{fontawesome5}
+        \usepackage{titlesec}
+        \usepackage{enumitem}
+        
+        % Custom styling
+        \pagestyle{empty}
+        \titleformat{\section}{\bfseries\large}{\thesection}{0em}{}[\titlerule]
+        \titlespacing{\section}{0pt}{12pt}{6pt}
+        
+        % Custom commands for icons
+        \newcommand{\locationIcon}{\faMapMarker*}
+        \newcommand{\emailIcon}{\faEnvelope}
+        \newcommand{\phoneIcon}{\faPhone*}
+        \newcommand{\websiteIcon}{\faGlobe}
+        \newcommand{\githubIcon}{\faGithub}
+        
+        % Bullet customization
+        \renewcommand{\labelitemi}{$\circ$}
+        
+        \begin{document}
+        
+        % Header
+        {\Large\bfseries {{firstName}} {{lastName}}}
+        
+        % Contact info line with icons
+        \vspace{0.5em}
+        \begin{center}
+        \small
+        {{#if location}}\locationIcon~{{location}}{{/if}}
+        {{#if email}} \emailIcon~\href{mailto:{{email}}}{{{email}}}{{/if}}
+        {{#if phone}} \phoneIcon~\href{tel:{{phone}}}{{{phone}}}{{/if}}
+        {{#if website}} \websiteIcon~\href{{{website}}}{{{website}}}{{/if}}
+        {{#if github}} \githubIcon~\href{{{github}}}{{{github}}}{{/if}}
+        \end{center}
+        
+        % Last updated date
+        \begin{flushright}
+        \small\textit{Last updated in {{currentDate}}}
+        \end{flushright}
+        
+        % Welcome section (if needed)
+        {{#if summary}}
+        \section*{Welcome to RenderCV!}
+        {{summary}}
+        {{/if}}
+        
+        % Quick Guide section
+        \section*{Quick Guide}
         \begin{itemize}[leftmargin=*]
-            \item {{description}}
-            {{#each achievements}}
-                \item {{this}}
-            {{/each}}
+        \item Each section title is arbitrary and each section contains a list of entries.
+        \item There are 7 unique entry types: BulletEntry, TextEntry, EducationEntry, ExperienceEntry, NormalEntry, PublicationEntry, and ProjectEntry.
+        \item Select a section title, pick an entry type, and start writing your section!
         \end{itemize}
-        {{#unless @last}}\vspace{1em}{{/unless}}
-    {{/each}}
-    {{/if}}
-
-    {{#if educations.length}}
-    % Education
-    \section*{\faGraduationCap\ Education}
-    {{#each educations}}
-        {\large\color{primary}\textbf{ {{degree}} in {{field}} }}\\
-        {\large\color{secondary}\textit{ {{school}} }}
-        \hfill {{startDate}} - {{#if current}}Present{{else}}{{endDate}}{{/if}}\\
-        \textit{ {{location}} }
-        {{#if gpa}}\\GPA: {{gpa}}{{/if}}
+        
+        % Education section
+        \section*{Education}
+        {{#each educations}}
+        \textbf{University of {{school}}} \hfill {{startDate}} -- {{#if current}}Present{{else}}{{endDate}}{{/if}}\\
+        {{degree}} in {{field}} \hfill {{location}}\\
+        {{#if gpa}}
+        \textbullet~GPA: {{gpa}}
+        {{/if}}
         {{#if achievements.length}}
-            \begin{itemize}[leftmargin=*]
+        \begin{itemize}[leftmargin=*, itemsep=0pt]
+        \item Coursework: {{achievements.[0]}}
+        {{#each achievements}}
+        {{#unless @first}}
+        \item {{this}}
+        {{/unless}}
+        {{/each}}
+        \end{itemize}
+        {{/if}}
+        \vspace{0.5em}
+        {{/each}}
+        
+        % Experience section
+        \section*{Experience}
+        {{#each experiences}}
+        \textbf{{{title}}} \hfill {{location}}\\
+        \textit{{{company}}} \hfill {{startDate}} -- {{#if current}}Present{{else}}{{endDate}}{{/if}}
+        {{#if description}}
+        \begin{itemize}[leftmargin=*, itemsep=0pt]
+        \item {{description}}
+        {{#each achievements}}
+        \item {{this}}
+        {{/each}}
+        \end{itemize}
+        {{/if}}
+        \vspace{0.5em}
+        {{/each}}
+        
+        % Publications section (if exists in data)
+        {{#if publications.length}}
+        \section*{Publications}
+        {{#each publications}}
+        \textbf{{{title}}} \hfill {{date}}\\
+        {{authors}}\\
+        \textit{{{journal}}}
+        {{#if doi}}
+        \href{https://doi.org/{{doi}}}{[DOI: {{doi}}]}
+        {{/if}}
+        \vspace{0.5em}
+        {{/each}}
+        {{/if}}
+        
+        % Projects section
+        {{#if projects.length}}
+        \section*{Projects}
+        {{#each projects}}
+        \textbf{{{title}}} {{#if url}}\href{{{url}}}{\small[Link]}{{/if}}\\
+        {{description}}
+        {{#if highlights.length}}
+        \begin{itemize}[leftmargin=*, itemsep=0pt]
+        {{#each highlights}}
+        \item {{this}}
+        {{/each}}
+        \end{itemize}
+        {{/if}}
+        \vspace{0.5em}
+        {{/each}}
+        {{/if}}
+        
+        \end{document}
+        `
+    },
+    {
+        id: 'minimal',
+        name: 'Minimal',
+        description: 'A clean and minimalist design that focuses on content',
+        preview: '/images/templates/minimal-preview.png',
+        features: ['Minimalist', 'Space-Efficient', 'Content-Focused', 'Elegant'],
+        template: String.raw`\documentclass[10pt, letterpaper]{article}
+            \usepackage[margin=1in]{geometry}
+            \usepackage{hyperref}
+            \usepackage{fontawesome5}
+            \usepackage{titlesec}
+            
+            % Minimal styling
+            \pagestyle{empty}
+            \titleformat{\section}{\Large\bfseries}{\thesection}{1em}{}[\titlerule]
+            \titlespacing{\section}{0pt}{12pt}{6pt}
+            
+            \begin{document}
+            % Header
+            \begin{center}
+                {\Huge\textbf{ {{firstName}} {{lastName}} }}\\[6pt]
+                {\large {{title}} }\\[6pt]
+                \href{mailto:{{email}}}{ {{email}} } $\cdot$
+                \href{tel:{{phone}}}{ {{phone}} } $\cdot$
+                {{location}}
+                {{#if linkedin}}
+                $\cdot$ \href{ {{linkedin}} }{\faLinkedin}
+                {{/if}}
+                {{#if website}}
+                $\cdot$ \href{ {{website}} }{\faGlobe}
+                {{/if}}
+            \end{center}
+
+            % Summary
+            {{#if summary}}
+            \section*{Summary}
+            {{summary}}
+            {{/if}}
+
+            % Experience
+            {{#if experiences.length}}
+            \section*{Experience}
+            {{#each experiences}}
+            \textbf{ {{title}} } $\cdot$ \textit{ {{company}} }\\
+            {{location}} $\cdot$ {{startDate}}{{#if current}} -- Present{{else}} -- {{endDate}}{{/if}}
+            \begin{itemize}
+                \item {{description}}
                 {{#each achievements}}
-                    \item {{this}}
+                \item {{this}}
                 {{/each}}
             \end{itemize}
-        {{/if}}
-        {{#unless @last}}\vspace{1em}{{/unless}}
-    {{/each}}
-    {{/if}}
-
-    {{#if skills.length}}
-    % Skills
-    \section*{\faLightbulb\ Skills}
-    {{#each skillsByCategory}}
-        {\color{primary}\textbf{ {{category}} :}} {{#each skills}}{{name}}{{#unless @last}}, {{/unless}}{{/each}}\\
-    {{/each}}
-    {{/if}}
-
-    {{#if projects.length}}
-    % Projects
-    \section*{\faRocket\ Projects}
-    {{#each projects}}
-        {\large\color{primary}\textbf{ {{title}} }}
-        {{#if url}}\href{ {{url}} }{[\faExternalLinkAlt]}{{/if}}\\
-        \begin{itemize}[leftmargin=*]
-            \item {{description}}
-            {{#each highlights}}
-                \item {{this}}
             {{/each}}
-            {{#if technologies.length}}
-                \item {\color{secondary}\textbf{Technologies:}} {{technologies}}
             {{/if}}
-        \end{itemize}
-        {{#unless @last}}\vspace{1em}{{/unless}}
-    {{/each}}
-    {{/if}}
-\end{document}`;
 
-const minimalTemplate = String.raw`\documentclass[10pt, letterpaper]{article}
-
-\usepackage[
-    ignoreheadfoot,
-    top=2cm,
-    bottom=2cm,
-    left=2cm,
-    right=2cm
-]{geometry}
-\usepackage{titlesec}
-\usepackage{xcolor}
-\usepackage{hyperref}
-\usepackage{enumitem}
-
-% Minimal styling
-\pagestyle{empty}
-\setlength{\parindent}{0pt}
-
-% Section formatting
-\titleformat{\section}
-    {\Large\bfseries}
-    {}{0em}
-    {}[\vspace{0.2em}\hrule\vspace{0.5em}]
-
-\begin{document}
-    % Header
-    \begin{center}
-        {\Large\bfseries {{firstName}} {{lastName}}}\\[0.3em]
-        {{title}}\\[0.3em]
-        \small{
-            {{email}} | {{phone}} | {{location}}
-            {{#if linkedin}} | \href{ {{linkedin}} }{LinkedIn}{{/if}}
-            {{#if website}} | \href{ {{website}} }{Website}{{/if}}
-        }
-    \end{center}
-
-    {{#if summary}}
-    % Summary
-    \section*{Summary}
-    {{summary}}
-    {{/if}}
-
-    {{#if experiences.length}}
-    % Experience
-    \section*{Experience}
-    {{#each experiences}}
-        \textbf{ {{title}} } \hfill {{startDate}} - {{#if current}}Present{{else}}{{endDate}}{{/if}}\\
-        \textit{ {{company}} } \hfill {{location}}\\[0.3em]
-        \begin{itemize}[leftmargin=*,nosep]
-            \item {{description}}
-            {{#each achievements}}
-                \item {{this}}
-            {{/each}}
-        \end{itemize}
-        {{#unless @last}}\vspace{0.8em}{{/unless}}
-    {{/each}}
-    {{/if}}
-
-    {{#if educations.length}}
-    % Education
-    \section*{Education}
-    {{#each educations}}
-        \textbf{ {{degree}} in {{field}} } \hfill {{startDate}} - {{#if current}}Present{{else}}{{endDate}}{{/if}}\\
-        \textit{ {{school}} } \hfill {{location}}
-        {{#if gpa}}\\GPA: {{gpa}}{{/if}}
-        {{#if achievements.length}}
-            \begin{itemize}[leftmargin=*,nosep]
+            % Education
+            {{#if educations.length}}
+            \section*{Education}
+            {{#each educations}}
+            \textbf{ {{school}} } $\cdot$ {{location}}\\
+            {{degree}} in {{field}}{{#if gpa}} $\cdot$ GPA: {{gpa}}{{/if}}\\
+            {{startDate}}{{#if current}} -- Present{{else}} -- {{endDate}}{{/if}}
+            {{#if achievements.length}}
+            \begin{itemize}
                 {{#each achievements}}
-                    \item {{this}}
+                \item {{this}}
                 {{/each}}
             \end{itemize}
-        {{/if}}
-        {{#unless @last}}\vspace{0.8em}{{/unless}}
-    {{/each}}
-    {{/if}}
-
-    {{#if skills.length}}
-    % Skills
-    \section*{Skills}
-    {{#each skillsByCategory}}
-        \textbf{ {{category}} :} {{#each skills}}{{name}}{{#unless @last}}, {{/unless}}{{/each}}\\
-    {{/each}}
-    {{/if}}
-
-    {{#if projects.length}}
-    % Projects
-    \section*{Projects}
-    {{#each projects}}
-        \textbf{ {{title}} }{{#if url}} \href{ {{url}} }{[Link]}{{/if}}\\
-        \begin{itemize}[leftmargin=*,nosep]
-            \item {{description}}
-            {{#each highlights}}
-                \item {{this}}
-            {{/each}}
-            {{#if technologies.length}}
-                \item \textbf{Technologies:} {{technologies}}
             {{/if}}
-        \end{itemize}
-        {{#unless @last}}\vspace{0.8em}{{/unless}}
-    {{/each}}
-    {{/if}}
-\end{document}`;
+            {{/each}}
+            {{/if}}
 
-export const templates = [
-  { 
-    id: 'modern', 
-    name: 'Modern', 
-    description: 'Clean and contemporary design',
-    template: modernTemplate,
-    preview: '/templates/modern-preview.png',
-    fallbackPreview: 'https://via.placeholder.com/300x400?text=Modern+Template',
-    features: ['Clean layout', 'Professional fonts', 'Minimalist design']
-  },
-  { 
-    id: 'professional', 
-    name: 'Professional', 
-    description: 'Traditional and elegant layout',
-    template: professionalTemplate,
-    preview: '/templates/professional-preview.png',
-    fallbackPreview: 'https://via.placeholder.com/300x400?text=Professional+Template',
-    features: ['Classic style', 'ATS-friendly', 'Structured sections']
-  },
-  { 
-    id: 'creative', 
-    name: 'Creative', 
-    description: 'Unique and eye-catching design',
-    template: creativeTemplate,
-    preview: '/templates/creative-preview.png',
-    fallbackPreview: 'https://via.placeholder.com/300x400?text=Creative+Template',
-    features: ['Bold colors', 'Custom sections', 'Visual elements']
-  },
-  { 
-    id: 'minimal', 
-    name: 'Minimal', 
-    description: 'Simple and straightforward presentation',
-    template: minimalTemplate,
-    preview: '/templates/minimal-preview.png',
-    fallbackPreview: 'https://via.placeholder.com/300x400?text=Minimal+Template',
-    features: ['Space-efficient', 'Easy to read', 'Focus on content']
-  }
+            % Skills
+            {{#if skills.length}}
+            \section*{Skills}
+            {{#each skillsByCategory}}
+            \textbf{ {{@key}} }: {{#each this}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}\\
+            {{/each}}
+            {{/if}}
+
+            \end{document}
+        `
+    }
 ];
 
-export type Template = typeof templates[0]; 
+export function getTemplate(id: string): ResumeTemplate {
+    const template = templates.find(t => t.id === id);
+    if (!template) {
+        throw new TemplateError(`Template with id '${id}' not found`);
+    }
+    return template;
+}
+
+export function processResumeTemplate(templateId: string, data: ResumeTemplateData): string {
+    try {
+        const template = getTemplate(templateId);
+        
+        // Process skills into categories if they exist
+        if (data.skills?.length) {
+            const skillsByCategory = data.skills.reduce((acc, skill) => {
+                if (!acc[skill.category]) {
+                    acc[skill.category] = [];
+                }
+                acc[skill.category].push(skill.name);
+                return acc;
+            }, {} as Record<string, string[]>);
+            
+            data = {
+                ...data,
+                skillsByCategory
+            };
+        }
+
+        return processTemplate(template.template, data);
+    } catch (error) {
+        if (error instanceof TemplateError) {
+            throw error;
+        }
+        throw new TemplateError(
+            'Failed to process resume template',
+            error instanceof Error ? error.message : undefined
+        );
+    }
+}
+
+export function validateTemplateData(data: ResumeTemplateData): void {
+    if (!data.personalInfo) {
+        throw new TemplateError('Missing personal information');
+    }
+
+    const requiredFields = ['firstName', 'lastName', 'email'] as const;
+    const missingFields = requiredFields.filter(field => !data.personalInfo[field]);
+    
+    if (missingFields.length > 0) {
+        throw new TemplateError(
+            'Missing required fields',
+            `The following fields are required: ${missingFields.join(', ')}`
+        );
+    }
+}
+
+export function getAllTemplates(): ResumeTemplate[] {
+    return templates;
+}
+
+export function getTemplatePreview(templateId: string): string {
+    const template = getTemplate(templateId);
+    return template.preview;
+}
+
+export function getTemplateFeatures(templateId: string): string[] {
+    const template = getTemplate(templateId);
+    return template.features;
+}
+
+export async function generateResume(templateId: string, data: ResumeTemplateData): Promise<string> {
+    try {
+        // Validate the data first
+        validateTemplateData(data);
+
+        // Process the template with the data
+        const processedTemplate = processResumeTemplate(templateId, data);
+
+        // Return the processed LaTeX content
+        return processedTemplate;
+    } catch (error) {
+        if (error instanceof TemplateError) {
+            throw error;
+        }
+        throw new TemplateError(
+            'Failed to generate resume',
+            error instanceof Error ? error.message : undefined
+        );
+    }
+}

@@ -276,7 +276,7 @@ export default function ResumeBuilder() {
   };
 
   const steps = [
-    { title: 'Templates', icon: '🎨' },     // Add Templates step
+    { title: 'Templates', icon: '' },     // Add Templates step
     { title: 'Personal Info', icon: '👤' },
     { title: 'Experience', icon: '💼' },
     { title: 'Education', icon: '🎓' },
@@ -705,26 +705,72 @@ export default function ResumeBuilder() {
 
     let content = template.template;
     
-    // Replace basic placeholders
-    content = content
-      .replace(/PLACEHOLDER_FIRSTNAME/g, personalInfo?.firstName || '')
-      .replace(/PLACEHOLDER_LASTNAME/g, personalInfo?.lastName || '')
-      .replace(/PLACEHOLDER_EMAIL/g, personalInfo?.email || '')
-      .replace(/PLACEHOLDER_PHONE/g, personalInfo?.phone || '')
-      .replace(/PLACEHOLDER_LOCATION/g, personalInfo?.location || '');
+    // Helper function to safely escape LaTeX special characters
+    const escapeLatex = (str: string = '') => {
+      return str.replace(/[&$%#_{}~^\\]/g, '\\$&')
+               .replace(/\n/g, '\\\\');  // Handle newlines
+    };
 
-    // Insert sections after the appropriate markers
-    if (personalInfo?.summary) {
-      content = content.replace(
-        '% Summary section will be added by the template processor',
-        `\\section{Summary}
-        \\begin{onecolentry}
-          ${personalInfo.summary}
-        \\end{onecolentry}`
-      );
-    }
+    // Process arrays (FOREACH loops)
+    content = content.replace(/\\FOREACH{([^}]+)}(.*?)\\ENDFOREACH/gs, (match: string, array: string, body: string) => {
+      const items = array.split('.').reduce((obj: any, key: string) => obj?.[key], {
+        personalInfo,
+        experiences,
+        education,
+        skills,
+        skillsByCategory: skills.reduce((acc: Record<string, string[]>, skill) => {
+          if (!acc[skill.category]) {
+            acc[skill.category] = [];
+          }
+          acc[skill.category].push(skill.name);
+          return acc;
+        }, {})
+      });
+      
+      if (!Array.isArray(items)) return '';
+      return items.map(item => {
+        let itemContent = body;
+        // Replace VAR tags within the loop
+        itemContent = itemContent.replace(/\\VAR{([^}]+)}/g, (m: string, path: string) => {
+          const value = path.split('.').reduce((o: any, k: string) => o?.[k], item);
+          return escapeLatex(value || '');
+        });
+        return itemContent;
+      }).join('\n');
+    });
 
-    // Add other sections similarly...
+    // Process IF conditions
+    content = content.replace(/\\IF{([^}]+)}(.*?)\\ENDIF/gs, (match: string, condition: string, body: string) => {
+      const value = condition.split('.').reduce((obj: any, key: string) => obj?.[key], {
+        personalInfo,
+        experiences,
+        education,
+        skills
+      });
+      return value ? body : '';
+    });
+
+    // Process UNLESS conditions
+    content = content.replace(/\\UNLESS{([^}]+)}(.*?)\\ENDUNLESS/gs, (match: string, condition: string, body: string) => {
+      const value = condition.split('.').reduce((obj: any, key: string) => obj?.[key], {
+        personalInfo,
+        experiences,
+        education,
+        skills
+      });
+      return value ? '' : body;
+    });
+
+    // Replace remaining VAR tags
+    content = content.replace(/\\VAR{([^}]+)}/g, (match: string, path: string) => {
+      const value = path.split('.').reduce((obj: any, key: string) => obj?.[key], {
+        personalInfo,
+        experiences,
+        education,
+        skills
+      });
+      return escapeLatex(value || '');
+    });
 
     return content;
   };

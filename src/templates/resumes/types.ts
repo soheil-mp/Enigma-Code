@@ -1,67 +1,56 @@
-export interface ResumeTemplate {
-  id: string;
-  name: string;
-  description: string;
-  preview: string;
-  features: string[];
-  template: string;
-}
-
-export interface ResumeTemplateData {
+export interface ResumeData {
   personalInfo: {
-    firstName: string;
-    lastName: string;
+    name: string;
     email: string;
-    phone?: string;
-    location?: string;
-    title?: string;
-    summary?: string;
-    linkedin?: string;
+    phone: string;
+    location: string;
     website?: string;
+    linkedin?: string;
     github?: string;
   };
-  experiences?: Array<{
-    title: string;
+  summary?: string;
+  experience: {
     company: string;
+    position: string;
     location: string;
     startDate: string;
-    endDate?: string;
-    current: boolean;
-    description: string;
-    achievements: string[];
-  }>;
-  educations?: Array<{
-    school: string;
+    endDate: string;
+    highlights: string[];
+  }[];
+  education: {
+    institution: string;
     degree: string;
     field: string;
     location: string;
     startDate: string;
-    endDate?: string;
-    current: boolean;
+    endDate: string;
     gpa?: string;
-    achievements: string[];
-  }>;
-  skills?: Array<{
-    name: string;
-    level: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert';
+  }[];
+  skills: {
     category: string;
-  }>;
-  projects?: Array<{
-    title: string;
+    items: string[];
+  }[];
+  projects?: {
+    name: string;
     description: string;
     technologies: string[];
-    url?: string;
-    startDate: string;
-    endDate?: string;
-    current: boolean;
-    highlights: string[];
-  }>;
-  publications?: Array<{
-    title: string;
-    authors: string;
-    journal: string;
+    link?: string;
+  }[];
+  certifications?: {
+    name: string;
+    issuer: string;
     date: string;
-    doi?: string;
-  }>;
-  skillsByCategory?: Record<string, string[]>;
+    link?: string;
+  }[];
+}
+
+export type TemplateId = 'professional';
+
+export interface TemplateConfig {
+  id: TemplateId;
+  name: string;
+  description: string;
+  preview: string;
+  template: string;
+  features: string[];
 } 

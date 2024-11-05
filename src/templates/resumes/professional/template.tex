@@ -1,131 +1,102 @@
-% Professional Resume Template
-\documentclass[10pt, letterpaper]{article}
+\documentclass[11pt,letterpaper]{article}
 
-% Packages
-\usepackage[
-    ignoreheadfoot,
-    top=2 cm,
-    bottom=2 cm,
-    left=2 cm,
-    right=2 cm,
-    footskip=1.0 cm
-]{geometry}
-\usepackage{titlesec}
-\usepackage{tabularx}
-\usepackage{array}
-\usepackage[dvipsnames]{xcolor}
-\definecolor{primaryColor}{RGB}{0, 79, 144}
+% Required packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{hyperref}
 \usepackage{enumitem}
+\usepackage{titlesec}
 \usepackage{fontawesome5}
-\usepackage{amsmath}
-\usepackage[
-    pdftitle={Resume},
+\usepackage{xcolor}
+
+% Define colors
+\definecolor{primary}{RGB}{0, 79, 144}
+\definecolor{secondary}{RGB}{100, 100, 100}
+
+% Configure hyperlinks
+\hypersetup{
     colorlinks=true,
-    urlcolor=primaryColor
-]{hyperref}
-\usepackage[pscoord]{eso-pic}
-\usepackage{calc}
-\usepackage{bookmark}
-\usepackage{lastpage}
-\usepackage{changepage}
-\usepackage{paracol}
-\usepackage{ifthen}
-\usepackage{needspace}
-\usepackage{iftex}
-
-% ATS Readability
-\ifPDFTeX
-    \input{glyphtounicode}
-    \pdfgentounicode=1
-    \usepackage[utf8]{inputenc}
-    \usepackage{lmodern}
-\fi
-
-% Settings
-\AtBeginEnvironment{adjustwidth}{\partopsep0pt}
-\pagestyle{empty}
-\setcounter{secnumdepth}{0}
-\setlength{\parindent}{0pt}
-\setlength{\topskip}{0pt}
-\setlength{\columnsep}{0cm}
-
-% Section formatting
-\titleformat{\section}{\needspace{4\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
-\titlespacing{\section}{-1pt}{0.3cm}{0.2cm}
-
-% Custom bullet points and environments
-\renewcommand\labelitemi{$\circ$}
-
-\newenvironment{highlights}{
-    \begin{itemize}[
-        topsep=0.10cm,
-        parsep=0.10cm,
-        partopsep=0pt,
-        itemsep=0pt,
-        leftmargin=0.4cm + 10pt
-    ]
-}{
-    \end{itemize}
+    linkcolor=primary,
+    urlcolor=primary
 }
 
-\newenvironment{onecolentry}{
-    \begin{adjustwidth}{0.2cm + 0.00001cm}{0.2cm + 0.00001cm}
-}{
-    \end{adjustwidth}
-}
+% Custom section styling
+\titleformat{\section}
+    {\Large\bfseries\color{primary}}
+    {}{0em}
+    {}[\titlerule]
+\titlespacing*{\section}{0pt}{12pt}{8pt}
 
-\newenvironment{twocolentry}[1]{
-    \onecolentry
-    \def\secondColumn{#1}
-    \setcolumnwidth{\fill, 4.5cm}
-    \begin{paracol}{2}
-}{
-    \switchcolumn \raggedleft \secondColumn
-    \end{paracol}
-    \endonecolentry
-}
-
-\newenvironment{header}{
-    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.5}
-}{
-    \par\kern\topsep
-}
-
-% Commands
-\let\hrefWithoutArrow\href
-\renewcommand{\href}[2]{\hrefWithoutArrow{#1}{#2\,\raisebox{.15ex}{\footnotesize \faExternalLink*}}}
-
+% Begin document
 \begin{document}
-    \newcommand{\AND}{\unskip\cleaders\hbox{$\cdot$}\hskip2em plus1em\ignorespaces}
 
-    \begin{header}
-        \textbf{\fontsize{24pt}{24pt}\selectfont PLACEHOLDER_FIRSTNAME PLACEHOLDER_LASTNAME}
+% Header
+{\huge\bfseries\color{primary}\VAR{personalInfo.name}\par}
+\vspace{0.25em}
+\begin{center}
+\faEnvelope\ \href{mailto:\VAR{personalInfo.email}}{\VAR{personalInfo.email}} 
+\textbullet\ \faPhone\ \VAR{personalInfo.phone} 
+\textbullet\ \faMapMarker\ \VAR{personalInfo.location}
 
-        \vspace{0.3cm}
+\IFNOTEMPTY{personalInfo.linkedin}{\faLinkedin\ \href{https://linkedin.com/in/\VAR{personalInfo.linkedin}}{\VAR{personalInfo.linkedin}}}
+\IFNOTEMPTY{personalInfo.github}{\textbullet\ \faGithub\ \href{https://github.com/\VAR{personalInfo.github}}{\VAR{personalInfo.github}}}
+\end{center}
 
-        \normalsize
-        \mbox{{\color{black}\footnotesize\faMapMarker*}\hspace*{0.13cm}PLACEHOLDER_LOCATION}%
-        \kern 0.25cm%
-        \AND%
-        \kern 0.25cm%
-        \mbox{\hrefWithoutArrow{mailto:PLACEHOLDER_EMAIL}{\color{black}{\footnotesize\faEnvelope[regular]}\hspace*{0.13cm}PLACEHOLDER_EMAIL}}%
-        \kern 0.25cm%
-        \AND%
-        \kern 0.25cm%
-        \mbox{\hrefWithoutArrow{tel:PLACEHOLDER_PHONE}{\color{black}{\footnotesize\faPhone*}\hspace*{0.13cm}PLACEHOLDER_PHONE}}%
-        % Website and LinkedIn will be added by the template processor
-    \end{header}
+% Summary
+\IFNOTEMPTY{summary}{
+    \section{Summary}
+    \VAR{summary}
+}
 
-    \vspace{0.3cm}
+% Experience Section
+\section{Professional Experience}
+\FOREACH{experience}{
+    {\textbf{\VAR{company}}} \hfill {\VAR{location}}\\
+    {\textit{\VAR{position}}} \hfill {\VAR{startDate} -- \VAR{endDate}}
+    \begin{itemize}[leftmargin=*,nosep]
+        \FOREACH{highlights}{
+            \item \VAR{.}
+        }\ENDFOREACH
+    \end{itemize}
+    \vspace{0.5em}
+}\ENDFOREACH
 
-    % Summary section will be added by the template processor
-    
-    % Experience section will be added by the template processor
-    
-    % Education section will be added by the template processor
-    
-    % Skills section will be added by the template processor
-    
-    % Projects section will be added by the template processor
+% Education Section
+\section{Education}
+\FOREACH{education}{
+    {\textbf{\VAR{institution}}} \hfill {\VAR{location}}\\
+    {\textit{\VAR{degree}}} in \VAR{field} \hfill {\VAR{startDate} -- \VAR{endDate}}
+    \IFNOTEMPTY{gpa}{\\GPA: \VAR{gpa}}
+    \vspace{0.5em}
+}\ENDFOREACH
+
+% Skills Section
+\section{Skills}
+\FOREACH{skills}{
+    \textbf{\VAR{category}:} \VAR{items}\\[0.3em]
+}\ENDFOREACH
+
+% Projects Section
+\IFNOTEMPTY{projects}{
+    \section{Projects}
+    \FOREACH{projects}{
+        \textbf{\VAR{name}} 
+        \IFNOTEMPTY{link}{\hfill \href{\VAR{link}}{Project Link}}\\
+        \textit{Technologies:} \VAR{technologies}\\
+        \VAR{description}
+        \vspace{0.5em}
+    }\ENDFOREACH
+}
+
+% Certifications Section
+\IFNOTEMPTY{certifications}{
+    \section{Certifications}
+    \FOREACH{certifications}{
+        \textbf{\VAR{name}} -- \textit{\VAR{issuer}} \hfill \VAR{date}
+        \IFNOTEMPTY{link}{\\{\small\href{\VAR{link}}{View Certificate}}}
+        \vspace{0.5em}
+    }\ENDFOREACH
+}
 
 \end{document} 

@@ -925,6 +925,65 @@ ${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
     return (completedSections / Object.keys(sections).length) * 100;
   };
 
+  const handleApplyFeedback = (section: string, suggestion: string) => {
+    switch (section) {
+      case 'summary':
+        setPersonalInfo(prev => ({ ...prev, summary: suggestion }));
+        break;
+      case 'experience':
+        if (experiences.length > 0) {
+          const updatedExperiences = [...experiences];
+          // Update the achievements array instead of description
+          updatedExperiences[0] = {
+            ...updatedExperiences[0],
+            achievements: [suggestion, ...updatedExperiences[0].achievements]
+          };
+          setExperiences(updatedExperiences);
+        }
+        break;
+      case 'skills':
+        // Create a new skill with the suggestion
+        const newSkill: Skill = {
+          id: crypto.randomUUID(),
+          name: suggestion,
+          level: 'Intermediate',
+          category: 'Technical'
+        };
+        setSkills(prev => [...prev, newSkill]);
+        break;
+      case 'education':
+        if (education.length > 0) {
+          const updatedEducation = [...education];
+          // Update the achievements array instead of trying to set description
+          updatedEducation[0] = {
+            ...updatedEducation[0],
+            achievements: [suggestion, ...updatedEducation[0].achievements]
+          };
+          setEducation(updatedEducation);
+        }
+        break;
+      case 'projects':
+        if (projects.length > 0) {
+          const updatedProjects = [...projects];
+          updatedProjects[0] = {
+            ...updatedProjects[0],
+            description: suggestion
+          };
+          setProjects(updatedProjects);
+        }
+        break;
+      case 'language':
+        // For language improvements, find and replace the text in experience descriptions
+        setExperiences(prev => prev.map(exp => ({
+          ...exp,
+          achievements: exp.achievements.map(achievement => 
+            achievement === suggestion.text ? suggestion : achievement
+          )
+        })));
+        break;
+    }
+  };
+
   if (status === 'loading') {
     return <LoadingSpinner />;
   }
@@ -2488,20 +2547,7 @@ ${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
                           certifications,
                           languages
                         }}
-                        onApplyFeedback={(section, suggestion) => {
-                          switch (section) {
-                            case 'summary':
-                              setPersonalInfo(prev => ({ ...prev, summary: suggestion }));
-                              break;
-                            case 'experience':
-                              // Handle experience suggestions
-                              break;
-                            case 'skills':
-                              // Handle skills suggestions
-                              break;
-                            // Add other cases as needed
-                          }
-                        }}
+                        onApplyFeedback={handleApplyFeedback}
                       />
                     </div>
                   </motion.div>

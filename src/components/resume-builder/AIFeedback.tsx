@@ -135,7 +135,7 @@ export default function AIFeedback({ resumeData, onApplyFeedback }: AIFeedbackPr
             </div>
 
             {/* Language Improvements */}
-            {feedback.languageImprovements && feedback.languageImprovements.length > 0 && (
+            {feedback?.languageImprovements && Array.isArray(feedback.languageImprovements) && feedback.languageImprovements.length > 0 && (
               <div className="border-t pt-4">
                 <h4 className="text-md font-medium mb-3">Language Improvements</h4>
                 <div className="space-y-3">
@@ -151,14 +151,14 @@ export default function AIFeedback({ resumeData, onApplyFeedback }: AIFeedbackPr
             )}
 
             {/* Competitive Analysis */}
-            {feedback.competitiveAnalysis && (
+            {feedback?.competitiveAnalysis && (
               <div className="border-t pt-4">
                 <h4 className="text-md font-medium mb-3">Industry Comparison</h4>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <h5 className="text-sm font-medium text-green-600 mb-2">Strengths</h5>
                     <ul className="list-disc list-inside text-sm space-y-1">
-                      {feedback.competitiveAnalysis.strengths.map((strength, index) => (
+                      {feedback.competitiveAnalysis.strengths?.map((strength, index) => (
                         <li key={index} className="text-gray-700">{strength}</li>
                       ))}
                     </ul>
@@ -166,15 +166,17 @@ export default function AIFeedback({ resumeData, onApplyFeedback }: AIFeedbackPr
                   <div>
                     <h5 className="text-sm font-medium text-red-600 mb-2">Areas to Improve</h5>
                     <ul className="list-disc list-inside text-sm space-y-1">
-                      {feedback.competitiveAnalysis.gaps.map((gap, index) => (
+                      {feedback.competitiveAnalysis.gaps?.map((gap, index) => (
                         <li key={index} className="text-gray-700">{gap}</li>
                       ))}
                     </ul>
                   </div>
                 </div>
-                <p className="text-sm text-gray-700 mt-4">
-                  {feedback.competitiveAnalysis.industryComparison}
-                </p>
+                {feedback.competitiveAnalysis.industryComparison && (
+                  <p className="text-sm text-gray-700 mt-4">
+                    {feedback.competitiveAnalysis.industryComparison}
+                  </p>
+                )}
               </div>
             )}
           </motion.div>

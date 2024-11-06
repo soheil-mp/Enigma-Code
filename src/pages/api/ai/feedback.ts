@@ -40,51 +40,117 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const { content, industry = 'software' } = req.body;
 
-    const systemPrompt = `You are an expert resume reviewer and career coach with deep knowledge of ${industry} industry standards.
-Analyze the resume content and provide detailed feedback in the following areas:
+    const resumeContext = {
+      fullName: `${content.personalInfo?.firstName || ''} ${content.personalInfo?.lastName || ''}`.trim(),
+      currentRole: content.personalInfo?.title || '',
+      summary: content.personalInfo?.summary || '',
+      experience: content.experiences?.map((exp: any) => ({
+        role: exp.title,
+        company: exp.company,
+        duration: `${exp.startDate} - ${exp.current ? 'Present' : exp.endDate}`,
+        description: exp.description,
+        achievements: exp.achievements
+      })),
+      skills: content.skills?.map((skill: any) => ({
+        name: skill.name,
+        category: skill.category,
+        level: skill.level
+      })),
+      education: content.education?.map((edu: any) => ({
+        degree: edu.degree,
+        institution: edu.institution,
+        graduationYear: edu.graduationYear
+      })),
+      projects: content.projects?.map((project: any) => ({
+        name: project.name,
+        description: project.description,
+        technologies: project.technologies
+      }))
+    };
 
-1. Section-by-section analysis (score out of 100 and specific improvements)
-2. Impact assessment of achievements
-3. Language and phrasing suggestions
-4. Competitive analysis against industry standards, including:
-   - At least 3 specific strengths
-   - At least 3 areas for improvement
-   - A brief industry comparison statement
+    const systemPrompt = `You are an expert resume writer and career coach with deep knowledge of ${industry} industry standards.
+Your task is to analyze the resume and provide READY-TO-USE content improvements.
 
-Your response MUST include arrays of strengths and gaps in the competitiveAnalysis section.
-Format the response exactly as specified in the JSON structure.`;
+Guidelines:
+1. For each section, provide actual rewritten content, not instructions
+2. Use the candidate's real experience and achievements
+3. Maintain professional tone while improving impact
+4. Include specific metrics and achievements from their experience
+5. Keep the candidate's original information but enhance the presentation
 
-    const userPrompt = `Analyze this resume content and provide structured feedback:
+When suggesting improvements:
+- Generate complete, ready-to-use text that can directly replace existing content
+- Include specific details from their actual experience
+- Maintain the same facts but present them more effectively
+- For summary suggestions, write complete summary paragraphs
+- For experience suggestions, write complete bullet points
+- For skills suggestions, write complete skill descriptions`;
 
-${JSON.stringify(content, null, 2)}
+    const userPrompt = `Analyze this resume and provide ready-to-use content improvements:
+
+${JSON.stringify(resumeContext, null, 2)}
 
 Provide feedback in this exact JSON structure:
 {
   "overallScore": number,
   "sections": {
-    "summary": { "score": number, "feedback": string, "suggestions": string[] },
-    "experience": { "score": number, "feedback": string, "suggestions": string[] },
-    "skills": { "score": number, "feedback": string, "suggestions": string[] },
-    "education": { "score": number, "feedback": string, "suggestions": string[] }
+    "summary": {
+      "score": number,
+      "feedback": "specific feedback",
+      "suggestions": [
+        "Complete, ready-to-use professional summary incorporating their actual experience",
+        "Alternative summary highlighting different aspects of their background"
+      ]
+    },
+    "experience": {
+      "score": number,
+      "feedback": "specific feedback",
+      "suggestions": [
+        "Rewritten bullet point with actual metrics and achievements",
+        "Enhanced description of real accomplishments"
+      ]
+    },
+    "skills": {
+      "score": number,
+      "feedback": "specific feedback",
+      "suggestions": [
+        "Reorganized skill section with actual technologies",
+        "Alternative skill grouping based on their real expertise"
+      ]
+    },
+    "education": {
+      "score": number,
+      "feedback": "specific feedback",
+      "suggestions": [
+        "Improved presentation of actual educational background",
+        "Enhanced format for academic achievements"
+      ]
+    }
   },
   "languageImprovements": [
-    { "text": string, "suggestion": string, "reason": string }
+    {
+      "text": "original text from their resume",
+      "suggestion": "improved version maintaining same facts",
+      "reason": "explanation of the improvement"
+    }
   ],
   "competitiveAnalysis": {
-    "strengths": string[],
-    "gaps": string[],
-    "industryComparison": string
+    "strengths": ["actual strength from their experience"],
+    "gaps": ["specific improvement area based on their background"],
+    "industryComparison": "comparison based on their actual experience"
   }
-}`;
+}
+
+Important: All suggestions must be complete, ready-to-use content based on their actual experience, not instructions or placeholders.`;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt }
       ],
-      temperature: 0.7,
-      max_tokens: 1500,
+      temperature: 0.5,
+      max_tokens: 2000,
     });
 
     const feedbackContent = JSON.parse(completion.choices[0].message.content || '{}');

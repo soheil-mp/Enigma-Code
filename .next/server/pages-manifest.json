@@ -3,9 +3,9 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/dashboard": "pages/dashboard.js",
-  "/api/auth/[...nextauth]": "pages/api/auth/[...nextauth].js",
   "/api/resumes/load": "pages/api/resumes/load.js",
+  "/api/auth/[...nextauth]": "pages/api/auth/[...nextauth].js",
+  "/api/ai/feedback": "pages/api/ai/feedback.js",
   "/api/resumes/save": "pages/api/resumes/save.js",
-  "/resume-builder": "pages/resume-builder.js",
-  "/api/ai/feedback": "pages/api/ai/feedback.js"
+  "/resume-builder": "pages/resume-builder.js"
 }

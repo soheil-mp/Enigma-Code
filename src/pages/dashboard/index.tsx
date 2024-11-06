@@ -68,42 +68,42 @@ export default function Dashboard() {
   return (
     <DashboardLayout>
       <div className="max-w-7xl mx-auto space-y-8 px-4 sm:px-6">
-        {/* Welcome Section */}
+        {/* Welcome Section - Enhanced with better gradients and animations */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mt-4 relative"
         >
-          <div className="relative bg-white rounded-[24px] p-8 shadow-sm overflow-hidden">
-            {/* Decorative elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-blue-500/10 to-cyan-500/10 rounded-full -ml-32 -mb-32 blur-3xl"></div>
+          <div className="relative bg-white/90 backdrop-blur-xl rounded-[32px] p-8 shadow-xl border border-white/20 overflow-hidden">
+            {/* Enhanced decorative elements */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-full -mr-48 -mt-48 blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-blue-500/20 via-cyan-500/20 to-teal-500/20 rounded-full -ml-48 -mb-48 blur-3xl"></div>
 
             <div className="relative">
-              {/* Welcome Text with enhanced animation */}
+              {/* Welcome Text with enhanced animation and typography */}
               <motion.div 
-                className="flex items-start gap-4 mb-8"
+                className="flex items-start gap-6"
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.2 }}
               >
                 <motion.div 
-                  className="w-12 h-12 bg-[#EEF2FF] rounded-2xl flex items-center justify-center"
+                  className="w-16 h-16 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl flex items-center justify-center shadow-lg"
                   whileHover={{ scale: 1.1, rotate: 10 }}
                   whileTap={{ scale: 0.9 }}
                 >
-                  <span className="text-2xl">👋</span>
+                  <span className="text-3xl">👋</span>
                 </motion.div>
                 <div>
                   <motion.h2 
-                    className="text-[28px] font-semibold"
+                    className="text-[32px] font-bold"
                     initial={{ y: -20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.3 }}
                   >
-                    <span className="text-[#1F2937] block">Ready to shine,</span>
+                    <span className="text-gray-900 block">Welcome back,</span>
                     <motion.span 
-                      className="text-[#6366F1] block mt-1"
+                      className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent block mt-1"
                       initial={{ x: -20, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       transition={{ delay: 0.4 }}
@@ -112,40 +112,59 @@ export default function Dashboard() {
                     </motion.span>
                   </motion.h2>
                   <motion.p 
-                    className="mt-2 text-[#4B5563] text-base"
+                    className="mt-2 text-gray-600 text-lg"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
                   >
-                    Your journey to success starts here. Let's make your dream job a reality!
+                    Let's make your dream job a reality today.
                   </motion.p>
                 </div>
               </motion.div>
 
-              {/* Quick Stats with hover effects */}
-              <div className="grid grid-cols-3 gap-6">
+              {/* Quick Stats with enhanced design */}
+              <div className="grid grid-cols-3 gap-6 mt-8">
                 {[
                   { 
                     title: 'Weekly Progress', 
                     value: '+25%', 
-                    bg: 'bg-[#EEF2FF]', 
-                    hover: 'hover:bg-[#E0E7FF]',
-                    tooltip: 'Your progress increased by 25% this week! Keep up the great work!' 
+                    bg: 'bg-gradient-to-br from-indigo-50 to-purple-50', 
+                    border: 'border-indigo-100',
+                    icon: '📈',
+                    tooltip: 'Your progress increased by 25% this week!' 
                   },
-                  { title: 'Active Applications', value: '12', bg: 'bg-[#F5F3FF]', hover: 'hover:bg-[#EDE9FE]', tooltip: 'You have 12 active job applications.' },
-                  { title: 'Interview Success', value: '85%', bg: 'bg-[#ECFDF5]', hover: 'hover:bg-[#D1FAE5]', tooltip: 'You have a success rate of 85% in interviews.' }
+                  { 
+                    title: 'Active Applications', 
+                    value: '12', 
+                    bg: 'bg-gradient-to-br from-pink-50 to-rose-50', 
+                    border: 'border-pink-100',
+                    icon: '📝',
+                    tooltip: 'You have 12 active job applications.' 
+                  },
+                  { 
+                    title: 'Interview Success', 
+                    value: '85%', 
+                    bg: 'bg-gradient-to-br from-emerald-50 to-teal-50', 
+                    border: 'border-emerald-100',
+                    icon: '🎯',
+                    tooltip: 'Your interview success rate is 85%!' 
+                  }
                 ].map((stat, index) => (
                   <Tooltip key={stat.title} content={stat.tooltip} placement="top">
                     <motion.div
-                      key={stat.title}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.6 + index * 0.1 }}
-                      whileHover={{ scale: 1.02 }}
-                      className={`${stat.bg} ${stat.hover} rounded-2xl px-5 py-4 transition-all duration-200 cursor-pointer`}
+                      whileHover={{ scale: 1.02, y: -4 }}
+                      className={`${stat.bg} backdrop-blur-xl rounded-2xl px-6 py-5 border ${stat.border} shadow-lg shadow-gray-100/20 transition-all duration-200`}
                     >
-                      <div className="text-sm text-[#4B5563]">{stat.title}</div>
-                      <div className="mt-1 text-xl font-semibold text-[#1F2937]">{stat.value}</div>
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="text-2xl">{stat.icon}</span>
+                        <div className="text-sm text-gray-600 font-medium">{stat.title}</div>
+                      </div>
+                      <div className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                        {stat.value}
+                      </div>
                     </motion.div>
                   </Tooltip>
                 ))}
@@ -154,7 +173,7 @@ export default function Dashboard() {
           </div>
         </motion.div>
 
-        {/* Tools Grid with enhanced interactions */}
+        {/* Tools Grid with enhanced design */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {tools.map((tool, index) => (
             <motion.div 
@@ -162,44 +181,40 @@ export default function Dashboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 + index * 0.1 }}
-              whileHover={{ y: -4 }}
-              onHoverStart={() => setHoveredTool(tool.title)}
-              onHoverEnd={() => setHoveredTool(null)}
-              className={`relative bg-white rounded-[24px] p-6 shadow-sm overflow-hidden ${tool.hoverEffect} transition-all duration-300`}
+              whileHover={{ y: -8, scale: 1.02 }}
+              className="relative bg-white/90 backdrop-blur-xl rounded-[24px] p-6 shadow-xl border border-white/20 overflow-hidden group"
             >
-              {/* Background gradient */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${tool.bgGradient} opacity-50`}></div>
+              {/* Enhanced background gradient */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${tool.bgGradient} opacity-30 group-hover:opacity-50 transition-opacity duration-300`}></div>
               
               <div className="relative">
                 <motion.div 
-                  className={`w-10 h-10 ${tool.iconBg} rounded-xl flex items-center justify-center mb-4`}
-                  whileHover={{ scale: 1.1, rotate: 10 }}
+                  className={`w-12 h-12 ${tool.iconBg} rounded-2xl flex items-center justify-center shadow-lg mb-4 group-hover:scale-110 transition-transform duration-300`}
+                  whileHover={{ rotate: 10 }}
                 >
                   <span className="text-2xl">{tool.icon}</span>
                 </motion.div>
-                <h3 className="text-[#1F2937] text-lg font-semibold mb-2">{tool.title}</h3>
-                <p className="text-[#4B5563] text-sm mb-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{tool.title}</h3>
+                <p className="text-gray-600 text-sm mb-6">
                   {tool.description}
                 </p>
                 <Link href={tool.href}>
                   <motion.button 
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full bg-[#6366F1] hover:bg-[#4F46E5] text-white px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 flex items-center justify-center group"
+                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-3 rounded-xl text-sm font-medium shadow-lg shadow-indigo-500/20 hover:shadow-xl hover:shadow-indigo-500/30 transition-all duration-200 flex items-center justify-center group"
                   >
                     Get Started
                     <motion.svg 
                       className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" 
                       viewBox="0 0 24 24" 
                       fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
-                      <path 
-                        d="M9 5l7 7-7 7" 
-                        stroke="currentColor" 
-                        strokeWidth={2} 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round"
-                      />
+                      <path d="M5 12h14M12 5l7 7-7 7" />
                     </motion.svg>
                   </motion.button>
                 </Link>

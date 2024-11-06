@@ -20,10 +20,10 @@ self.__BUILD_MANIFEST = {
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/resume-builder": [
+    "/dashboard": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/resume-builder.js"
+      "static/chunks/pages/dashboard.js"
     ]
   },
   "ampFirstPages": []

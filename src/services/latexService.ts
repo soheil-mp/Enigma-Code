@@ -1,51 +1,44 @@
-import { CompilationError, TemplateError } from '@/utils/errors';
+import axios from 'axios';
 
-export async function generatePDF(latexContent: string): Promise<Blob> {
+// Update this to your actual LaTeX service URL
+const LATEX_SERVICE_URL = process.env.NEXT_PUBLIC_LATEX_SERVICE_URL || '/api/latex';
+
+export const generatePDF = async (latexContent: string): Promise<Blob> => {
   try {
-    if (!latexContent.trim()) {
-      throw new TemplateError('Empty LaTeX content');
+    // First validate that we have content
+    if (!latexContent) {
+      throw new Error('No LaTeX content provided');
     }
 
-    const cleanedContent = latexContent
-      .replace(/\r\n/g, '\n')  // Normalize line endings
-      .replace(/\n{3,}/g, '\n\n');  // Remove excessive blank lines
-
-    const response = await fetch('/api/latex/compile', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ latex: cleanedContent }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      if (errorData.error) {
-        throw new CompilationError(
-          errorData.error.message,
-          errorData.error.details
-        );
+    const response = await axios.post(LATEX_SERVICE_URL, 
+      { content: latexContent },
+      { 
+        responseType: 'blob',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        timeout: 30000 // 30 second timeout
       }
+    );
+
+    if (response.status !== 200) {
       throw new Error('Failed to generate PDF');
     }
 
-    return await response.blob();
+    return new Blob([response.data], { type: 'application/pdf' });
   } catch (error) {
-    console.error('PDF generation error:', error);
-    if (error instanceof Error) {
-      throw error;
-    }
-    throw new Error('Unknown error occurred during PDF generation');
+    console.error('PDF Generation Error:', error);
+    throw new Error('Failed to generate PDF. Please try again.');
   }
-}
+};
 
-export function downloadPDF(blob: Blob, filename: string) {
+export const downloadPDF = (blob: Blob, filename: string) => {
   const url = window.URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.setAttribute('download', filename);
+  link.download = filename;
   document.body.appendChild(link);
   link.click();
-  link.remove();
+  document.body.removeChild(link);
   window.URL.revokeObjectURL(url);
-} 
+}; 

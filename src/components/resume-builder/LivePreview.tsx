@@ -1,111 +1,315 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import LoadingSpinner from '../LoadingSpinner';
+
+interface PersonalInfo {
+  firstName: string;
+  lastName: string;
+  title?: string;
+  email: string;
+  phone: string;
+  location: string;
+  summary?: string;
+  linkedin?: string;
+  website?: string;
+}
+
+interface Experience {
+  company: string;
+  title: string;
+  location: string;
+  startDate: string;
+  endDate: string;
+  current: boolean;
+  description?: string;
+  achievements: string[];
+}
+
+interface Education {
+  school: string;
+  degree: string;
+  field: string;
+  location: string;
+  startDate: string;
+  endDate: string;
+  current: boolean;
+  gpa?: string;
+  achievements?: string[];
+}
+
+interface Skill {
+  category: string;
+  name: string;
+  level: string;
+}
+
+interface Language {
+  name: string;
+  proficiency: string;
+}
+
+interface Project {
+  name: string;
+  title: string;
+  description?: string;
+  url?: string;
+  startDate: string;
+  endDate?: string;
+  current: boolean;
+  technologies?: string[];
+  highlights?: string[];
+}
+
+interface Certification {
+  name: string;
+  issuer: string;
+  issueDate: string;
+  expiryDate?: string;
+  credentialId?: string;
+  url?: string;
+}
 
 interface LivePreviewProps {
   latexContent: string;
+  formData: {
+    personalInfo: PersonalInfo;
+    experiences?: Experience[];
+    education?: Education[];
+    skills?: Skill[];
+    languages?: Language[];
+    projects?: Project[];
+    certifications?: Certification[];
+  };
   onDownloadPDF: () => void;
 }
 
-export default function LivePreview({ latexContent, onDownloadPDF }: LivePreviewProps) {
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const generatePreview = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        console.log('Sending LaTeX content to compile:', latexContent);
-        
-        const response = await fetch('/api/latex/compile', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ latex: latexContent }),
-        });
-
-        console.log('Compile response status:', response.status);
-
-        if (!response.ok) {
-          let errorMessage: string;
-          try {
-            const errorData = await response.json();
-            errorMessage = errorData.message || 'Failed to generate PDF';
-          } catch {
-            errorMessage = response.statusText || 'Failed to generate PDF';
-          }
-          throw new Error(errorMessage);
-        }
-
-        const contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/pdf')) {
-          throw new Error('Invalid response format');
-        }
-
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        setPdfUrl(url);
-      } catch (error) {
-        console.error('Error details:', error);
-        setError(error instanceof Error ? error.message : 'Failed to generate preview');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (latexContent) {
-      generatePreview();
-    }
-
-    return () => {
-      if (pdfUrl) {
-        URL.revokeObjectURL(pdfUrl);
-      }
-    };
-  }, [latexContent]);
+export default function LivePreview({ formData, latexContent, onDownloadPDF }: LivePreviewProps) {
+  // Helper function to safely check array length
+  const hasItems = (arr: any[] | undefined) => arr && arr.length > 0;
 
   return (
-    <div className="relative h-full">
-      {/* Download button */}
-      <button
-        onClick={onDownloadPDF}
-        className="absolute top-4 right-4 z-10 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-      >
-        Download PDF
-      </button>
+    <div className="preview-container">
+      {/* Personal Info Section */}
+      <div className="text-center mb-4">
+        <h1 className="text-2xl font-bold">
+          {formData.personalInfo?.firstName} {formData.personalInfo?.lastName}
+        </h1>
+        <p className="text-gray-700">{formData.personalInfo?.title}</p>
+        
+        {/* Contact, Location & Links */}
+        <div className="flex justify-center gap-3 text-sm text-gray-600 mt-2">
+          {formData.personalInfo?.email && (
+            <span>{formData.personalInfo.email}</span>
+          )}
+          {formData.personalInfo?.phone && (
+            <span>• {formData.personalInfo.phone}</span>
+          )}
+          {formData.personalInfo?.location && (
+            <span>• {formData.personalInfo.location}</span>
+          )}
+        </div>
+        <div className="flex justify-center gap-3 text-sm text-gray-600 mt-1">
+          {formData.personalInfo?.linkedin && (
+            <a href={formData.personalInfo.linkedin} target="_blank" rel="noopener noreferrer" 
+               className="text-blue-600 hover:underline">LinkedIn</a>
+          )}
+          {formData.personalInfo?.website && (
+            <span>• <a href={formData.personalInfo.website} target="_blank" rel="noopener noreferrer" 
+                      className="text-blue-600 hover:underline">Portfolio</a></span>
+          )}
+        </div>
 
-      {/* Preview container */}
-      <div className="h-full overflow-auto p-8 bg-white shadow-inner">
-        {isLoading ? (
-          <div className="flex flex-col items-center justify-center h-full gap-4">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
-            <p className="text-sm text-gray-600">Generating preview...</p>
-          </div>
-        ) : error ? (
-          <div className="flex flex-col items-center justify-center h-full gap-4 text-red-500">
-            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <p className="text-sm">{error}</p>
-            <button 
-              onClick={() => setError(null)}
-              className="mt-2 text-sm text-indigo-600 hover:text-indigo-700"
-            >
-              Try again
-            </button>
-          </div>
-        ) : pdfUrl ? (
-          <iframe
-            src={pdfUrl}
-            className="w-full h-full border-0"
-            title="Resume Preview"
-          />
-        ) : (
-          <div className="flex items-center justify-center h-full text-gray-500">
-            No preview available
+        {/* Professional Summary */}
+        {formData.personalInfo?.summary && (
+          <div className="mt-4 text-sm text-gray-700 text-left">
+            <h2 className="text-lg font-bold border-b border-gray-300 mb-2">Professional Summary</h2>
+            <p className="whitespace-pre-wrap">{formData.personalInfo.summary}</p>
           </div>
         )}
+      </div>
+
+      {/* Experience Section */}
+      {hasItems(formData.experiences) && (
+        <div className="mb-4">
+          <h2 className="text-lg font-bold border-b border-gray-300 mb-2">Experience</h2>
+          {formData.experiences?.map((exp, index) => (
+            <div key={index} className="mb-3">
+              <div className="flex justify-between">
+                <strong>{exp.title}</strong>
+                <span className="text-gray-600">{exp.startDate} - {exp.current ? 'Present' : exp.endDate}</span>
+              </div>
+              <div className="flex justify-between text-gray-700">
+                <span>{exp.company}</span>
+                <span>{exp.location}</span>
+              </div>
+              {exp.description && (
+                <p className="text-gray-700 mt-1 text-sm">{exp.description}</p>
+              )}
+              {exp.achievements?.length > 0 && (
+                <ul className="list-disc list-inside mt-1 text-sm">
+                  {exp.achievements.map((achievement: string, i: number) => (
+                    achievement && <li key={i} className="text-gray-700">{achievement}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Skills Section */}
+      {hasItems(formData.skills) && (
+        <div className="mb-4">
+          <h2 className="text-lg font-bold border-b border-gray-300 mb-2">Skills</h2>
+          {Object.entries(
+            formData.skills?.reduce((acc: any, skill) => {
+              if (!acc[skill.category]) acc[skill.category] = [];
+              acc[skill.category].push(skill);
+              return acc;
+            }, {}) || {}
+          ).map(([category, skills]: [string, any]) => (
+            <div key={category} className="mb-2">
+              <h3 className="text-sm font-medium text-gray-700 mb-1">{category}</h3>
+              <div className="flex flex-wrap gap-2">
+                {skills.map((skill: any, index: number) => (
+                  <span 
+                    key={index} 
+                    className="inline-flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-md text-sm"
+                    title={`Proficiency: ${skill.level}`}
+                  >
+                    {skill.name}
+                    <span className="w-2 h-2 rounded-full" 
+                          style={{
+                            backgroundColor: 
+                              skill.level === 'Expert' ? '#10B981' :
+                              skill.level === 'Advanced' ? '#3B82F6' :
+                              skill.level === 'Intermediate' ? '#F59E0B' :
+                              '#6B7280'
+                          }}
+                    />
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Languages Section */}
+      {hasItems(formData.languages) && (
+        <div className="mb-4">
+          <h2 className="text-lg font-bold border-b border-gray-300 mb-2">Languages</h2>
+          <div className="flex flex-wrap gap-2">
+            {formData.languages?.map((lang, index) => (
+              <span key={index} className="inline-flex items-center gap-2 bg-gray-100 px-2 py-1 rounded-md text-sm">
+                {lang.name}
+                <span className="text-xs text-gray-500">({lang.proficiency})</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Projects Section */}
+      {hasItems(formData.projects) && (
+        <div className="mb-4">
+          <h2 className="text-lg font-bold border-b border-gray-300 mb-2">Projects</h2>
+          {formData.projects?.map((project, index) => (
+            <div key={index} className="mb-3">
+              <div className="flex justify-between">
+                <strong>{project.title || project.name}</strong>
+                <span className="text-gray-600">{project.startDate} - {project.current ? 'Present' : project.endDate}</span>
+              </div>
+              {project.url && (
+                <a href={project.url} target="_blank" rel="noopener noreferrer" 
+                   className="text-sm text-blue-600 hover:underline">{project.url}</a>
+              )}
+              {project.description && (
+                <p className="text-gray-700 mt-1 text-sm">{project.description}</p>
+              )}
+              {hasItems(project.technologies) && (
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {project.technologies!.map((tech: string, i: number) => (
+                    <span key={i} className="text-xs bg-gray-100 px-2 py-0.5 rounded">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              )}
+              {hasItems(project.highlights) && (
+                <ul className="list-disc list-inside mt-2 text-sm">
+                  {project.highlights!.map((highlight: string, i: number) => (
+                    highlight && <li key={i} className="text-gray-700">{highlight}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Certifications Section */}
+      {hasItems(formData.certifications) && (
+        <div className="mb-4">
+          <h2 className="text-lg font-bold border-b border-gray-300 mb-2">Certifications</h2>
+          {formData.certifications?.map((cert, index) => (
+            <div key={index} className="mb-2">
+              <div className="flex justify-between">
+                <strong>{cert.name}</strong>
+                <span className="text-gray-600">
+                  {cert.issueDate}
+                  {cert.expiryDate && ` - ${cert.expiryDate}`}
+                </span>
+              </div>
+              <div className="text-sm text-gray-700">{cert.issuer}</div>
+              {cert.credentialId && (
+                <div className="text-sm text-gray-600">
+                  Credential ID: {cert.credentialId}
+                </div>
+              )}
+              {cert.url && (
+                <a href={cert.url} target="_blank" rel="noopener noreferrer" 
+                   className="text-sm text-blue-600 hover:underline">View Certificate</a>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Education Section */}
+      {formData.education?.length > 0 && (
+        <div className="mb-4">
+          <h2 className="text-lg font-bold border-b border-gray-300 mb-2">Education</h2>
+          {formData.education.map((edu: any, index: number) => (
+            <div key={index} className="mb-3">
+              <div className="flex justify-between">
+                <strong>{edu.degree} in {edu.field}</strong>
+                <span className="text-gray-600">{edu.startDate} - {edu.current ? 'Present' : edu.endDate}</span>
+              </div>
+              <div className="flex justify-between text-gray-700">
+                <span>{edu.school}</span>
+                <span>{edu.location}</span>
+              </div>
+              {edu.gpa && <p className="text-sm text-gray-700">GPA: {edu.gpa}</p>}
+              {edu.achievements?.length > 0 && (
+                <ul className="list-disc list-inside mt-1 text-sm">
+                  {edu.achievements.map((achievement: string, i: number) => (
+                    achievement && <li key={i} className="text-gray-700">{achievement}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Download Button */}
+      <div className="mt-4 text-center">
+        <button
+          onClick={onDownloadPDF}
+          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+        >
+          Download PDF
+        </button>
       </div>
     </div>
   );

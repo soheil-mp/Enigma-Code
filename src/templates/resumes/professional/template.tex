@@ -32,30 +32,40 @@
 \begin{document}
 
 % Header
-{\huge\bfseries\color{primary}\VAR{personalInfo.name}\par}
+{\huge\bfseries\color{primary}\VAR{personalInfo.firstName} \VAR{personalInfo.lastName}\par}
 \vspace{0.25em}
 \begin{center}
 \faEnvelope\ \href{mailto:\VAR{personalInfo.email}}{\VAR{personalInfo.email}} 
 \textbullet\ \faPhone\ \VAR{personalInfo.phone} 
 \textbullet\ \faMapMarker\ \VAR{personalInfo.location}
 
-\IFNOTEMPTY{personalInfo.linkedin}{\faLinkedin\ \href{https://linkedin.com/in/\VAR{personalInfo.linkedin}}{\VAR{personalInfo.linkedin}}}
-\IFNOTEMPTY{personalInfo.github}{\textbullet\ \faGithub\ \href{https://github.com/\VAR{personalInfo.github}}{\VAR{personalInfo.github}}}
+\ifx\VAR{personalInfo.linkedin}\empty\else
+    \\\faLinkedin\ \href{https://linkedin.com/in/\VAR{personalInfo.linkedin}}{\VAR{personalInfo.linkedin}}
+\fi
+\ifx\VAR{personalInfo.website}\empty\else
+    \textbullet\ \faGlobe\ \href{\VAR{personalInfo.website}}{\VAR{personalInfo.website}}
+\fi
 \end{center}
 
+% Professional Title
+{\large\color{secondary}\centering\VAR{personalInfo.title}\par}
+\vspace{1em}
+
 % Summary
-\IFNOTEMPTY{summary}{
+\ifx\VAR{personalInfo.summary}\empty\else
     \section{Summary}
-    \VAR{summary}
-}
+    \VAR{personalInfo.summary}
+    \vspace{0.5em}
+\fi
 
 % Experience Section
 \section{Professional Experience}
-\FOREACH{experience}{
+\FOREACH{experiences}{%
     {\textbf{\VAR{company}}} \hfill {\VAR{location}}\\
-    {\textit{\VAR{position}}} \hfill {\VAR{startDate} -- \VAR{endDate}}
+    {\textit{\VAR{title}}} \hfill {\VAR{startDate} -- \VAR{endDate}}\\
+    \VAR{description}
     \begin{itemize}[leftmargin=*,nosep]
-        \FOREACH{highlights}{
+        \FOREACH{achievements}{%
             \item \VAR{.}
         }\ENDFOREACH
     \end{itemize}
@@ -64,39 +74,58 @@
 
 % Education Section
 \section{Education}
-\FOREACH{education}{
-    {\textbf{\VAR{institution}}} \hfill {\VAR{location}}\\
+\FOREACH{education}{%
+    {\textbf{\VAR{school}}} \hfill {\VAR{location}}\\
     {\textit{\VAR{degree}}} in \VAR{field} \hfill {\VAR{startDate} -- \VAR{endDate}}
-    \IFNOTEMPTY{gpa}{\\GPA: \VAR{gpa}}
+    \ifx\VAR{gpa}\empty\else
+        \\GPA: \VAR{gpa}
+    \fi
+    \begin{itemize}[leftmargin=*,nosep]
+        \FOREACH{achievements}{%
+            \item \VAR{.}
+        }\ENDFOREACH
+    \end{itemize}
     \vspace{0.5em}
 }\ENDFOREACH
 
 % Skills Section
 \section{Skills}
-\FOREACH{skills}{
-    \textbf{\VAR{category}:} \VAR{items}\\[0.3em]
+\FOREACH{skills}{%
+    \textbf{\VAR{name}} (\VAR{level}) -- \VAR{category}\\[0.3em]
 }\ENDFOREACH
 
-% Projects Section
-\IFNOTEMPTY{projects}{
-    \section{Projects}
-    \FOREACH{projects}{
-        \textbf{\VAR{name}} 
-        \IFNOTEMPTY{link}{\hfill \href{\VAR{link}}{Project Link}}\\
-        \textit{Technologies:} \VAR{technologies}\\
-        \VAR{description}
-        \vspace{0.5em}
+% Languages Section (if any languages exist)
+\ifx\VAR{languages}\empty\else
+    \section{Languages}
+    \FOREACH{languages}{%
+        \textbf{\VAR{name}} -- \VAR{proficiency}\\[0.3em]
     }\ENDFOREACH
-}
+\fi
 
-% Certifications Section
-\IFNOTEMPTY{certifications}{
-    \section{Certifications}
-    \FOREACH{certifications}{
-        \textbf{\VAR{name}} -- \textit{\VAR{issuer}} \hfill \VAR{date}
-        \IFNOTEMPTY{link}{\\{\small\href{\VAR{link}}{View Certificate}}}
+% Projects Section (if any projects exist)
+\ifx\VAR{projects}\empty\else
+    \section{Projects}
+    \FOREACH{projects}{%
+        \textbf{\VAR{title}} 
+        \ifx\VAR{url}\empty\else
+            \hfill \href{\VAR{url}}{Project Link}
+        \fi\\
+        \VAR{description}\\
+        \textit{Technologies:} \VAR{technologies}
         \vspace{0.5em}
     }\ENDFOREACH
-}
+\fi
+
+% Certifications Section (if any certifications exist)
+\ifx\VAR{certifications}\empty\else
+    \section{Certifications}
+    \FOREACH{certifications}{%
+        \textbf{\VAR{name}} -- \textit{\VAR{issuer}} \hfill \VAR{date}
+        \ifx\VAR{url}\empty\else
+            \\{\small\href{\VAR{url}}{View Certificate}}
+        \fi
+        \vspace{0.5em}
+    }\ENDFOREACH
+\fi
 
 \end{document} 

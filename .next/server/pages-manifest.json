@@ -2,9 +2,10 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
+  "/": "pages/index.js",
+  "/dashboard": "pages/dashboard.js",
   "/api/auth/[...nextauth]": "pages/api/auth/[...nextauth].js",
-  "/api/resumes/save": "pages/api/resumes/save.js",
-  "/api/latex/compile": "pages/api/latex/compile.js",
   "/api/resumes/load": "pages/api/resumes/load.js",
+  "/api/resumes/save": "pages/api/resumes/save.js",
   "/resume-builder": "pages/resume-builder.js"
 }

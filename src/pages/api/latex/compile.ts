@@ -1,60 +1,42 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { exec } from 'child_process';
-import fs from 'fs/promises';
-import { existsSync } from 'fs';
-import path from 'path';
+import { writeFile, readFile, mkdir } from 'fs/promises';
+import { join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import os from 'os';
-import { CompilationError } from '@/utils/errors';
-import { errorHandler } from '@/middleware/errorHandler';
+import { promisify } from 'util';
+
+const execAsync = promisify(exec);
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ message: 'Method not allowed' });
+  }
+
   try {
-    if (req.method !== 'POST') {
-      throw new Error('Method not allowed');
-    }
-
-    const { latex: latexContent } = req.body;
-    if (!latexContent) {
-      throw new CompilationError('No LaTeX content provided');
-    }
-
-    const tempDir = path.join(os.tmpdir(), 'enigma-latex', uuidv4());
+    const { content } = req.body;
+    const tempDir = join(process.cwd(), 'temp', uuidv4());
     
     // Create temp directory
-    await fs.mkdir(tempDir, { recursive: true });
-    const texFile = path.join(tempDir, 'resume.tex');
+    await mkdir(tempDir, { recursive: true });
     
     // Write LaTeX content to file
-    await fs.writeFile(texFile, latexContent);
+    const texPath = join(tempDir, 'resume.tex');
+    await writeFile(texPath, content);
 
-    // Run pdflatex
-    const { stdout, stderr } = await new Promise<{ stdout: string; stderr: string }>((resolve, reject) => {
-      exec(
-        `pdflatex -interaction=nonstopmode -output-directory="${tempDir}" "${texFile}"`,
-        (error, stdout, stderr) => {
-          if (error && !existsSync(path.join(tempDir, 'resume.pdf'))) {
-            reject(new CompilationError('LaTeX compilation failed', stderr));
-            return;
-          }
-          resolve({ stdout, stderr });
-        }
-      );
-    });
+    // Compile LaTeX to PDF
+    await execAsync(`pdflatex -interaction=nonstopmode -output-directory=${tempDir} ${texPath}`);
 
     // Read the generated PDF
-    const pdfPath = path.join(tempDir, 'resume.pdf');
-    const pdfContent = await fs.readFile(pdfPath);
+    const pdfPath = join(tempDir, 'resume.pdf');
+    const pdfContent = await readFile(pdfPath);
 
-    // Clean up temp directory
-    await fs.rm(tempDir, { recursive: true, force: true });
-
-    // Send the PDF
+    // Send PDF back to client
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', 'attachment; filename=resume.pdf');
     res.send(pdfContent);
 
   } catch (error) {
-    errorHandler(error, req, res);
+    console.error('PDF generation error:', error);
+    res.status(500).json({ message: 'Failed to generate PDF' });
   }
 } 

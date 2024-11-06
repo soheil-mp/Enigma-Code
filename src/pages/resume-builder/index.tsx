@@ -275,16 +275,41 @@ export default function ResumeBuilder() {
     }
   };
 
+  // Update the steps array at the beginning of your component
   const steps = [
-    { title: 'Templates', icon: '' },     // Add Templates step
-    { title: 'Personal Info', icon: '👤' },
-    { title: 'Experience', icon: '💼' },
-    { title: 'Education', icon: '🎓' },
-    { title: 'Skills', icon: '⚡' },
-    { title: 'Languages', icon: '🌐' },
-    { title: 'Projects', icon: '🚀' },
-    { title: 'Certifications', icon: '📜' },
-  ]
+    { 
+      title: 'Templates', 
+      icon: '📄'  // Added document emoji for Templates
+    },
+    { 
+      title: 'Personal Info', 
+      icon: '👤' 
+    },
+    { 
+      title: 'Experience', 
+      icon: '💼' 
+    },
+    { 
+      title: 'Education', 
+      icon: '🎓' 
+    },
+    { 
+      title: 'Skills', 
+      icon: '⚡' 
+    },
+    { 
+      title: 'Languages', 
+      icon: '🌐' 
+    },
+    { 
+      title: 'Projects', 
+      icon: '🚀' 
+    },
+    { 
+      title: 'Certifications', 
+      icon: '📜' 
+    }
+  ];
 
   const skillCategories = [
     'Technical',
@@ -695,7 +720,7 @@ export default function ResumeBuilder() {
     };
   };
 
-  // Update the getTemplateContent function with null checks
+  // Update the getTemplateContent function
   const getTemplateContent = (templateId: string) => {
     const template = templates.find(t => t.id === templateId);
     if (!template) {
@@ -707,70 +732,72 @@ export default function ResumeBuilder() {
     
     // Helper function to safely escape LaTeX special characters
     const escapeLatex = (str: string = '') => {
-      return str.replace(/[&$%#_{}~^\\]/g, '\\$&')
-               .replace(/\n/g, '\\\\');  // Handle newlines
+      return str.toString()
+        .replace(/[&$%#_{}~^\\]/g, '\\$&')
+        .replace(/\n/g, '\\\\');  // Handle newlines
+    };
+
+    // Create a formatted data object that matches the template variables
+    const formattedData = {
+      personalInfo: {
+        ...personalInfo,
+        name: `${personalInfo.firstName} ${personalInfo.lastName}`,
+      },
+      experiences: experiences.map(exp => ({
+        ...exp,
+        endDate: exp.current ? 'Present' : exp.endDate,
+      })),
+      education: education.map(edu => ({
+        ...edu,
+        endDate: edu.current ? 'Present' : edu.endDate,
+      })),
+      skills: skills.map(skill => ({
+        ...skill,
+        items: skill.name // Map the skill name to items for template compatibility
+      })),
+      languages: languages.length > 0 ? languages : null,
+      projects: projects.length > 0 ? projects : null,
+      certifications: certifications.length > 0 ? certifications : null,
     };
 
     // Process arrays (FOREACH loops)
-    content = content.replace(/\\FOREACH{([^}]+)}(.*?)\\ENDFOREACH/gs, (match: string, array: string, body: string) => {
-      const items = array.split('.').reduce((obj: any, key: string) => obj?.[key], {
-        personalInfo,
-        experiences,
-        education,
-        skills,
-        skillsByCategory: skills.reduce((acc: Record<string, string[]>, skill) => {
-          if (!acc[skill.category]) {
-            acc[skill.category] = [];
-          }
-          acc[skill.category].push(skill.name);
-          return acc;
-        }, {})
-      });
-      
-      if (!Array.isArray(items)) return '';
-      return items.map(item => {
-        let itemContent = body;
-        // Replace VAR tags within the loop
-        itemContent = itemContent.replace(/\\VAR{([^}]+)}/g, (m: string, path: string) => {
-          const value = path.split('.').reduce((o: any, k: string) => o?.[k], item);
-          return escapeLatex(value || '');
-        });
-        return itemContent;
-      }).join('\n');
-    });
-
-    // Process IF conditions
-    content = content.replace(/\\IF{([^}]+)}(.*?)\\ENDIF/gs, (match: string, condition: string, body: string) => {
-      const value = condition.split('.').reduce((obj: any, key: string) => obj?.[key], {
-        personalInfo,
-        experiences,
-        education,
-        skills
-      });
-      return value ? body : '';
-    });
-
-    // Process UNLESS conditions
-    content = content.replace(/\\UNLESS{([^}]+)}(.*?)\\ENDUNLESS/gs, (match: string, condition: string, body: string) => {
-      const value = condition.split('.').reduce((obj: any, key: string) => obj?.[key], {
-        personalInfo,
-        experiences,
-        education,
-        skills
-      });
-      return value ? '' : body;
-    });
+    content = content.replace(
+      /\\FOREACH{([^}]+)}(.*?)\\ENDFOREACH/gs,
+      (match: string, array: string, body: string) => {
+        const items = array.split('.').reduce(
+          (obj: any, key: string) => obj?.[key],
+          formattedData
+        );
+        
+        if (!Array.isArray(items)) return '';
+        return items.map(item => {
+          let itemContent = body;
+          itemContent = itemContent.replace(
+            /\\VAR{([^}]+)}/g,
+            (m: string, path: string) => {
+              const value = path.split('.').reduce(
+                (o: any, k: string) => o?.[k],
+                item
+              );
+              return escapeLatex(value || '');
+            }
+          );
+          return itemContent;
+        }).join('\n');
+      }
+    );
 
     // Replace remaining VAR tags
-    content = content.replace(/\\VAR{([^}]+)}/g, (match: string, path: string) => {
-      const value = path.split('.').reduce((obj: any, key: string) => obj?.[key], {
-        personalInfo,
-        experiences,
-        education,
-        skills
-      });
-      return escapeLatex(value || '');
-    });
+    content = content.replace(
+      /\\VAR{([^}]+)}/g,
+      (match: string, path: string) => {
+        const value = path.split('.').reduce(
+          (obj: any, key: string) => obj?.[key],
+          formattedData
+        );
+        return escapeLatex(value || '');
+      }
+    );
 
     return content;
   };
@@ -2402,6 +2429,15 @@ export default function ResumeBuilder() {
                     {previewTab === 'preview' ? (
                       <LivePreview
                         latexContent={latexContent}
+                        formData={{
+                          personalInfo,
+                          experiences,
+                          education,
+                          skills,
+                          languages,
+                          projects,
+                          certifications
+                        }}
                         onDownloadPDF={async () => {
                           try {
                             const pdfBlob = await generatePDF(latexContent);

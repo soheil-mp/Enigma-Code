@@ -156,7 +156,7 @@ export default function ResumeBuilder() {
     category: 'Technical'
   });
 
-  // Initialize all form states properly
+  // Initialize personalInfo with default values
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
     firstName: '',
     lastName: '',
@@ -802,16 +802,118 @@ export default function ResumeBuilder() {
     return content;
   };
 
-  // Update the effect to generate latex when form data changes
+  // Update the useEffect for latex generation
   useEffect(() => {
     const generateLatex = () => {
-      // Use the getTemplateContent function instead of creating simplified LaTeX
-      const latex = getTemplateContent(selectedTemplate);
-      setLatexContent(latex);
+      try {
+        // Helper function to safely check array length
+        const hasItems = (arr: any[] | undefined) => arr && arr.length > 0;
+
+        // Basic LaTeX template with null checks
+        const latex = `
+\\documentclass[11pt,a4paper]{article}
+\\usepackage[utf8]{inputenc}
+\\usepackage[T1]{fontenc}
+\\usepackage{lmodern}
+\\usepackage[margin=1in]{geometry}
+\\usepackage{hyperref}
+
+\\begin{document}
+
+% Personal Information
+\\begin{center}
+\\textbf{\\Large ${personalInfo?.firstName || ''} ${personalInfo?.lastName || ''}}\\\\[0.3em]
+${personalInfo?.title || ''}\\\\[0.3em]
+${personalInfo?.email || ''} ${personalInfo?.phone ? `• ${personalInfo.phone}` : ''} ${personalInfo?.location ? `• ${personalInfo.location}` : ''}\\\\[0.2em]
+${personalInfo?.linkedin ? `\\href{${personalInfo.linkedin}}{LinkedIn}` : ''} 
+${personalInfo?.website ? `• \\href{${personalInfo.website}}{Portfolio}` : ''}
+\\end{center}
+
+% Summary
+${personalInfo?.summary ? `
+\\section*{Professional Summary}
+${personalInfo.summary}
+` : ''}
+
+% Experience
+${hasItems(experiences) ? `
+\\section*{Experience}
+${experiences?.map(exp => `
+\\noindent\\textbf{${exp.title}} \\hfill ${exp.startDate} - ${exp.current ? 'Present' : exp.endDate}\\\\
+\\textit{${exp.company}, ${exp.location}}\\\\
+${exp.description ? `${exp.description}\\\\` : ''}
+${hasItems(exp.achievements) ? `\\begin{itemize}
+${exp.achievements.map(achievement => achievement ? `\\item ${achievement}` : '').join('\n')}
+\\end{itemize}` : ''}
+`).join('\n')}` : ''}
+
+% Education
+${hasItems(education) ? `
+\\section*{Education}
+${education?.map(edu => `
+\\noindent\\textbf{${edu.degree} in ${edu.field}} \\hfill ${edu.startDate} - ${edu.current ? 'Present' : edu.endDate}\\\\
+\\textit{${edu.school}, ${edu.location}}\\\\
+${edu.gpa ? `GPA: ${edu.gpa}\\\\` : ''}
+${hasItems(edu.achievements) ? `\\begin{itemize}
+${edu.achievements.map(achievement => achievement ? `\\item ${achievement}` : '').join('\n')}
+\\end{itemize}` : ''}
+`).join('\n')}` : ''}
+
+% Skills
+${hasItems(skills) ? `
+\\section*{Skills}
+${Object.entries(skills.reduce((acc: any, skill) => {
+  if (!acc[skill.category]) acc[skill.category] = [];
+  acc[skill.category].push(skill);
+  return acc;
+}, {})).map(([category, skills]: [string, any]) => `
+\\textbf{${category}:} ${skills.map((skill: any) => skill.name).join(', ')}\\\\
+`).join('\n')}` : ''}
+
+% Languages
+${hasItems(languages) ? `
+\\section*{Languages}
+${languages?.map(lang => `${lang.name} (${lang.proficiency})`).join(' • ')}` : ''}
+
+% Projects
+${hasItems(projects) ? `
+\\section*{Projects}
+${projects?.map(project => `
+\\noindent\\textbf{${project.title}} \\hfill ${project.startDate} - ${project.current ? 'Present' : project.endDate}\\\\
+${project.url ? `\\href{${project.url}}{${project.url}}\\\\` : ''}
+${project.description ? `${project.description}\\\\` : ''}
+${hasItems(project.technologies) ? `Technologies: ${project.technologies.join(', ')}\\\\` : ''}
+${hasItems(project.highlights) ? `\\begin{itemize}
+${project.highlights.map(highlight => highlight ? `\\item ${highlight}` : '').join('\n')}
+\\end{itemize}` : ''}
+`).join('\n')}` : ''}
+
+% Certifications
+${hasItems(certifications) ? `
+\\section*{Certifications}
+${certifications?.map(cert => `
+\\noindent\\textbf{${cert.name}} \\hfill ${cert.issueDate}${cert.expiryDate ? ` - ${cert.expiryDate}` : ''}\\\\
+\\textit{${cert.issuer}}\\\\
+${cert.credentialId ? `Credential ID: ${cert.credentialId}\\\\` : ''}
+${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
+`).join('\n')}` : ''}
+
+\\end{document}
+`;
+
+        setLatexContent(latex);
+      } catch (error) {
+        console.error('Error generating LaTeX:', error);
+        setNotification({
+          type: 'error',
+          message: 'Failed to generate LaTeX content',
+          isVisible: true
+        });
+      }
     };
 
     generateLatex();
-  }, [personalInfo, experiences, education, skills, languages, projects, certifications, selectedTemplate]); // Add selectedTemplate to dependencies
+  }, [personalInfo, experiences, education, skills, languages, projects, certifications]);
 
   if (status === 'loading') {
     return <LoadingSpinner />;
@@ -1081,8 +1183,8 @@ export default function ResumeBuilder() {
                         <label className="block text-sm font-medium text-gray-700">First Name</label>
                         <input
                           type="text"
-                          value={personalInfo.firstName}
-                          onChange={(e) => setPersonalInfo({ ...personalInfo, firstName: e.target.value })}
+                          value={personalInfo?.firstName || ''}
+                          onChange={(e) => setPersonalInfo(prev => ({ ...prev, firstName: e.target.value }))}
                           className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
                           placeholder="First Name"
                         />

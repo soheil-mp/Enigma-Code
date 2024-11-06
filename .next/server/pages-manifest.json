@@ -3,9 +3,10 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/": "pages/index.js",
-  "/dashboard": "pages/dashboard.js",
   "/api/auth/[...nextauth]": "pages/api/auth/[...nextauth].js",
-  "/api/resumes/load": "pages/api/resumes/load.js",
+  "/dashboard": "pages/dashboard.js",
   "/api/resumes/save": "pages/api/resumes/save.js",
+  "/api/resumes/load": "pages/api/resumes/load.js",
+  "/api/latex": "pages/api/latex.js",
   "/resume-builder": "pages/resume-builder.js"
 }

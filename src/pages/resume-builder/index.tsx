@@ -312,6 +312,10 @@ export default function ResumeBuilder() {
     { 
       title: 'Certifications', 
       icon: '📜' 
+    },
+    { 
+      title: 'AI Resume Analyzer', 
+      icon: '🤖' 
     }
   ];
 
@@ -2351,7 +2355,7 @@ ${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
                           className="bg-white rounded-xl p-6 border border-gray-200 relative group"
                         >
                           <button
-                            onClick={() => setCertifications(certifications.filter(c => c.id !== cert.id))}
+                            onClick={() => setCertifications(prevCertifications => prevCertifications.filter(c => c.id !== cert.id))}
                             className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
                           >
                             <span className="text-gray-400 hover:text-red-500">✕</span>
@@ -2359,32 +2363,36 @@ ${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
 
                           <div className="grid grid-cols-2 gap-6">
                             <div className="space-y-2">
-                              <label className="block text-sm font-medium text-gray-700">Certification Name</label>
+                              <label className="block text-sm font-medium text-gray-700">Name</label>
                               <input
                                 type="text"
                                 value={cert.name}
                                 onChange={(e) => {
-                                  const newCertifications = [...certifications];
-                                  newCertifications[index].name = e.target.value;
-                                  setCertifications(newCertifications);
+                                  setCertifications(prevCertifications => {
+                                    const newCertifications = [...prevCertifications];
+                                    newCertifications[index].name = e.target.value;
+                                    return newCertifications;
+                                  });
                                 }}
                                 className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                                placeholder="e.g., AWS Solutions Architect"
+                                placeholder="e.g., AWS Certified Developer"
                               />
                             </div>
 
                             <div className="space-y-2">
-                              <label className="block text-sm font-medium text-gray-700">Issuing Organization</label>
+                              <label className="block text-sm font-medium text-gray-700">Issuer</label>
                               <input
                                 type="text"
                                 value={cert.issuer}
                                 onChange={(e) => {
-                                  const newCertifications = [...certifications];
-                                  newCertifications[index].issuer = e.target.value;
-                                  setCertifications(newCertifications);
+                                  setCertifications(prevCertifications => {
+                                    const newCertifications = [...prevCertifications];
+                                    newCertifications[index].issuer = e.target.value;
+                                    return newCertifications;
+                                  });
                                 }}
                                 className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                                placeholder="e.g., AWS, Microsoft, Google"
+                                placeholder="e.g., Amazon Web Services"
                               />
                             </div>
 
@@ -2394,9 +2402,11 @@ ${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
                                 type="month"
                                 value={cert.issueDate}
                                 onChange={(e) => {
-                                  const newCertifications = [...certifications];
-                                  newCertifications[index].issueDate = e.target.value;
-                                  setCertifications(newCertifications);
+                                  setCertifications(prevCertifications => {
+                                    const newCertifications = [...prevCertifications];
+                                    newCertifications[index].issueDate = e.target.value;
+                                    return newCertifications;
+                                  });
                                 }}
                                 className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
                               />
@@ -2408,94 +2418,91 @@ ${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
                                 type="month"
                                 value={cert.expiryDate}
                                 onChange={(e) => {
-                                  const newCertifications = [...certifications];
-                                  newCertifications[index].expiryDate = e.target.value;
-                                  setCertifications(newCertifications);
+                                  setCertifications(prevCertifications => {
+                                    const newCertifications = [...prevCertifications];
+                                    newCertifications[index].expiryDate = e.target.value;
+                                    return newCertifications;
+                                  });
                                 }}
                                 className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
                               />
                             </div>
 
                             <div className="space-y-2">
-                              <label className="block text-sm font-medium text-gray-700">Credential ID</label>
+                              <label className="block text-sm font-medium text-gray-700">Credential ID (Optional)</label>
                               <input
                                 type="text"
                                 value={cert.credentialId}
                                 onChange={(e) => {
-                                  const newCertifications = [...certifications];
-                                  newCertifications[index].credentialId = e.target.value;
-                                  setCertifications(newCertifications);
+                                  setCertifications(prevCertifications => {
+                                    const newCertifications = [...prevCertifications];
+                                    newCertifications[index].credentialId = e.target.value;
+                                    return newCertifications;
+                                  });
                                 }}
                                 className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                                placeholder="Enter credential ID"
+                                placeholder="e.g., 1234567890"
                               />
                             </div>
 
                             <div className="space-y-2">
-                              <label className="block text-sm font-medium text-gray-700">Credential URL</label>
+                              <label className="block text-sm font-medium text-gray-700">URL (Optional)</label>
                               <input
                                 type="url"
                                 value={cert.url}
                                 onChange={(e) => {
-                                  const newCertifications = [...certifications];
-                                  newCertifications[index].url = e.target.value;
-                                  setCertifications(newCertifications);
+                                  setCertifications(prevCertifications => {
+                                    const newCertifications = [...prevCertifications];
+                                    newCertifications[index].url = e.target.value;
+                                    return newCertifications;
+                                  });
                                 }}
                                 className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
                                 placeholder="https://..."
                               />
                             </div>
-
-                            {/* Certification Status Indicator */}
-                            <div className="col-span-2">
-                              <div className="flex items-center gap-2 text-sm">
-                                <span className={`w-2 h-2 rounded-full ${
-                                  cert.expiryDate && new Date(cert.expiryDate) < new Date()
-                                    ? 'bg-red-500'
-                                    : 'bg-green-500'
-                                }`}></span>
-                                <span className="text-gray-600">
-                                  {cert.expiryDate && new Date(cert.expiryDate) < new Date()
-                                    ? 'Expired'
-                                    : 'Active'}
-                                </span>
-                              </div>
-                            </div>
                           </div>
                         </motion.div>
                       ))}
-
-                      {certifications.length === 0 && (
-                        <motion.div
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          className="text-center py-12 bg-gray-50 rounded-xl"
-                        >
-                          <p className="text-gray-500">No certifications added yet. Click the Add Certification button to get started.</p>
-                        </motion.div>
-                      )}
                     </div>
-
-                    {/* AI Suggestions */}
-                    <div className="mt-8 p-4 bg-indigo-50 rounded-xl">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-                          <span className="text-sm">💡</span>
-                        </div>
-                        <div>
-                          <h3 className="text-sm font-medium text-indigo-900">AI Suggestions</h3>
-                          <p className="text-sm text-indigo-700">
-                            Pro tip: Include certifications that are relevant to your target role. 
-                            Keep them up-to-date and make sure to include verification links when available.
-                          </p>
-                        </div>
-                      </div>
-                      <button 
-                        onClick={() => handleAISuggestion('certifications')}
-                        className="mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
-                      >
-                        Get AI Suggestions →
-                      </button>
+                  </motion.div>
+                )}
+                
+                {activeStep === 8 && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="space-y-6"
+                  >
+                    <div className="bg-white rounded-xl p-6 shadow-sm">
+                      <h2 className="text-xl font-semibold text-gray-900 mb-4">AI Resume Analyzer</h2>
+                      <p className="text-gray-600 mb-6">Get intelligent feedback and suggestions to improve your resume</p>
+                      
+                      <AIFeedback
+                        resumeData={{
+                          personalInfo,
+                          experiences,
+                          education,
+                          skills,
+                          projects,
+                          certifications,
+                          languages
+                        }}
+                        onApplyFeedback={(section, suggestion) => {
+                          switch (section) {
+                            case 'summary':
+                              setPersonalInfo(prev => ({ ...prev, summary: suggestion }));
+                              break;
+                            case 'experience':
+                              // Handle experience suggestions
+                              break;
+                            case 'skills':
+                              // Handle skills suggestions
+                              break;
+                            // Add other cases as needed
+                          }
+                        }}
+                      />
                     </div>
                   </motion.div>
                 )}
@@ -2670,33 +2677,6 @@ ${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
           message={notification.message}
           isVisible={notification.isVisible}
           onClose={() => setNotification(prev => ({ ...prev, isVisible: false }))}
-        />
-
-        <AIFeedback
-          resumeData={{
-            personalInfo,
-            experiences,
-            education,
-            skills,
-            projects,
-            certifications,
-            languages
-          }}
-          onApplyFeedback={(section, suggestion) => {
-            // Handle applying feedback based on the section
-            switch (section) {
-              case 'summary':
-                setPersonalInfo(prev => ({ ...prev, summary: suggestion }));
-                break;
-              case 'experience':
-                // Handle experience suggestions
-                break;
-              case 'skills':
-                // Handle skills suggestions
-                break;
-              // Add other cases as needed
-            }
-          }}
         />
       </div>
     </DashboardLayout>

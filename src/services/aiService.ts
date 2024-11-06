@@ -22,10 +22,11 @@ export const aiService = {
   },
 
   // Get skill recommendations based on job title
-  async getSkillSuggestions(jobTitle: string): Promise<AIResponse> {
+  async getSkillSuggestions(jobTitle: string, existingSkills: string[] = []): Promise<AIResponse> {
     try {
       const response = await axios.post('/api/ai/suggestions/skills', {
-        jobTitle
+        jobTitle,
+        existingSkills
       });
       return response.data;
     } catch (error) {
@@ -38,7 +39,8 @@ export const aiService = {
   async getResumeFeedback(content: any): Promise<AIResponse> {
     try {
       const response = await axios.post('/api/ai/feedback', {
-        content
+        content,
+        industry: content.industry || 'software'
       });
       return response.data;
     } catch (error) {

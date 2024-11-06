@@ -9,6 +9,7 @@ interface AISuggestionsProps {
     role?: string;
     company?: string;
     jobTitle?: string;
+    existingSkills?: string[];
   };
 }
 
@@ -36,7 +37,10 @@ export default function AISuggestions({ onApplySuggestion, type, context }: AISu
           if (!context.jobTitle) {
             throw new Error('Please fill in your professional title first');
           }
-          response = await aiService.getSkillSuggestions(context.jobTitle);
+          response = await aiService.getSkillSuggestions(
+            context.jobTitle,
+            context.existingSkills || []
+          );
           break;
         default:
           throw new Error('Invalid suggestion type');
@@ -63,6 +67,20 @@ export default function AISuggestions({ onApplySuggestion, type, context }: AISu
       setError(error instanceof Error ? error.message : 'Failed to get suggestions');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Auto-refresh suggestions when one is selected
+  const handleSuggestionClick = async (suggestion: string[], groupIndex: number) => {
+    onApplySuggestion(suggestion);
+    
+    // Remove the used suggestion
+    const newSuggestions = suggestions.filter((_, index) => index !== groupIndex);
+    setSuggestions(newSuggestions);
+
+    // If we're running low on suggestions, get more
+    if (newSuggestions.length < 2) {
+      await getSuggestions();
     }
   };
 
@@ -111,13 +129,7 @@ export default function AISuggestions({ onApplySuggestion, type, context }: AISu
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: groupIndex * 0.1 }}
                 className="p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-                onClick={() => {
-                  if (type === 'description') {
-                    onApplySuggestion(group.join('\n• '));
-                  } else {
-                    onApplySuggestion(group);
-                  }
-                }}
+                onClick={() => handleSuggestionClick(group, groupIndex)}
               >
                 <div className="text-xs font-medium text-gray-500 mb-2">Option {groupIndex + 1}</div>
                 {group.map((suggestion, index) => (

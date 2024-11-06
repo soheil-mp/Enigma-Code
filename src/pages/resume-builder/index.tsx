@@ -17,6 +17,7 @@ import { templates } from '@/templates/resumes';
 import LivePreview from '@/components/resume-builder/LivePreview';
 import { generatePDF, downloadPDF } from '@/services/latexService';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import AIFeedback from '@/components/resume-builder/AIFeedback';
 
 interface PersonalInfo {
   firstName: string;
@@ -1915,15 +1916,18 @@ ${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
                       <AISuggestions
                         type="skills"
                         context={{
-                          jobTitle: personalInfo?.title || ''
+                          jobTitle: personalInfo?.title || '',
+                          existingSkills: skills.map(skill => skill.name) // Pass existing skills
                         }}
                         onApplySuggestion={(suggestion) => {
-                          setSkills(prev => [...prev, {
-                            id: crypto.randomUUID(),
-                            name: suggestion,
-                            level: 'Intermediate',
-                            category: 'Technical'
-                          }]);
+                          if (Array.isArray(suggestion)) {
+                            setSkills(prev => [...prev, {
+                              id: crypto.randomUUID(),
+                              name: suggestion[0], // Take first item since we know it's a single skill
+                              level: 'Intermediate',
+                              category: 'Technical'
+                            }]);
+                          }
                         }}
                       />
                     </div>
@@ -2635,6 +2639,33 @@ ${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
           message={notification.message}
           isVisible={notification.isVisible}
           onClose={() => setNotification(prev => ({ ...prev, isVisible: false }))}
+        />
+
+        <AIFeedback
+          resumeData={{
+            personalInfo,
+            experiences,
+            education,
+            skills,
+            projects,
+            certifications,
+            languages
+          }}
+          onApplyFeedback={(section, suggestion) => {
+            // Handle applying feedback based on the section
+            switch (section) {
+              case 'summary':
+                setPersonalInfo(prev => ({ ...prev, summary: suggestion }));
+                break;
+              case 'experience':
+                // Handle experience suggestions
+                break;
+              case 'skills':
+                // Handle skills suggestions
+                break;
+              // Add other cases as needed
+            }
+          }}
         />
       </div>
     </DashboardLayout>

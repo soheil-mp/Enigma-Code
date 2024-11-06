@@ -4,8 +4,8 @@
   "/_error": "pages/_error.js",
   "/api/resumes/load": "pages/api/resumes/load.js",
   "/dashboard": "pages/dashboard.js",
-  "/application-tracker": "pages/application-tracker.js",
   "/api/auth/[...nextauth]": "pages/api/auth/[...nextauth].js",
+  "/application-tracker": "pages/application-tracker.js",
   "/api/resumes/save": "pages/api/resumes/save.js",
   "/resume-builder": "pages/resume-builder.js"
 }

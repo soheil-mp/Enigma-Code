@@ -62,6 +62,17 @@ module.exports = {
       backgroundSize: {
         '300%': '300%',
       },
+      borderRadius: {
+        'xl': '1rem',
+        '2xl': '1.5rem'
+      },
+      boxShadow: {
+        'soft': '0 10px 25px -10px rgba(0, 0, 0, 0.05)',
+        'hover': '0 15px 30px -10px rgba(0, 0, 0, 0.1)'
+      },
+      backgroundImage: {
+        'gradient-soft': 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))'
+      }
     },
   },
   plugins: [],

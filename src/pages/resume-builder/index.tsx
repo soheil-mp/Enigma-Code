@@ -1476,173 +1476,153 @@ ${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
                   >
                     <div className="flex items-center justify-between">
                       <h2 className="text-xl font-semibold text-gray-900">Work Experience</h2>
-                      <div className="flex items-center gap-4">
-                        <label className="flex items-center gap-2 text-sm text-gray-600">
-                          <input
-                            type="checkbox"
-                            checked={hasNoExperience}
-                            onChange={(e) => {
-                              setHasNoExperience(e.target.checked);
-                              if (e.target.checked) {
-                                setExperiences([]);
-                              }
-                            }}
-                            className="rounded text-indigo-600 focus:ring-indigo-500"
-                          />
-                          I have no work experience
-                        </label>
-                        {!hasNoExperience && (
-                          <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={() => {
-                              setExperiences([...experiences, {
-                                id: crypto.randomUUID(),
-                                title: '',
-                                company: '',
-                                location: '',
-                                startDate: '',
-                                endDate: '',
-                                current: false,
-                                description: '',
-                                achievements: ['']
-                              }]);
-                            }}
-                            className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-100"
-                          >
-                            + Add Experience
-                          </motion.button>
-                        )}
-                      </div>
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => {
+                          setExperiences([...experiences, {
+                            id: crypto.randomUUID(),
+                            title: '',
+                            company: '',
+                            location: '',
+                            startDate: '',
+                            endDate: '',
+                            current: false,
+                            description: '',
+                            achievements: []
+                          }]);
+                        }}
+                        className="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-100"
+                      >
+                        + Add Experience
+                      </motion.button>
                     </div>
 
-                    {hasNoExperience ? (
-                      <div className="bg-gray-50 rounded-xl p-6 text-center">
-                        <p className="text-gray-600">
-                          Don't worry! You can still create a great resume focusing on your education, skills, and projects.
-                        </p>
-                        <button
-                          onClick={() => setHasNoExperience(false)}
-                          className="mt-4 text-indigo-600 hover:text-indigo-700 text-sm font-medium"
+                    <div className="space-y-6">
+                      {experiences.map((exp, index) => (
+                        <motion.div
+                          key={exp.id}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          className="bg-white rounded-xl p-6 border border-gray-200 relative group"
                         >
-                          Add work experience later
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="space-y-8">
-                        {experiences.map((experience, index) => (
-                          <motion.div
-                            key={experience.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="bg-white p-6 rounded-xl border border-gray-200"
+                          <button
+                            onClick={() => setExperiences(experiences.filter((_, i) => i !== index))}
+                            className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
                           >
-                            <div className="flex justify-between items-start">
-                              <h3 className="text-lg font-medium text-gray-900">Position {index + 1}</h3>
-                              <button
-                                onClick={() => {
-                                  setExperiences(experiences.filter((_, i) => i !== index));
+                            <span className="text-gray-400 hover:text-red-500">✕</span>
+                          </button>
+
+                          <div className="grid grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">Job Title</label>
+                              <input
+                                type="text"
+                                value={exp.title}
+                                onChange={(e) => {
+                                  const newExperiences = [...experiences];
+                                  newExperiences[index].title = e.target.value;
+                                  setExperiences(newExperiences);
                                 }}
-                                className="text-gray-400 hover:text-red-500"
-                              >
-                                ✕
-                              </button>
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                placeholder="e.g., Senior Software Engineer"
+                              />
                             </div>
 
-                            <div className="grid grid-cols-2 gap-6">
-                              <FormField label="Job Title" required>
-                                <input
-                                  type="text"
-                                  value={experience.title}
-                                  onChange={(e) => {
-                                    const newExperiences = [...experiences];
-                                    newExperiences[index].title = e.target.value;
-                                    setExperiences(newExperiences);
-                                  }}
-                                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                                  placeholder="Software Engineer"
-                                />
-                              </FormField>
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">Company</label>
+                              <input
+                                type="text"
+                                value={exp.company}
+                                onChange={(e) => {
+                                  const newExperiences = [...experiences];
+                                  newExperiences[index].company = e.target.value;
+                                  setExperiences(newExperiences);
+                                }}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                placeholder="e.g., Tech Innovations Inc."
+                              />
+                            </div>
 
-                              <FormField label="Company" required>
-                                <input
-                                  type="text"
-                                  value={experience.company}
-                                  onChange={(e) => {
-                                    const newExperiences = [...experiences];
-                                    newExperiences[index].company = e.target.value;
-                                    setExperiences(newExperiences);
-                                  }}
-                                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                                  placeholder="Company Name"
-                                />
-                              </FormField>
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">Location</label>
+                              <input
+                                type="text"
+                                value={exp.location}
+                                onChange={(e) => {
+                                  const newExperiences = [...experiences];
+                                  newExperiences[index].location = e.target.value;
+                                  setExperiences(newExperiences);
+                                }}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                placeholder="e.g., San Francisco, CA"
+                              />
+                            </div>
 
-                              <FormField label="Location">
-                                <input
-                                  type="text"
-                                  value={experience.location}
-                                  onChange={(e) => {
-                                    const newExperiences = [...experiences];
-                                    newExperiences[index].location = e.target.value;
-                                    setExperiences(newExperiences);
-                                  }}
-                                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                                  placeholder="City, Country"
-                                />
-                              </FormField>
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">Start Date</label>
+                              <input
+                                type="month"
+                                value={exp.startDate}
+                                onChange={(e) => {
+                                  const newExperiences = [...experiences];
+                                  newExperiences[index].startDate = e.target.value;
+                                  setExperiences(newExperiences);
+                                }}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                              />
+                            </div>
 
-                              <div className="grid grid-cols-2 gap-4">
-                                <FormField label="Start Date" required>
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between">
+                                <label className="block text-sm font-medium text-gray-700">End Date</label>
+                                <label className="inline-flex items-center">
                                   <input
-                                    type="month"
-                                    value={experience.startDate}
-                                    max={new Date().toISOString().slice(0, 7)}
+                                    type="checkbox"
+                                    checked={exp.current}
                                     onChange={(e) => {
                                       const newExperiences = [...experiences];
-                                      newExperiences[index].startDate = e.target.value;
+                                      newExperiences[index].current = e.target.checked;
+                                      if (e.target.checked) {
+                                        newExperiences[index].endDate = '';
+                                      }
                                       setExperiences(newExperiences);
                                     }}
-                                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                    className="form-checkbox h-4 w-4 text-indigo-600 border-gray-300 rounded"
                                   />
-                                </FormField>
-
-                                <FormField label="End Date" required={!experience.current}>
-                                  <div className="space-y-2">
-                                    <input
-                                      type="month"
-                                      value={experience.endDate}
-                                      max={new Date().toISOString().slice(0, 7)}
-                                      disabled={experience.current}
-                                      onChange={(e) => {
-                                        const newExperiences = [...experiences];
-                                        newExperiences[index].endDate = e.target.value;
-                                        setExperiences(newExperiences);
-                                      }}
-                                      className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200 disabled:bg-gray-100"
-                                    />
-                                    <label className="flex items-center gap-2 text-sm text-gray-600">
-                                      <input
-                                        type="checkbox"
-                                        checked={experience.current}
-                                        onChange={(e) => {
-                                          const newExperiences = [...experiences];
-                                          newExperiences[index].current = e.target.checked;
-                                          if (e.target.checked) {
-                                            newExperiences[index].endDate = '';
-                                          }
-                                          setExperiences(newExperiences);
-                                        }}
-                                        className="rounded text-indigo-600 focus:ring-indigo-500"
-                                      />
-                                      Current
-                                    </label>
-                                  </div>
-                                </FormField>
+                                  <span className="ml-2 text-sm text-gray-600">Currently Working</span>
+                                </label>
                               </div>
+                              {!exp.current && (
+                                <input
+                                  type="month"
+                                  value={exp.endDate}
+                                  onChange={(e) => {
+                                    const newExperiences = [...experiences];
+                                    newExperiences[index].endDate = e.target.value;
+                                    setExperiences(newExperiences);
+                                  }}
+                                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                />
+                              )}
                             </div>
 
-                            <div className="space-y-4">
+                            <div className="col-span-2 space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">Job Description</label>
+                              <textarea
+                                value={exp.description}
+                                onChange={(e) => {
+                                  const newExperiences = [...experiences];
+                                  newExperiences[index].description = e.target.value;
+                                  setExperiences(newExperiences);
+                                }}
+                                rows={3}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200 resize-none"
+                                placeholder="Describe your key responsibilities and achievements..."
+                              />
+                            </div>
+
+                            <div className="col-span-2 space-y-4">
                               <div className="flex items-center justify-between">
                                 <label className="block text-sm font-medium text-gray-700">Key Achievements</label>
                                 <button
@@ -1656,7 +1636,7 @@ ${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
                                   + Add Achievement
                                 </button>
                               </div>
-                              {experience.achievements.map((achievement, achievementIndex) => (
+                              {exp.achievements.map((achievement, achievementIndex) => (
                                 <div key={achievementIndex} className="flex gap-2">
                                   <input
                                     type="text"
@@ -1667,61 +1647,49 @@ ${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
                                       setExperiences(newExperiences);
                                     }}
                                     className="flex-1 px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                                    placeholder="Describe a key achievement..."
+                                    placeholder="e.g., Increased team productivity by 30% through process optimization"
                                   />
                                   <button
                                     onClick={() => {
                                       const newExperiences = [...experiences];
-                                      newExperiences[index].achievements = newExperiences[index].achievements.filter(
+                                      newExperiences[index].achievements = exp.achievements.filter(
                                         (_, i) => i !== achievementIndex
                                       );
                                       setExperiences(newExperiences);
                                     }}
-                                    className="text-gray-400 hover:text-red-500 px-2"
+                                    className="text-gray-400 hover:text-red-500"
                                   >
                                     ✕
                                   </button>
                                 </div>
                               ))}
                             </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
 
-                            {/* Description field with AI suggestions */}
-                            <div className="space-y-4">
-                              <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                  Description
-                                </label>
-                                <textarea
-                                  value={experience.description}
-                                  onChange={(e) => {
-                                    const newExperiences = [...experiences];
-                                    newExperiences[index].description = e.target.value;
-                                    setExperiences(newExperiences);
-                                  }}
-                                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
-                                  rows={4}
-                                  placeholder="Describe your role and responsibilities"
-                                />
-                              </div>
-
-                              {/* AI Suggestions Component */}
-                              <AISuggestions
-                                type="description"
-                                context={{
-                                  role: experience.title,
-                                  company: experience.company
-                                }}
-                                onApplySuggestion={(suggestion) => {
-                                  const newExperiences = [...experiences];
-                                  newExperiences[index].description = suggestion;
-                                  setExperiences(newExperiences);
-                                }}
-                              />
-                            </div>
-                          </motion.div>
-                        ))}
+                    {/* AI Suggestions */}
+                    <div className="mt-8 p-4 bg-indigo-50 rounded-xl">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                          <span className="text-sm">💡</span>
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-medium text-indigo-900">AI Suggestions</h3>
+                          <p className="text-sm text-indigo-700">
+                            Pro tip: Highlight your most impactful achievements and quantify your contributions. 
+                            Need help? Click the AI Assistant button for personalized suggestions.
+                          </p>
+                        </div>
                       </div>
-                    )}
+                      <button 
+                        onClick={() => handleAISuggestion('experience')}
+                        className="mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                      >
+                        Get AI Suggestions →
+                      </button>
+                    </div>
                   </motion.div>
                 )}
                 

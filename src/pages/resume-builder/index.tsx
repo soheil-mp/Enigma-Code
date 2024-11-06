@@ -2526,8 +2526,8 @@ ${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
                     </div>
                   </div>
 
-                  {/* Tab Content */}
-                  <div className="h-[400px] lg:h-[800px] bg-gray-50 rounded-xl">
+                  {/* Preview Container */}
+                  <div className="h-[800px] bg-gray-50 rounded-xl overflow-hidden">
                     {previewTab === 'preview' ? (
                       <LivePreview
                         latexContent={latexContent}

@@ -641,48 +641,22 @@ export default function ResumeBuilder() {
   };
 
   // Add AI suggestion handling
-  const handleAISuggestion = async (section: SectionType) => {
-    setLoadingSection(activeStep);
+  const handleAISuggestion = async (type: string) => {
     try {
-      // TODO: Implement AI API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Simulate AI suggestions
-      const suggestions = {
-        skills: ['Problem Solving', 'Team Leadership', 'Project Management'],
-        experience: 'Led a team of 5 developers in implementing...',
-        education: 'Relevant coursework: Data Structures, Algorithms...'
-      };
-
-      // Apply suggestions based on section
-      switch (section) {
-        case 'skills':
-          setSkills(prev => [
-            ...prev,
-            ...suggestions.skills.map(skill => ({
-              id: crypto.randomUUID(),
-              name: skill,
-              level: 'Intermediate' as const,
-              category: 'Technical'
-            }))
-          ]);
-          break;
-        // Add other section handlers
-      }
-
       setNotification({
-        type: 'success',
-        message: 'AI suggestions applied successfully!',
+        type: 'info',
+        message: 'Getting AI suggestions...',
         isVisible: true
       });
+
+      // The suggestions will be handled by the AISuggestions component
+      
     } catch (error) {
       setNotification({
         type: 'error',
         message: 'Failed to get AI suggestions',
         isVisible: true
       });
-    } finally {
-      setLoadingSection(null);
     }
   };
 
@@ -1376,7 +1350,7 @@ ${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
                             key={experience.id}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-gray-50 rounded-xl p-6 space-y-6"
+                            className="bg-white p-6 rounded-xl border border-gray-200"
                           >
                             <div className="flex justify-between items-start">
                               <h3 className="text-lg font-medium text-gray-900">Position {index + 1}</h3>
@@ -1483,20 +1457,6 @@ ${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
                               </div>
                             </div>
 
-                            <FormField label="Description" required>
-                              <textarea
-                                value={experience.description}
-                                onChange={(e) => {
-                                  const newExperiences = [...experiences];
-                                  newExperiences[index].description = e.target.value;
-                                  setExperiences(newExperiences);
-                                }}
-                                rows={4}
-                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200 resize-none"
-                                placeholder="Describe your role and responsibilities..."
-                              />
-                            </FormField>
-
                             <div className="space-y-4">
                               <div className="flex items-center justify-between">
                                 <label className="block text-sm font-medium text-gray-700">Key Achievements</label>
@@ -1539,30 +1499,44 @@ ${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
                                 </div>
                               ))}
                             </div>
+
+                            {/* Description field with AI suggestions */}
+                            <div className="space-y-4">
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                  Description
+                                </label>
+                                <textarea
+                                  value={experience.description}
+                                  onChange={(e) => {
+                                    const newExperiences = [...experiences];
+                                    newExperiences[index].description = e.target.value;
+                                    setExperiences(newExperiences);
+                                  }}
+                                  className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200"
+                                  rows={4}
+                                  placeholder="Describe your role and responsibilities"
+                                />
+                              </div>
+
+                              {/* AI Suggestions Component */}
+                              <AISuggestions
+                                type="description"
+                                context={{
+                                  role: experience.title,
+                                  company: experience.company
+                                }}
+                                onApplySuggestion={(suggestion) => {
+                                  const newExperiences = [...experiences];
+                                  newExperiences[index].description = suggestion;
+                                  setExperiences(newExperiences);
+                                }}
+                              />
+                            </div>
                           </motion.div>
                         ))}
                       </div>
                     )}
-
-                    {/* AI Suggestions */}
-                    <div className="mt-8 p-4 bg-indigo-50 rounded-xl">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-                          <span className="text-sm">💡</span>
-                        </div>
-                        <h3 className="text-sm font-medium text-indigo-900">AI Suggestions</h3>
-                      </div>
-                      <p className="text-sm text-indigo-700">
-                        Need help describing your experience? Our AI can help you write compelling descriptions
-                        and achievements that highlight your impact.
-                      </p>
-                      <button 
-                        onClick={() => handleAISuggestion('experience')}
-                        className="mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
-                      >
-                        Get AI Suggestions →
-                      </button>
-                    </div>
                   </motion.div>
                 )}
                 
@@ -1937,24 +1911,21 @@ ${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
                     </div>
 
                     {/* AI Suggestions */}
-                    <div className="mt-8 p-4 bg-indigo-50 rounded-xl">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-                          <span className="text-sm">💡</span>
-                        </div>
-                        <div>
-                          <h3 className="text-sm font-medium text-indigo-900">AI Suggestions</h3>
-                          <p className="text-sm text-indigo-700">
-                            Pro tip: Include a mix of technical and soft skills relevant to your target role. The AI can analyze job descriptions and suggest skills you might want to add.
-                          </p>
-                        </div>
-                      </div>
-                      <button 
-                        onClick={() => handleAISuggestion('skills')}
-                        className="mt-4 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
-                      >
-                        Get AI Suggestions →
-                      </button>
+                    <div className="mt-4">
+                      <AISuggestions
+                        type="skills"
+                        context={{
+                          jobTitle: personalInfo?.title || ''
+                        }}
+                        onApplySuggestion={(suggestion) => {
+                          setSkills(prev => [...prev, {
+                            id: crypto.randomUUID(),
+                            name: suggestion,
+                            level: 'Intermediate',
+                            category: 'Technical'
+                          }]);
+                        }}
+                      />
                     </div>
                   </motion.div>
                 )}

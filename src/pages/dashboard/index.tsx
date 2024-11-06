@@ -75,8 +75,11 @@ export default function Dashboard() {
           className="mt-4 relative"
         >
           <div className="relative bg-white/90 backdrop-blur-xl rounded-[32px] p-8 shadow-xl border border-white/20 overflow-hidden">
+            {/* Enhanced glass morphism effect */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-white/10 backdrop-blur-xl" />
+            
             {/* Enhanced decorative elements */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-full -mr-48 -mt-48 blur-3xl"></div>
+            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-violet-500/20 via-fuchsia-500/20 to-pink-500/20 rounded-full -mr-48 -mt-48 blur-3xl"></div>
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-blue-500/20 via-cyan-500/20 to-teal-500/20 rounded-full -ml-48 -mb-48 blur-3xl"></div>
 
             <div className="relative">
@@ -88,7 +91,7 @@ export default function Dashboard() {
                 transition={{ delay: 0.2 }}
               >
                 <motion.div 
-                  className="w-16 h-16 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl flex items-center justify-center shadow-lg"
+                  className="w-16 h-16 bg-gradient-to-br from-violet-100 to-fuchsia-100 rounded-2xl flex items-center justify-center shadow-lg"
                   whileHover={{ scale: 1.1, rotate: 10 }}
                   whileTap={{ scale: 0.9 }}
                 >
@@ -103,7 +106,7 @@ export default function Dashboard() {
                   >
                     <span className="text-gray-900 block">Welcome back,</span>
                     <motion.span 
-                      className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent block mt-1"
+                      className="bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 bg-clip-text text-transparent block mt-1"
                       initial={{ x: -20, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       transition={{ delay: 0.4 }}
@@ -122,14 +125,14 @@ export default function Dashboard() {
                 </div>
               </motion.div>
 
-              {/* Quick Stats with enhanced design */}
+              {/* Enhanced Quick Stats */}
               <div className="grid grid-cols-3 gap-6 mt-8">
                 {[
                   { 
                     title: 'Weekly Progress', 
                     value: '+25%', 
-                    bg: 'bg-gradient-to-br from-indigo-50 to-purple-50', 
-                    border: 'border-indigo-100',
+                    bg: 'bg-gradient-to-br from-violet-50 to-fuchsia-50', 
+                    border: 'border-violet-100',
                     icon: '📈',
                     tooltip: 'Your progress increased by 25% this week!' 
                   },
@@ -173,7 +176,7 @@ export default function Dashboard() {
           </div>
         </motion.div>
 
-        {/* Tools Grid with enhanced design */}
+        {/* Enhanced Tools Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {tools.map((tool, index) => (
             <motion.div 
@@ -202,7 +205,7 @@ export default function Dashboard() {
                   <motion.button 
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-3 rounded-xl text-sm font-medium shadow-lg shadow-indigo-500/20 hover:shadow-xl hover:shadow-indigo-500/30 transition-all duration-200 flex items-center justify-center group"
+                    className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white px-4 py-3 rounded-xl text-sm font-medium shadow-lg shadow-violet-500/20 hover:shadow-xl hover:shadow-violet-500/30 transition-all duration-200 flex items-center justify-center group"
                   >
                     Get Started
                     <motion.svg 

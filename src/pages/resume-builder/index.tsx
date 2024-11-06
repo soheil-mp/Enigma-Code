@@ -1082,44 +1082,67 @@ ${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
                 className="relative group"
               >
                 <div className={`
-                  relative w-full rounded-2xl p-4 transition-all duration-200
+                  relative w-full rounded-2xl p-4 transition-all duration-300 hover:scale-105
                   ${index === activeStep 
-                    ? 'bg-[#7C3AED]' 
+                    ? 'bg-gradient-to-br from-[#7C3AED] to-[#6D28D9] shadow-lg shadow-purple-500/20' 
                     : index < activeStep
-                    ? 'bg-[#10B981]'
-                    : 'bg-[#282433]'
+                    ? 'bg-gradient-to-br from-[#10B981] to-[#059669] shadow-lg shadow-green-500/20'
+                    : 'bg-gradient-to-br from-[#282433] to-[#1E1B2C] hover:from-[#312D3F] hover:to-[#252232]'
                   }
                 `}>
-                  {/* Completion indicator */}
+                  {/* Completion indicator with animation */}
                   {index < activeStep && (
-                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#10B981] rounded-full flex items-center justify-center">
-                      <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <motion.div 
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-[#10B981] to-[#059669] rounded-full flex items-center justify-center shadow-lg"
+                    >
+                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                    </div>
+                    </motion.div>
                   )}
 
-                  {/* Icon */}
-                  <div className="text-lg mb-2 text-center text-white">
+                  {/* Icon with floating animation */}
+                  <motion.div 
+                    animate={{ y: [0, -4, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    className="text-2xl mb-3 text-center"
+                  >
                     {step.icon}
-                  </div>
+                  </motion.div>
 
-                  {/* Title */}
-                  <div className={`text-[11px] font-medium text-center ${
-                    index === activeStep || index < activeStep
+                  {/* Title with gradient text */}
+                  <div className={`text-xs font-medium text-center ${
+                    index === activeStep
                       ? 'text-white' 
+                      : index < activeStep
+                      ? 'text-white'
                       : 'text-gray-400'
                   }`}>
                     {step.title}
                   </div>
 
-                  {/* Connection line */}
+                  {/* Description tooltip on hover */}
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <div className="bg-gray-900 text-white text-xs rounded-lg p-2 text-center">
+                      {step.description}
+                      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-2 h-2 bg-gray-900"/>
+                    </div>
+                  </div>
+
+                  {/* Connection line with animation */}
                   {index < steps.length - 1 && (
                     <div className="absolute top-1/2 -right-3 transform -translate-y-1/2 w-3">
-                      <div className="h-[2px] w-full bg-[#282433]">
-                        <div 
-                          className={`h-full transition-all duration-300 ${
-                            index < activeStep ? 'bg-[#10B981]' : ''
+                      <div className="h-[2px] w-full bg-[#282433] overflow-hidden">
+                        <motion.div 
+                          initial={{ x: "-100%" }}
+                          animate={index < activeStep ? { x: "0%" } : {}}
+                          transition={{ duration: 0.5 }}
+                          className={`h-full w-full ${
+                            index < activeStep 
+                              ? 'bg-gradient-to-r from-[#10B981] to-[#059669]'
+                              : ''
                           }`}
                         />
                       </div>
@@ -1130,32 +1153,34 @@ ${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
             ))}
           </div>
 
-          {/* Bottom section with status and next button */}
-          <div className="mt-4 flex items-center justify-between">
-            <div className="flex items-center gap-4 text-xs">
+          {/* Bottom section with improved status indicators */}
+          <div className="mt-6 flex items-center justify-between">
+            <div className="flex items-center gap-6 text-xs">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-[#10B981]"/>
+                <div className="w-3 h-3 rounded-full bg-gradient-to-br from-[#10B981] to-[#059669] shadow-lg shadow-green-500/20"/>
                 <span className="text-gray-400">Completed</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-[#7C3AED]"/>
+                <div className="w-3 h-3 rounded-full bg-gradient-to-br from-[#7C3AED] to-[#6D28D9] shadow-lg shadow-purple-500/20"/>
                 <span className="text-gray-400">Current</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-[#282433]"/>
+                <div className="w-3 h-3 rounded-full bg-gradient-to-br from-[#282433] to-[#1E1B2C]"/>
                 <span className="text-gray-400">Pending</span>
               </div>
             </div>
             
-            <button 
+            <motion.button 
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => setActiveStep(Math.min(steps.length - 1, activeStep + 1))}
-              className="text-[#7C3AED] text-sm font-medium flex items-center gap-1"
+              className="text-[#7C3AED] text-sm font-medium flex items-center gap-2 bg-[#7C3AED]/10 px-4 py-2 rounded-xl hover:bg-[#7C3AED]/20 transition-colors duration-200"
             >
               Next Section
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
-            </button>
+            </motion.button>
           </div>
         </div>
 

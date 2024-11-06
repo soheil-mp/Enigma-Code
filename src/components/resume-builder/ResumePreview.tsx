@@ -107,17 +107,17 @@ export default function ResumePreview({ data, template }: ResumePreviewProps) {
       <div className="p-4 space-y-4 max-h-[calc(100vh-150px)] overflow-y-auto">
         {/* Personal Info */}
         <div className="text-center">
-          <h2 className="text-xl font-bold">
+          <h2 className="text-2xl font-bold text-gray-900">
             {data.personalInfo?.firstName} {data.personalInfo?.lastName}
           </h2>
-          <p className="text-gray-600">{data.personalInfo?.title}</p>
+          <p className="text-lg text-gray-600">{data.personalInfo?.title}</p>
           
           {/* Contact & Links */}
-          <div className="flex justify-center gap-2 text-sm text-gray-600 mt-2">
+          <div className="flex justify-center gap-4 text-sm text-gray-600 mt-2">
             {data.personalInfo?.email && <span>{data.personalInfo.email}</span>}
             {data.personalInfo?.phone && <span>• {data.personalInfo.phone}</span>}
           </div>
-          <div className="flex justify-center gap-2 text-sm text-gray-600 mt-1">
+          <div className="flex justify-center gap-4 text-sm text-gray-600 mt-1">
             {data.personalInfo?.linkedin && (
               <a href={data.personalInfo.linkedin} className="text-blue-600 hover:underline">LinkedIn</a>
             )}

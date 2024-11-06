@@ -159,12 +159,12 @@ export default function LivePreview({ formData, latexContent, onDownloadPDF }: L
 
           {/* Experience Section */}
           {hasItems(formData.experiences) && (
-            <div className="mb-4">
-              <h2 className="text-lg font-bold border-b border-gray-300 mb-2">Experience</h2>
+            <div className="mb-6">
+              <h2 className="text-lg font-bold border-b border-gray-300 mb-3">Experience</h2>
               {formData.experiences?.map((exp, index) => (
-                <div key={index} className="mb-3">
+                <div key={index} className="mb-4">
                   <div className="flex justify-between">
-                    <strong>{exp.title}</strong>
+                    <strong className="text-gray-800">{exp.title}</strong>
                     <span className="text-gray-600">{exp.startDate} - {exp.current ? 'Present' : exp.endDate}</span>
                   </div>
                   <div className="flex justify-between text-gray-700">
@@ -172,10 +172,10 @@ export default function LivePreview({ formData, latexContent, onDownloadPDF }: L
                     <span>{exp.location}</span>
                   </div>
                   {exp.description && (
-                    <p className="text-gray-700 mt-1 text-sm">{exp.description}</p>
+                    <p className="text-gray-700 mt-2 text-sm">{exp.description}</p>
                   )}
                   {exp.achievements?.length > 0 && (
-                    <ul className="list-disc list-inside mt-1 text-sm">
+                    <ul className="list-disc list-inside mt-2 text-sm">
                       {exp.achievements.map((achievement: string, i: number) => (
                         achievement && <li key={i} className="text-gray-700">{achievement}</li>
                       ))}

@@ -28,10 +28,17 @@ interface FeedbackData {
   };
 }
 
+interface SectionScore {
+  score: number;
+  suggestions: string[];
+  keywords: string[];
+}
+
 export default function AIFeedback({ resumeData, onApplyFeedback }: AIFeedbackProps) {
   const [feedback, setFeedback] = useState<FeedbackData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sectionScores, setSectionScores] = useState<Record<string, SectionScore>>({});
 
   const getFeedback = async () => {
     setLoading(true);
@@ -55,6 +62,14 @@ export default function AIFeedback({ resumeData, onApplyFeedback }: AIFeedbackPr
         {score}/100
       </span>
     );
+  };
+
+  const analyzeSectionContent = async (section: string, content: any) => {
+    const score = await aiService.analyzeSection(section, content);
+    setSectionScores(prev => ({
+      ...prev,
+      [section]: score
+    }));
   };
 
   return (

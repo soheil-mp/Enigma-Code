@@ -73,6 +73,24 @@ export default function ResumePreview({ data, template }: ResumePreviewProps) {
     return Array.isArray(section) && section.length > 0;
   };
 
+  // Add template switching preview
+  const TemplatePreview = ({ template, data }) => {
+    return (
+      <div className="relative">
+        {/* Add quick template switcher */}
+        <div className="absolute top-2 right-2 flex gap-2">
+          <button className="p-2 bg-white rounded-lg shadow hover:bg-gray-50">
+            Previous Template
+          </button>
+          <button className="p-2 bg-white rounded-lg shadow hover:bg-gray-50">
+            Next Template
+          </button>
+        </div>
+        {/* Existing preview content */}
+      </div>
+    );
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}

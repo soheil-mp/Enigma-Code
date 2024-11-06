@@ -2,9 +2,11 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/api/auth/[...nextauth]": "pages/api/auth/[...nextauth].js",
   "/dashboard": "pages/dashboard.js",
+  "/api/auth/[...nextauth]": "pages/api/auth/[...nextauth].js",
   "/api/resumes/load": "pages/api/resumes/load.js",
+  "/resume-builder": "pages/resume-builder.js",
   "/api/resumes/save": "pages/api/resumes/save.js",
-  "/resume-builder": "pages/resume-builder.js"
+  "/api/ai/suggestions/skills": "pages/api/ai/suggestions/skills.js",
+  "/api/ai/suggestions/description": "pages/api/ai/suggestions/description.js"
 }

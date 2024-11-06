@@ -85,6 +85,29 @@ interface LivePreviewProps {
 export default function LivePreview({ formData, latexContent, onDownloadPDF }: LivePreviewProps) {
   const hasItems = (arr: any[] | undefined) => arr && arr.length > 0;
 
+  // Add multiple export formats
+  const exportFormats = [
+    { id: 'pdf', label: 'PDF', icon: '📄' },
+    { id: 'docx', label: 'Word', icon: '📝' },
+    { id: 'txt', label: 'Plain Text', icon: '📋' },
+    { id: 'json', label: 'JSON', icon: '🔧' }
+  ];
+
+  const ExportOptions = () => (
+    <div className="flex gap-2">
+      {exportFormats.map(format => (
+        <button
+          key={format.id}
+          onClick={() => handleExport(format.id)}
+          className="flex items-center gap-1 px-3 py-2 bg-white rounded-lg shadow hover:bg-gray-50"
+        >
+          <span>{format.icon}</span>
+          {format.label}
+        </button>
+      ))}
+    </div>
+  );
+
   return (
     <div className="h-[800px] bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col">
       {/* Fixed Header */}

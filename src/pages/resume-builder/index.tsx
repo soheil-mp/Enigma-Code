@@ -191,6 +191,9 @@ export default function ResumeBuilder() {
   // Add state for latex content
   const [latexContent, setLatexContent] = useState<string>('');
 
+  // Add more robust auto-save with status indicator
+  const [autoSaveStatus, setAutoSaveStatus] = useState<'saving' | 'saved' | 'error' | null>(null);
+
   // Load resume data on component mount
   useEffect(() => {
     if (session?.user?.id) {
@@ -519,23 +522,20 @@ export default function ResumeBuilder() {
 
   // Update the autosave effect
   useEffect(() => {
-    if (isDirty) {
-      const saveTimer = setTimeout(() => {
-        autoSave({
-          personalInfo,
-          experiences,
-          education,
-          skills,
-          languages,
-          certifications,
-          projects
-        });
-        setIsDirty(false);
-      }, 1000); // Debounce autosave for 1 second
+    const autoSaveTimer = setTimeout(async () => {
+      if (isDirty) {
+        try {
+          setAutoSaveStatus('saving');
+          await handleSave();
+          setAutoSaveStatus('saved');
+        } catch (error) {
+          setAutoSaveStatus('error');
+        }
+      }
+    }, 3000);
 
-      return () => clearTimeout(saveTimer);
-    }
-  }, [personalInfo, experiences, education, skills, languages, certifications, projects, isDirty]);
+    return () => clearTimeout(autoSaveTimer);
+  }, [personalInfo, experiences, education, skills, languages, projects, certifications]);
 
   useEffect(() => {
     const loadExistingResume = async () => {
@@ -889,6 +889,37 @@ ${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
 
     generateLatex();
   }, [personalInfo, experiences, education, skills, languages, projects, certifications]);
+
+  // Add keyboard shortcuts for common actions
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        handleSave();
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+        e.preventDefault();
+        setShowPreview(prev => !prev);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, []);
+
+  // Add section completion tracking
+  const calculateProgress = () => {
+    const sections = {
+      personalInfo: validatePersonalInfo(personalInfo).isValid,
+      experience: experiences.length > 0,
+      education: education.length > 0,
+      skills: skills.length > 0,
+      // Add other sections
+    };
+
+    const completedSections = Object.values(sections).filter(Boolean).length;
+    return (completedSections / Object.keys(sections).length) * 100;
+  };
 
   if (status === 'loading') {
     return <LoadingSpinner />;

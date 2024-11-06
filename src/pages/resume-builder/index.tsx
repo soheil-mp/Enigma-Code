@@ -283,39 +283,48 @@ export default function ResumeBuilder() {
   const steps = [
     { 
       title: 'Templates', 
-      icon: '📄'  // Added document emoji for Templates
+      icon: '📄',
+      description: 'Choose your resume template'
     },
     { 
       title: 'Personal Info', 
-      icon: '👤' 
+      icon: '👤',
+      description: 'Add your contact details'
     },
     { 
       title: 'Experience', 
-      icon: '💼' 
+      icon: '💼',
+      description: 'List your work history'
     },
     { 
       title: 'Education', 
-      icon: '🎓' 
+      icon: '🎓',
+      description: 'Add your academic background'
     },
     { 
       title: 'Skills', 
-      icon: '⚡' 
+      icon: '⚡',
+      description: 'Highlight your expertise'
     },
     { 
       title: 'Languages', 
-      icon: '🌐' 
+      icon: '🌐',
+      description: 'Add language proficiencies'
     },
     { 
       title: 'Projects', 
-      icon: '🚀' 
+      icon: '🚀',
+      description: 'Showcase your projects'
     },
     { 
       title: 'Certifications', 
-      icon: '📜' 
+      icon: '📜',
+      description: 'List your certifications'
     },
     { 
-      title: 'AI Resume Analyzer', 
-      icon: '🤖' 
+      title: 'AI Review', 
+      icon: '🤖',
+      description: 'Get AI-powered feedback'
     }
   ];
 
@@ -999,119 +1008,158 @@ ${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-[24px] p-8 shadow-sm mb-6"
+          className="relative overflow-hidden bg-[#7C3AED] rounded-[32px] p-8 shadow-lg mb-8"
         >
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center">
-              <span className="text-2xl">📝</span>
+          <div className="relative flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              <div className="w-14 h-14 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                <span className="text-2xl">📝</span>
+              </div>
+              <div>
+                <h1 className="text-2xl font-semibold text-white">AI Resume Builder</h1>
+                <p className="text-white/80 mt-1">Create a professional resume with AI assistance</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-semibold text-gray-900">AI Resume Builder</h1>
-              <p className="text-gray-600">Create a professional resume with AI assistance</p>
+            <div className="flex items-center gap-4">
+              <div className="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-xl flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"/>
+                <span className="text-white/90 text-sm">Auto-saving</span>
+              </div>
+              <motion.button 
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleSave}
+                className="px-4 py-2 bg-white text-[#7C3AED] rounded-xl font-medium flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                </svg>
+                Save Progress
+              </motion.button>
+            </div>
+          </div>
+
+          {/* Progress bar */}
+          <div className="mt-8">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm text-white/80">Overall Progress</span>
+              <span className="text-sm font-medium text-white">{Math.round((activeStep / (steps.length - 1)) * 100)}%</span>
+            </div>
+            <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${(activeStep / (steps.length - 1)) * 100}%` }}
+                className="h-full bg-white rounded-full"
+                transition={{ duration: 0.5 }}
+              />
             </div>
           </div>
         </motion.div>
 
-        {/* Progress Steps */}
-        <div className="bg-white/70 backdrop-blur-md rounded-[24px] p-8 mb-6">
-          <div className="relative flex justify-between">
-            {/* Background line */}
-            <div className="absolute top-[2.15rem] left-0 w-full h-1 bg-gray-100 rounded-full" />
-            
-            {/* Animated gradient progress line */}
-            <div 
-              className="absolute top-[2.15rem] left-0 h-1 rounded-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-500"
-              style={{ 
-                width: `${(activeStep / (steps.length - 1)) * 100}%`,
-                transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
-              }}
-            >
-              {/* Animated glow effect */}
-              <div className="absolute top-0 right-0 w-4 h-full bg-gradient-to-r from-transparent to-white/50 animate-shimmer" />
+        {/* Update the sections bar with a cleaner design */}
+        <div className="bg-[#1E1B2C] rounded-[32px] p-8 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-xl text-white">Resume Sections</h3>
+              <p className="text-gray-400 text-sm mt-1">Complete each section to create your perfect resume</p>
             </div>
+            <div className="flex items-center gap-3">
+              <div className="px-3 py-1 bg-[#282433] rounded-lg text-sm text-gray-300">
+                {activeStep + 1} of {steps.length}
+              </div>
+              <div className="h-8 w-8 rounded-lg bg-[#7C3AED] flex items-center justify-center">
+                <span className="text-white text-sm">{Math.round((activeStep / (steps.length - 1)) * 100)}%</span>
+              </div>
+            </div>
+          </div>
 
-            {/* Steps */}
+          {/* Steps grid with improved styling */}
+          <div className="grid grid-cols-9 gap-3">
             {steps.map((step, index) => (
-              <motion.div
+              <button
                 key={step.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
                 onClick={() => setActiveStep(index)}
-                className="relative flex flex-col items-center cursor-pointer group z-10"
+                className="relative group"
               >
-                {/* Step Icon Container */}
-                <motion.div
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`relative w-16 h-16 rounded-2xl flex items-center justify-center mb-3 transition-all duration-300 ${
-                    index === activeStep 
-                      ? 'bg-gradient-to-tr from-violet-500 via-fuchsia-500 to-cyan-500 text-white shadow-lg shadow-fuchsia-500/25'
-                      : index < activeStep
-                      ? 'bg-gradient-to-tr from-violet-100 to-fuchsia-100 text-fuchsia-500'
-                      : 'bg-white text-gray-400 group-hover:bg-gray-50'
-                  }`}
-                >
-                  {/* Completion indicator */}
-                  {index < activeStep ? (
-                    <motion.div 
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className="text-2xl"
-                    >
-                      ✓
-                    </motion.div>
-                  ) : (
-                    <span className="text-2xl">{step.icon}</span>
-                  )}
-
-                  {/* Active step indicator */}
-                  {index === activeStep && (
-                    <>
-                      {/* Pulse animation */}
-                      <motion.div
-                        initial={{ scale: 0.8, opacity: 0.5 }}
-                        animate={{ scale: 1.4, opacity: 0 }}
-                        transition={{ duration: 1.5, repeat: Infinity }}
-                        className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-violet-500 via-fuchsia-500 to-cyan-500"
-                      />
-                      {/* Inner glow */}
-                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-violet-500/20 via-fuchsia-500/20 to-cyan-500/20 blur-sm" />
-                    </>
-                  )}
-                </motion.div>
-
-                {/* Step Title */}
-                <span className={`text-sm font-medium transition-colors duration-200 ${
-                  index === activeStep 
-                    ? 'text-fuchsia-600 font-semibold'
+                <div className={`
+                  relative w-full rounded-2xl p-4 transition-all duration-200
+                  ${index === activeStep 
+                    ? 'bg-[#7C3AED]' 
                     : index < activeStep
-                    ? 'text-gray-600'
-                    : 'text-gray-400 group-hover:text-gray-600'
-                }`}>
-                  {step.title}
-                </span>
+                    ? 'bg-[#10B981]'
+                    : 'bg-[#282433]'
+                  }
+                `}>
+                  {/* Completion indicator */}
+                  {index < activeStep && (
+                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#10B981] rounded-full flex items-center justify-center">
+                      <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  )}
 
-                {/* Step Status */}
-                <motion.span 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className={`mt-1 text-xs ${
-                    index === activeStep 
-                      ? 'text-fuchsia-500'
-                      : index < activeStep
-                      ? 'text-green-500'
+                  {/* Icon */}
+                  <div className="text-lg mb-2 text-center text-white">
+                    {step.icon}
+                  </div>
+
+                  {/* Title */}
+                  <div className={`text-[11px] font-medium text-center ${
+                    index === activeStep || index < activeStep
+                      ? 'text-white' 
                       : 'text-gray-400'
-                  }`}
-                >
-                  {index < activeStep ? 'Completed' : index === activeStep ? 'In Progress' : 'Pending'}
-                </motion.span>
-              </motion.div>
+                  }`}>
+                    {step.title}
+                  </div>
+
+                  {/* Connection line */}
+                  {index < steps.length - 1 && (
+                    <div className="absolute top-1/2 -right-3 transform -translate-y-1/2 w-3">
+                      <div className="h-[2px] w-full bg-[#282433]">
+                        <div 
+                          className={`h-full transition-all duration-300 ${
+                            index < activeStep ? 'bg-[#10B981]' : ''
+                          }`}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </button>
             ))}
+          </div>
+
+          {/* Bottom section with status and next button */}
+          <div className="mt-4 flex items-center justify-between">
+            <div className="flex items-center gap-4 text-xs">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-[#10B981]"/>
+                <span className="text-gray-400">Completed</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-[#7C3AED]"/>
+                <span className="text-gray-400">Current</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-[#282433]"/>
+                <span className="text-gray-400">Pending</span>
+              </div>
+            </div>
+            
+            <button 
+              onClick={() => setActiveStep(Math.min(steps.length - 1, activeStep + 1))}
+              className="text-[#7C3AED] text-sm font-medium flex items-center gap-1"
+            >
+              Next Section
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
         </div>
 
-        {/* Add these keyframes to your global styles */}
+        {/* Add these styles to your global CSS */}
         <style jsx global>{`
           @keyframes shimmer {
             0% {
@@ -1124,6 +1172,23 @@ ${cert.url ? `\\href{${cert.url}}{View Certificate}\\\\` : ''}
           
           .animate-shimmer {
             animation: shimmer 2s infinite;
+          }
+
+          @keyframes gradient {
+            0% {
+              background-position: 0% 50%;
+            }
+            50% {
+              background-position: 100% 50%;
+            }
+            100% {
+              background-position: 0% 50%;
+            }
+          }
+
+          .animate-gradient {
+            background-size: 200% 200%;
+            animation: gradient 6s ease infinite;
           }
         `}</style>
 
